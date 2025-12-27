@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uddf version="3.2.1">
+    <generator>
+        <name>UDDF Test Suite</name>
+        <version>1.0.0</version>
+        <manufacturer>
+            <name>UDDF Swift Library</name>
+            <contact>
+                <homepage>https://github.com/yourusername/uddf-swift</homepage>
+                <email>test@example.com</email>
+            </contact>
+        </manufacturer>
+        <datetime>2025-12-27T14:00:00Z</datetime>
+    </generator>
+</uddf>
