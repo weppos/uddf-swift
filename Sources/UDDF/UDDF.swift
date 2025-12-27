@@ -42,6 +42,51 @@ public struct UDDF {
         return try parser.parse(contentsOf: url)
     }
 
+    // MARK: - Reference Resolution
+
+    /// Parse UDDF and resolve all cross-references
+    ///
+    /// This method parses the document and validates that all ID/IDREF references
+    /// can be resolved. It builds a registry of all elements with IDs and checks
+    /// that all references point to valid elements.
+    ///
+    /// - Parameter data: XML data to parse
+    /// - Returns: A tuple containing the parsed document and resolution result
+    /// - Throws: UDDFError if parsing fails or references are invalid
+    public static func parseAndResolve(_ data: Data) throws -> (document: UDDFDocument, resolution: ResolutionResult) {
+        let document = try parse(data)
+        let resolver = ReferenceResolver()
+        let result = try resolver.resolve(document)
+
+        // Throw if there are unresolved references
+        if !result.isValid {
+            let errorMessages = result.errors.map { $0.message }.joined(separator: ", ")
+            throw UDDFError.unresolvedReference(errorMessages)
+        }
+
+        return (document, result)
+    }
+
+    /// Parse UDDF from file and resolve all cross-references
+    ///
+    /// - Parameter url: File URL to parse
+    /// - Returns: A tuple containing the parsed document and resolution result
+    /// - Throws: UDDFError if parsing fails or references are invalid
+    public static func parseAndResolve(contentsOf url: URL) throws -> (document: UDDFDocument, resolution: ResolutionResult) {
+        let data = try Data(contentsOf: url)
+        return try parseAndResolve(data)
+    }
+
+    /// Resolve references in an already-parsed document
+    ///
+    /// - Parameter document: The UDDF document to resolve
+    /// - Returns: Resolution result with registry and any errors
+    /// - Throws: UDDFError if resolution fails
+    public static func resolveReferences(in document: UDDFDocument) throws -> ResolutionResult {
+        let resolver = ReferenceResolver()
+        return try resolver.resolve(document)
+    }
+
     // MARK: - Writing
 
     /// Write UDDF document to Data
