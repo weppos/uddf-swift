@@ -23,7 +23,7 @@ Add this package to your `Package.swift`:
 ```swift
 dependencies:
 [
-    .package(url: "https://github.com/yourusername/uddf-swift.git", from: "1.0.0")
+    .package(url: "https://github.com/weppos/uddf-swift.git", from: "1.0.0")
 ]
 ```
 
