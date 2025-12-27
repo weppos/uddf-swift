@@ -13,37 +13,37 @@ public struct UDDFDocument: Codable, Equatable {
     public var generator: Generator
 
     /// OPTIONAL: Multimedia data (images, audio, video)
-    public var mediadata: String? // Placeholder for Phase 2
+    public var mediadata: MediaData?
 
     /// OPTIONAL: Manufacturer information
-    public var maker: String? // Placeholder for Phase 2
+    public var maker: [Maker]?
 
     /// OPTIONAL: Business entities (dive shops, training organizations)
-    public var business: String? // Placeholder for Phase 2
+    public var business: [Business]?
 
     /// OPTIONAL: Diver profiles and certifications
-    public var diver: String? // Placeholder for Phase 2
+    public var diver: DiverData?
 
     /// OPTIONAL: Dive site descriptions
-    public var divesite: String? // Placeholder for Phase 2
+    public var divesite: [DiveSite]?
 
     /// OPTIONAL: Gas mixture definitions
-    public var gasdefinitions: String? // Placeholder for Phase 2
+    public var gasdefinitions: GasDefinitions?
 
     /// OPTIONAL: Decompression model parameters
-    public var decomodel: String? // Placeholder for Phase 2
+    public var decomodel: [DecoModel]?
 
     /// OPTIONAL: Recorded dive profiles
-    public var profiledata: String? // Placeholder for Phase 2
+    public var profiledata: ProfileData?
 
     /// OPTIONAL: Dive table generation parameters
-    public var tablegeneration: String? // Placeholder for Phase 2
+    public var tablegeneration: TableGeneration?
 
     /// OPTIONAL: Multi-dive trip information
-    public var divetrip: String? // Placeholder for Phase 2
+    public var divetrip: [DiveTrip]?
 
     /// OPTIONAL: Dive computer configuration
-    public var divecomputercontrol: String? // Placeholder for Phase 2
+    public var divecomputercontrol: DiveComputerControl?
 
     public init(
         version: String = "3.2.1",

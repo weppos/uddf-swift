@@ -114,18 +114,27 @@ do {
 - [x] Round-trip tests
 - [x] File I/O support
 
+### Phase 2: Core Models (Complete ✓)
+
+- [x] Unit types (Depth, Temperature, Pressure, Duration) with automatic conversions
+- [x] UDDFDateTime with timezone support
+- [x] ProfileData (dive profiles, waypoints, samples)
+- [x] Diver (owner, buddy, personal information, equipment)
+- [x] GasDefinitions (air, nitrox, trimix with gas analysis)
+- [x] DiveSite (locations, GPS, geography)
+- [x] MediaData (images, audio, video)
+- [x] Maker (manufacturers)
+- [x] Business (dive shops, training organizations)
+- [x] DecoModel (decompression algorithms)
+- [x] TableGeneration (dive tables)
+- [x] DiveTrip (multi-dive trips)
+- [x] DiveComputerControl (device configuration)
+- [x] All 13 UDDF sections fully modeled
+- [x] Comprehensive test coverage (26 passing tests)
+
 ### Upcoming Phases
 
-**Phase 2: Core Models** (In Progress)
-
-- [ ] ProfileData (dive profiles and samples)
-- [ ] Diver (diver profiles and certifications)
-- [ ] GasDefinitions (gas mixtures)
-- [ ] DiveSite (locations and geography)
-- [ ] MediaData (images, audio, video)
-- [ ] All remaining UDDF sections
-
-**Phase 3: Cross-Reference Resolution**
+**Phase 3: Cross-Reference Resolution** (Next)
 
 - [ ] ID/IDREF reference system
 - [ ] Reference resolver
