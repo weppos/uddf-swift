@@ -4,7 +4,7 @@ import Foundation
 ///
 /// UDDF stores durations in seconds. This type provides convenient
 /// conversion to minutes and hours.
-public struct Duration: Codable, Equatable, Hashable {
+public struct UDDFDuration: Codable, Equatable, Hashable {
     /// Duration in seconds (UDDF standard unit)
     public var seconds: Double
 
@@ -45,15 +45,15 @@ public struct Duration: Codable, Equatable, Hashable {
 
 // MARK: - Comparable
 
-extension Duration: Comparable {
-    public static func < (lhs: Duration, rhs: Duration) -> Bool {
+extension UDDFDuration: Comparable {
+    public static func < (lhs: UDDFDuration, rhs: UDDFDuration) -> Bool {
         lhs.seconds < rhs.seconds
     }
 }
 
 // MARK: - CustomStringConvertible
 
-extension Duration: CustomStringConvertible {
+extension UDDFDuration: CustomStringConvertible {
     public var description: String {
         if seconds < 60 {
             return "\(Int(seconds))s"

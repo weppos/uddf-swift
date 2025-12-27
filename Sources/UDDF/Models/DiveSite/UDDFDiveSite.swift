@@ -4,7 +4,7 @@ import XMLCoder
 /// Dive site information
 ///
 /// Contains location and environmental information about a dive site.
-public struct DiveSite: Codable, Equatable {
+public struct UDDFDiveSite: Codable, Equatable {
     /// Unique identifier
     public var id: String?
 
@@ -12,20 +12,20 @@ public struct DiveSite: Codable, Equatable {
     public var name: String?
 
     /// Geographic information (coordinates, location)
-    public var geography: Geography?
+    public var geography: UDDFGeography?
 
     /// Description and notes
-    public var notes: Notes?
+    public var notes: UDDFNotes?
 
     /// Site ratings or information
-    public var sitedata: SiteData?
+    public var sitedata: UDDFSiteData?
 
     public init(
         id: String? = nil,
         name: String? = nil,
-        geography: Geography? = nil,
-        notes: Notes? = nil,
-        sitedata: SiteData? = nil
+        geography: UDDFGeography? = nil,
+        notes: UDDFNotes? = nil,
+        sitedata: UDDFSiteData? = nil
     ) {
         self.id = id
         self.name = name
@@ -45,7 +45,7 @@ public struct DiveSite: Codable, Equatable {
 
 // MARK: - DynamicNodeEncoding
 
-extension DiveSite: DynamicNodeEncoding {
+extension UDDFDiveSite: DynamicNodeEncoding {
     public static func nodeEncoding(for key: CodingKey) -> XMLEncoder.NodeEncoding {
         guard let codingKey = key as? CodingKeys else {
             return .element
@@ -61,12 +61,12 @@ extension DiveSite: DynamicNodeEncoding {
 }
 
 /// Geographic location information
-public struct Geography: Codable, Equatable {
+public struct UDDFGeography: Codable, Equatable {
     /// Location description
     public var location: String?
 
     /// GPS coordinates
-    public var gps: GPS?
+    public var gps: UDDFGPS?
 
     /// Timezone
     public var timezone: String?
@@ -76,7 +76,7 @@ public struct Geography: Codable, Equatable {
 
     public init(
         location: String? = nil,
-        gps: GPS? = nil,
+        gps: UDDFGPS? = nil,
         timezone: String? = nil,
         altitude: Double? = nil
     ) {
@@ -88,7 +88,7 @@ public struct Geography: Codable, Equatable {
 }
 
 /// GPS coordinates
-public struct GPS: Codable, Equatable {
+public struct UDDFGPS: Codable, Equatable {
     /// Latitude in decimal degrees
     public var latitude: Double?
 
@@ -102,20 +102,20 @@ public struct GPS: Codable, Equatable {
 }
 
 /// Site data and ratings
-public struct SiteData: Codable, Equatable {
+public struct UDDFSiteData: Codable, Equatable {
     /// Difficulty rating
     public var difficulty: String?
 
     /// Maximum depth at the site
-    public var maximumdepth: Depth?
+    public var maximumdepth: UDDFDepth?
 
     /// Average depth at the site
-    public var averagedepth: Depth?
+    public var averagedepth: UDDFDepth?
 
     public init(
         difficulty: String? = nil,
-        maximumdepth: Depth? = nil,
-        averagedepth: Depth? = nil
+        maximumdepth: UDDFDepth? = nil,
+        averagedepth: UDDFDepth? = nil
     ) {
         self.difficulty = difficulty
         self.maximumdepth = maximumdepth

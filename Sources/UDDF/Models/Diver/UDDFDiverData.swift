@@ -5,31 +5,31 @@ import XMLCoder
 ///
 /// Contains information about divers, including the owner (primary diver),
 /// buddies, and dive instructors.
-public struct DiverData: Codable, Equatable {
+public struct UDDFDiverData: Codable, Equatable {
     /// The primary diver (owner of the dive log)
-    public var owner: [Owner]?
+    public var owner: [UDDFOwner]?
 
     /// Dive buddies
-    public var buddy: [Buddy]?
+    public var buddy: [UDDFBuddy]?
 
-    public init(owner: [Owner]? = nil, buddy: [Buddy]? = nil) {
+    public init(owner: [UDDFOwner]? = nil, buddy: [UDDFBuddy]? = nil) {
         self.owner = owner
         self.buddy = buddy
     }
 }
 
 /// Primary diver (owner) information
-public struct Owner: Codable, Equatable {
+public struct UDDFOwner: Codable, Equatable {
     /// Unique identifier
     public var id: String?
 
     /// Personal information
-    public var personal: Personal?
+    public var personal: UDDFPersonal?
 
     /// Equipment used by this diver
-    public var equipment: Equipment?
+    public var equipment: UDDFEquipment?
 
-    public init(id: String? = nil, personal: Personal? = nil, equipment: Equipment? = nil) {
+    public init(id: String? = nil, personal: UDDFPersonal? = nil, equipment: UDDFEquipment? = nil) {
         self.id = id
         self.personal = personal
         self.equipment = equipment
@@ -44,7 +44,7 @@ public struct Owner: Codable, Equatable {
 
 // MARK: - DynamicNodeEncoding
 
-extension Owner: DynamicNodeEncoding {
+extension UDDFOwner: DynamicNodeEncoding {
     public static func nodeEncoding(for key: CodingKey) -> XMLEncoder.NodeEncoding {
         guard let codingKey = key as? CodingKeys else {
             return .element
@@ -60,14 +60,14 @@ extension Owner: DynamicNodeEncoding {
 }
 
 /// Buddy (dive partner) information
-public struct Buddy: Codable, Equatable {
+public struct UDDFBuddy: Codable, Equatable {
     /// Unique identifier
     public var id: String?
 
     /// Personal information
-    public var personal: Personal?
+    public var personal: UDDFPersonal?
 
-    public init(id: String? = nil, personal: Personal? = nil) {
+    public init(id: String? = nil, personal: UDDFPersonal? = nil) {
         self.id = id
         self.personal = personal
     }
@@ -80,7 +80,7 @@ public struct Buddy: Codable, Equatable {
 
 // MARK: - DynamicNodeEncoding
 
-extension Buddy: DynamicNodeEncoding {
+extension UDDFBuddy: DynamicNodeEncoding {
     public static func nodeEncoding(for key: CodingKey) -> XMLEncoder.NodeEncoding {
         guard let codingKey = key as? CodingKeys else {
             return .element
@@ -96,7 +96,7 @@ extension Buddy: DynamicNodeEncoding {
 }
 
 /// Personal information about a diver
-public struct Personal: Codable, Equatable {
+public struct UDDFPersonal: Codable, Equatable {
     /// First name
     public var firstname: String?
 
@@ -113,7 +113,7 @@ public struct Personal: Codable, Equatable {
     public var birthname: String?
 
     /// Contact information
-    public var contact: Contact?
+    public var contact: UDDFContact?
 
     public init(
         firstname: String? = nil,
@@ -121,7 +121,7 @@ public struct Personal: Codable, Equatable {
         middlename: String? = nil,
         birthdate: Date? = nil,
         birthname: String? = nil,
-        contact: Contact? = nil
+        contact: UDDFContact? = nil
     ) {
         self.firstname = firstname
         self.lastname = lastname
@@ -133,7 +133,7 @@ public struct Personal: Codable, Equatable {
 }
 
 /// Equipment used by a diver
-public struct Equipment: Codable, Equatable {
+public struct UDDFEquipment: Codable, Equatable {
     /// Buoyancy control device
     public var bc: String?
 

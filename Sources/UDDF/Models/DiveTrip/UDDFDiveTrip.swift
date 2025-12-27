@@ -1,35 +1,35 @@
 import Foundation
 import XMLCoder
 
-/// Decompression model parameters
+/// Multi-dive trip information
 ///
-/// Contains decompression algorithm settings and parameters.
-public struct DecoModel: Codable, Equatable {
+/// Contains information about a dive trip spanning multiple days or dives.
+public struct UDDFDiveTrip: Codable, Equatable {
     /// Unique identifier
     public var id: String?
 
-    /// Model name (e.g., "Bühlmann ZHL-16C")
+    /// Trip name
     public var name: String?
 
-    /// Model type
-    public var type: String?
+    /// Trip notes
+    public var notes: UDDFNotes?
 
-    public init(id: String? = nil, name: String? = nil, type: String? = nil) {
+    public init(id: String? = nil, name: String? = nil, notes: UDDFNotes? = nil) {
         self.id = id
         self.name = name
-        self.type = type
+        self.notes = notes
     }
 
     enum CodingKeys: String, CodingKey {
         case id
         case name
-        case type
+        case notes
     }
 }
 
 // MARK: - DynamicNodeEncoding
 
-extension DecoModel: DynamicNodeEncoding {
+extension UDDFDiveTrip: DynamicNodeEncoding {
     public static func nodeEncoding(for key: CodingKey) -> XMLEncoder.NodeEncoding {
         guard let codingKey = key as? CodingKeys else {
             return .element

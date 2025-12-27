@@ -33,8 +33,8 @@ public class UDDFValidator {
     }
 
     private let options: Options
-    private var errors: [ValidationError] = []
-    private var warnings: [ValidationError] = []
+    private var errors: [UDDFValidationError] = []
+    private var warnings: [UDDFValidationError] = []
 
     public init(options: Options = Options()) {
         self.options = options
@@ -46,7 +46,7 @@ public class UDDFValidator {
     ///
     /// - Parameter document: Document to validate
     /// - Returns: Validation result with any errors or warnings
-    public func validate(_ document: UDDFDocument) -> ValidationResult {
+    public func validate(_ document: UDDFDocument) -> UDDFValidationResult {
         errors.removeAll()
         warnings.removeAll()
 
@@ -75,7 +75,7 @@ public class UDDFValidator {
             validateReferences(document)
         }
 
-        return ValidationResult(
+        return UDDFValidationResult(
             errors: errors,
             warnings: warnings
         )
@@ -83,7 +83,7 @@ public class UDDFValidator {
 
     // MARK: - Generator Validation
 
-    private func validateGenerator(_ generator: Generator) {
+    private func validateGenerator(_ generator: UDDFGenerator) {
         if generator.name.isEmpty {
             addError(field: "generator.name", message: "Generator name cannot be empty")
         }
@@ -95,7 +95,7 @@ public class UDDFValidator {
 
     // MARK: - Diver Data Validation
 
-    private func validateDiverData(_ diverData: DiverData) {
+    private func validateDiverData(_ diverData: UDDFDiverData) {
         // Validate owners
         if let owners = diverData.owner {
             for (index, owner) in owners.enumerated() {
@@ -111,7 +111,7 @@ public class UDDFValidator {
         }
     }
 
-    private func validateOwner(_ owner: Owner, index: Int) {
+    private func validateOwner(_ owner: UDDFOwner, index: Int) {
         let prefix = "diver.owner[\(index)]"
 
         if let id = owner.id, id.isEmpty {
@@ -123,7 +123,7 @@ public class UDDFValidator {
         }
     }
 
-    private func validateBuddy(_ buddy: Buddy, index: Int) {
+    private func validateBuddy(_ buddy: UDDFBuddy, index: Int) {
         let prefix = "diver.buddy[\(index)]"
 
         if let id = buddy.id, id.isEmpty {
@@ -135,7 +135,7 @@ public class UDDFValidator {
         }
     }
 
-    private func validatePersonal(_ personal: Personal, prefix: String) {
+    private func validatePersonal(_ personal: UDDFPersonal, prefix: String) {
         if let firstname = personal.firstname, firstname.isEmpty {
             addWarning(field: "\(prefix).personal.firstname", message: "First name is empty")
         }
@@ -147,7 +147,7 @@ public class UDDFValidator {
 
     // MARK: - Profile Data Validation
 
-    private func validateProfileData(_ profileData: ProfileData) {
+    private func validateProfileData(_ profileData: UDDFProfileData) {
         guard let groups = profileData.repetitiongroup else { return }
 
         for (groupIndex, group) in groups.enumerated() {
@@ -155,7 +155,7 @@ public class UDDFValidator {
         }
     }
 
-    private func validateRepetitionGroup(_ group: RepetitionGroup, index: Int) {
+    private func validateRepetitionGroup(_ group: UDDFRepetitionGroup, index: Int) {
         let prefix = "profiledata.repetitiongroup[\(index)]"
 
         if let id = group.id, id.isEmpty {
@@ -169,7 +169,7 @@ public class UDDFValidator {
         }
     }
 
-    private func validateDive(_ dive: Dive, groupIndex: Int, diveIndex: Int) {
+    private func validateDive(_ dive: UDDFDive, groupIndex: Int, diveIndex: Int) {
         let prefix = "profiledata.repetitiongroup[\(groupIndex)].dive[\(diveIndex)]"
 
         if let id = dive.id, id.isEmpty {
@@ -201,7 +201,7 @@ public class UDDFValidator {
         }
     }
 
-    private func validateWaypoint(_ waypoint: Waypoint, prefix: String) {
+    private func validateWaypoint(_ waypoint: UDDFWaypoint, prefix: String) {
         if options.validateRanges {
             if let time = waypoint.divetime, time.seconds < 0 {
                 addError(field: "\(prefix).divetime", message: "Dive time cannot be negative")
@@ -215,7 +215,7 @@ public class UDDFValidator {
 
     // MARK: - Gas Definitions Validation
 
-    private func validateGasDefinitions(_ gasDefinitions: GasDefinitions) {
+    private func validateGasDefinitions(_ gasDefinitions: UDDFGasDefinitions) {
         guard let mixes = gasDefinitions.mix else { return }
 
         for (index, mix) in mixes.enumerated() {
@@ -223,7 +223,7 @@ public class UDDFValidator {
         }
     }
 
-    private func validateMix(_ mix: Mix, index: Int) {
+    private func validateMix(_ mix: UDDFMix, index: Int) {
         let prefix = "gasdefinitions.mix[\(index)]"
 
         if let id = mix.id, id.isEmpty {
@@ -262,13 +262,13 @@ public class UDDFValidator {
 
     // MARK: - Dive Site Validation
 
-    private func validateDiveSites(_ sites: [DiveSite]) {
+    private func validateDiveSites(_ sites: [UDDFDiveSite]) {
         for (index, site) in sites.enumerated() {
             validateDiveSite(site, index: index)
         }
     }
 
-    private func validateDiveSite(_ site: DiveSite, index: Int) {
+    private func validateDiveSite(_ site: UDDFDiveSite, index: Int) {
         let prefix = "divesite[\(index)]"
 
         if let id = site.id, id.isEmpty {
@@ -292,7 +292,7 @@ public class UDDFValidator {
 
     private func validateReferences(_ document: UDDFDocument) {
         do {
-            let resolver = ReferenceResolver()
+            let resolver = UDDFReferenceResolver()
             let result = try resolver.resolve(document)
 
             for refError in result.errors {
@@ -310,7 +310,7 @@ public class UDDFValidator {
     // MARK: - Error/Warning Helpers
 
     private func addError(field: String, message: String, context: [String: String]? = nil) {
-        errors.append(ValidationError(
+        errors.append(UDDFValidationError(
             severity: .error,
             field: field,
             message: message,
@@ -322,7 +322,7 @@ public class UDDFValidator {
         if options.strictMode {
             addError(field: field, message: message, context: context)
         } else {
-            warnings.append(ValidationError(
+            warnings.append(UDDFValidationError(
                 severity: .warning,
                 field: field,
                 message: message,

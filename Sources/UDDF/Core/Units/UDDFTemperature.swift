@@ -4,7 +4,7 @@ import Foundation
 ///
 /// UDDF stores temperatures in Kelvin. This type provides automatic conversion
 /// to Celsius and Fahrenheit.
-public struct Temperature: Codable, Equatable, Hashable {
+public struct UDDFTemperature: Codable, Equatable, Hashable {
     /// Temperature in Kelvin (UDDF standard unit)
     public var kelvin: Double
 
@@ -45,15 +45,15 @@ public struct Temperature: Codable, Equatable, Hashable {
 
 // MARK: - Comparable
 
-extension Temperature: Comparable {
-    public static func < (lhs: Temperature, rhs: Temperature) -> Bool {
+extension UDDFTemperature: Comparable {
+    public static func < (lhs: UDDFTemperature, rhs: UDDFTemperature) -> Bool {
         lhs.kelvin < rhs.kelvin
     }
 }
 
 // MARK: - CustomStringConvertible
 
-extension Temperature: CustomStringConvertible {
+extension UDDFTemperature: CustomStringConvertible {
     public var description: String {
         "\(celsius)°C"
     }

@@ -4,15 +4,15 @@ import Foundation
 ///
 /// Every UDDF file must contain a generator section that identifies the
 /// application that created or last modified the file.
-public struct Generator: Codable, Equatable {
+public struct UDDFGenerator: Codable, Equatable {
     /// Name of the generating application
     public var name: String
 
     /// Manufacturer or developer of the application
-    public var manufacturer: ManufacturerInfo?
+    public var manufacturer: UDDFManufacturerInfo?
 
     /// Contact information for the software developer
-    public var contact: Contact?
+    public var contact: UDDFContact?
 
     /// Version of the generating software
     public var version: String?
@@ -22,8 +22,8 @@ public struct Generator: Codable, Equatable {
 
     public init(
         name: String,
-        manufacturer: ManufacturerInfo? = nil,
-        contact: Contact? = nil,
+        manufacturer: UDDFManufacturerInfo? = nil,
+        contact: UDDFContact? = nil,
         version: String? = nil,
         datetime: Date? = nil
     ) {
@@ -44,21 +44,21 @@ public struct Generator: Codable, Equatable {
 }
 
 /// Manufacturer or developer information
-public struct ManufacturerInfo: Codable, Equatable {
+public struct UDDFManufacturerInfo: Codable, Equatable {
     /// Name of the manufacturer
     public var name: String
 
     /// Contact information
-    public var contact: Contact?
+    public var contact: UDDFContact?
 
-    public init(name: String, contact: Contact? = nil) {
+    public init(name: String, contact: UDDFContact? = nil) {
         self.name = name
         self.contact = contact
     }
 }
 
 /// Contact information
-public struct Contact: Codable, Equatable {
+public struct UDDFContact: Codable, Equatable {
     /// Website URL
     public var homepage: String?
 

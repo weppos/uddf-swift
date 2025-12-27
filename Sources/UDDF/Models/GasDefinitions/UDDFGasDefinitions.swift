@@ -5,11 +5,11 @@ import XMLCoder
 ///
 /// Defines breathing gas mixtures used during dives, including air, nitrox,
 /// trimix, and other gas blends.
-public struct GasDefinitions: Codable, Equatable {
+public struct UDDFGasDefinitions: Codable, Equatable {
     /// Individual gas mixtures
-    public var mix: [Mix]?
+    public var mix: [UDDFMix]?
 
-    public init(mix: [Mix]? = nil) {
+    public init(mix: [UDDFMix]? = nil) {
         self.mix = mix
     }
 }
@@ -18,7 +18,7 @@ public struct GasDefinitions: Codable, Equatable {
 ///
 /// Defines the composition of a breathing gas, typically oxygen, nitrogen,
 /// and helium percentages.
-public struct Mix: Codable, Equatable {
+public struct UDDFMix: Codable, Equatable {
     /// Unique identifier for this gas mix
     public var id: String?
 
@@ -94,7 +94,7 @@ public struct Mix: Codable, Equatable {
 
 // MARK: - DynamicNodeEncoding
 
-extension Mix: DynamicNodeEncoding {
+extension UDDFMix: DynamicNodeEncoding {
     public static func nodeEncoding(for key: CodingKey) -> XMLEncoder.NodeEncoding {
         guard let codingKey = key as? CodingKeys else {
             return .element

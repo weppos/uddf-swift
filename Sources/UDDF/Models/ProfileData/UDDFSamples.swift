@@ -4,11 +4,11 @@ import Foundation
 ///
 /// Samples are waypoints recorded during the dive, typically at regular intervals.
 /// Each waypoint contains depth, time, and optionally temperature and other data.
-public struct Samples: Codable, Equatable {
+public struct UDDFSamples: Codable, Equatable {
     /// Individual waypoints
-    public var waypoint: [Waypoint]?
+    public var waypoint: [UDDFWaypoint]?
 
-    public init(waypoint: [Waypoint]? = nil) {
+    public init(waypoint: [UDDFWaypoint]? = nil) {
         self.waypoint = waypoint
     }
 }
@@ -16,27 +16,27 @@ public struct Samples: Codable, Equatable {
 /// A single waypoint in the dive profile
 ///
 /// Represents a point in time during the dive with depth and other measurements.
-public struct Waypoint: Codable, Equatable {
+public struct UDDFWaypoint: Codable, Equatable {
     /// Time since dive start (in seconds)
-    public var divetime: Duration?
+    public var divetime: UDDFDuration?
 
     /// Depth at this waypoint
-    public var depth: Depth?
+    public var depth: UDDFDepth?
 
     /// Temperature at this waypoint
-    public var temperature: Temperature?
+    public var temperature: UDDFTemperature?
 
     /// Tank pressure at this waypoint
-    public var tankpressure: Pressure?
+    public var tankpressure: UDDFPressure?
 
     /// Alarm or warning at this waypoint
     public var alarm: String?
 
     public init(
-        divetime: Duration? = nil,
-        depth: Depth? = nil,
-        temperature: Temperature? = nil,
-        tankpressure: Pressure? = nil,
+        divetime: UDDFDuration? = nil,
+        depth: UDDFDepth? = nil,
+        temperature: UDDFTemperature? = nil,
+        tankpressure: UDDFPressure? = nil,
         alarm: String? = nil
     ) {
         self.divetime = divetime

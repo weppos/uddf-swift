@@ -1,35 +1,35 @@
 import Foundation
 import XMLCoder
 
-/// Business entities (dive shops, training organizations)
+/// Decompression model parameters
 ///
-/// Information about commercial diving businesses.
-public struct Business: Codable, Equatable {
+/// Contains decompression algorithm settings and parameters.
+public struct UDDFDecoModel: Codable, Equatable {
     /// Unique identifier
     public var id: String?
 
-    /// Business name
+    /// Model name (e.g., "Bühlmann ZHL-16C")
     public var name: String?
 
-    /// Contact information
-    public var contact: Contact?
+    /// Model type
+    public var type: String?
 
-    public init(id: String? = nil, name: String? = nil, contact: Contact? = nil) {
+    public init(id: String? = nil, name: String? = nil, type: String? = nil) {
         self.id = id
         self.name = name
-        self.contact = contact
+        self.type = type
     }
 
     enum CodingKeys: String, CodingKey {
         case id
         case name
-        case contact
+        case type
     }
 }
 
 // MARK: - DynamicNodeEncoding
 
-extension Business: DynamicNodeEncoding {
+extension UDDFDecoModel: DynamicNodeEncoding {
     public static func nodeEncoding(for key: CodingKey) -> XMLEncoder.NodeEncoding {
         guard let codingKey = key as? CodingKeys else {
             return .element
