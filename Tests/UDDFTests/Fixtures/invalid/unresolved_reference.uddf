@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uddf version="3.2.1">
+    <generator>
+        <name>TestApp</name>
+    </generator>
+
+    <diver>
+        <owner id="owner1">
+            <personal>
+                <firstname>John</firstname>
+            </personal>
+        </owner>
+        <!-- No owner2 defined -->
+    </diver>
+
+    <profiledata>
+        <repetitiongroup id="rg1">
+            <dive id="dive1">
+                <samples>
+                    <waypoint>
+                        <divetime>0.0</divetime>
+                        <depth>0.0</depth>
+                    </waypoint>
+                </samples>
+                <informationafterdive>
+                    <greatestdepth>10.0</greatestdepth>
+                    <diveduration>600.0</diveduration>
+                </informationafterdive>
+            </dive>
+        </repetitiongroup>
+        <!-- Reference to non-existent rg2 -->
+        <repetitiongroup id="rg2_missing">
+        </repetitiongroup>
+    </profiledata>
+</uddf>

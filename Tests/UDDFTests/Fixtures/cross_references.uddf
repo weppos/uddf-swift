@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uddf version="3.2.1">
+    <generator>
+        <name>ReferenceTestApp</name>
+    </generator>
+
+    <diver>
+        <owner id="owner1">
+            <personal>
+                <firstname>Alice</firstname>
+            </personal>
+        </owner>
+        <owner id="owner2">
+            <personal>
+                <firstname>Bob</firstname>
+            </personal>
+        </owner>
+        <buddy id="buddy1">
+            <personal>
+                <firstname>Charlie</firstname>
+            </personal>
+        </buddy>
+    </diver>
+
+    <divesite id="reef1">
+        <name>Coral Reef</name>
+    </divesite>
+    <divesite id="wreck1">
+        <name>Shipwreck Site</name>
+    </divesite>
+
+    <gasdefinitions>
+        <mix id="air">
+            <name>Air</name>
+            <o2>0.21</o2>
+            <n2>0.79</n2>
+        </mix>
+        <mix id="ean32">
+            <name>EAN32</name>
+            <o2>0.32</o2>
+            <n2>0.68</n2>
+        </mix>
+        <mix id="ean36">
+            <name>EAN36</name>
+            <o2>0.36</o2>
+            <n2>0.64</n2>
+        </mix>
+    </gasdefinitions>
+
+    <profiledata>
+        <repetitiongroup id="rg1">
+            <dive id="dive1">
+                <informationbeforedive>
+                    <divenumber>1</divenumber>
+                    <datetime>2025-01-15T10:00:00Z</datetime>
+                </informationbeforedive>
+                <samples>
+                    <waypoint>
+                        <divetime>0.0</divetime>
+                        <depth>0.0</depth>
+                    </waypoint>
+                    <waypoint>
+                        <divetime>600.0</divetime>
+                        <depth>15.0</depth>
+                    </waypoint>
+                </samples>
+                <informationafterdive>
+                    <greatestdepth>15.0</greatestdepth>
+                    <diveduration>600.0</diveduration>
+                </informationafterdive>
+            </dive>
+            <dive id="dive2">
+                <informationbeforedive>
+                    <divenumber>2</divenumber>
+                    <datetime>2025-01-15T14:00:00Z</datetime>
+                </informationbeforedive>
+                <samples>
+                    <waypoint>
+                        <divetime>0.0</divetime>
+                        <depth>0.0</depth>
+                    </waypoint>
+                    <waypoint>
+                        <divetime>900.0</divetime>
+                        <depth>20.0</depth>
+                    </waypoint>
+                </samples>
+                <informationafterdive>
+                    <greatestdepth>20.0</greatestdepth>
+                    <diveduration>900.0</diveduration>
+                </informationafterdive>
+            </dive>
+        </repetitiongroup>
+    </profiledata>
+</uddf>
