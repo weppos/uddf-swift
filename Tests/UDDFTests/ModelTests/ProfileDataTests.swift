@@ -23,7 +23,7 @@ final class ProfileDataTests: XCTestCase {
         """
 
         let data = xml.data(using: .utf8)!
-        let document = try UDDF.parse(data)
+        let document = try UDDFSerialization.parse(data)
 
         XCTAssertNotNil(document.profiledata)
         XCTAssertEqual(document.profiledata?.repetitiongroup?.count, 1)
@@ -63,7 +63,7 @@ final class ProfileDataTests: XCTestCase {
         """
 
         let data = xml.data(using: .utf8)!
-        let document = try UDDF.parse(data)
+        let document = try UDDFSerialization.parse(data)
 
         let waypoints = document.profiledata?.repetitiongroup?.first?.dive?.first?.samples?.waypoint
         XCTAssertNotNil(waypoints)

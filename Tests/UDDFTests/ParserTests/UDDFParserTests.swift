@@ -15,7 +15,7 @@ final class UDDFParserTests: XCTestCase {
         """
 
         let data = xml.data(using: .utf8)!
-        let document = try UDDF.parse(data)
+        let document = try UDDFSerialization.parse(data)
 
         XCTAssertEqual(document.version, "3.2.1")
         XCTAssertEqual(document.generator.name, "TestApp")
@@ -40,7 +40,7 @@ final class UDDFParserTests: XCTestCase {
         """
 
         let data = xml.data(using: .utf8)!
-        let document = try UDDF.parse(data)
+        let document = try UDDFSerialization.parse(data)
 
         XCTAssertEqual(document.version, "3.2.1")
         XCTAssertEqual(document.generator.name, "TestApp")
@@ -71,7 +71,7 @@ final class UDDFParserTests: XCTestCase {
         let xmlData = try UDDF.write(originalDocument)
 
         // Parse it back
-        let reparsedDocument = try UDDF.parse(xmlData)
+        let reparsedDocument = try UDDFSerialization.parse(xmlData)
 
         // Verify equality
         XCTAssertEqual(reparsedDocument.version, originalDocument.version)
@@ -83,7 +83,7 @@ final class UDDFParserTests: XCTestCase {
         let originalDocument = UDDFDocument(version: "3.2.1", generator: generator)
 
         let xmlData = try UDDF.write(originalDocument, prettyPrinted: false)
-        let reparsedDocument = try UDDF.parse(xmlData)
+        let reparsedDocument = try UDDFSerialization.parse(xmlData)
 
         XCTAssertEqual(reparsedDocument.generator, originalDocument.generator)
     }
@@ -94,7 +94,7 @@ final class UDDFParserTests: XCTestCase {
         let invalidXML = "This is not XML"
         let data = invalidXML.data(using: .utf8)!
 
-        XCTAssertThrowsError(try UDDF.parse(data)) { error in
+        XCTAssertThrowsError(try UDDFSerialization.parse(data)) { error in
             guard case UDDFError.invalidXML = error else {
                 XCTFail("Expected invalidXML error, got \(error)")
                 return
@@ -111,7 +111,7 @@ final class UDDFParserTests: XCTestCase {
 
         let data = xml.data(using: .utf8)!
 
-        XCTAssertThrowsError(try UDDF.parse(data)) { error in
+        XCTAssertThrowsError(try UDDFSerialization.parse(data)) { error in
             guard case UDDFError.missingRequiredElement = error else {
                 XCTFail("Expected missingRequiredElement error, got \(error)")
                 return
@@ -122,7 +122,7 @@ final class UDDFParserTests: XCTestCase {
     func testParseFileNotFound() throws {
         let url = URL(fileURLWithPath: "/nonexistent/file.uddf")
 
-        XCTAssertThrowsError(try UDDF.parse(contentsOf: url)) { error in
+        XCTAssertThrowsError(try UDDFSerialization.parse(contentsOf: url)) { error in
             guard case UDDFError.fileNotFound = error else {
                 XCTFail("Expected fileNotFound error, got \(error)")
                 return
@@ -144,7 +144,7 @@ final class UDDFParserTests: XCTestCase {
         try UDDF.write(document, to: tempFile)
 
         // Read back from file
-        let readDocument = try UDDF.parse(contentsOf: tempFile)
+        let readDocument = try UDDFSerialization.parse(contentsOf: tempFile)
 
         // Verify
         XCTAssertEqual(readDocument.generator, document.generator)

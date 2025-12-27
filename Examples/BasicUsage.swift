@@ -27,12 +27,12 @@ func createBasicUDDFFile() throws {
 
     // Write to file
     let outputURL = URL(fileURLWithPath: "dive_log.uddf")
-    try UDDF.write(document, to: outputURL, prettyPrinted: true)
+    try UDDFSerialization.write(document, to: outputURL, prettyPrinted: true)
 
     print("UDDF file created successfully at: \(outputURL.path)")
 
     // Read it back
-    let parsedDocument = try UDDF.parse(contentsOf: outputURL)
+    let parsedDocument = try UDDFSerialization.parse(contentsOf: outputURL)
     print("Parsed generator: \(parsedDocument.generator.name)")
 }
 
@@ -41,7 +41,7 @@ func createBasicUDDFFile() throws {
 func parseExistingUDDFFile(from url: URL) throws {
     do {
         // Parse the file
-        let document = try UDDF.parse(contentsOf: url)
+        let document = try UDDFSerialization.parse(contentsOf: url)
 
         // Access the data
         print("UDDF Version: \(document.version)")
@@ -92,10 +92,10 @@ func roundTripExample() throws {
     )
 
     // Write to XML
-    let xmlData = try UDDF.write(original)
+    let xmlData = try UDDFSerialization.write(original)
 
     // Parse back
-    let parsed = try UDDF.parse(xmlData)
+    let parsed = try UDDFSerialization.parse(xmlData)
 
     // Verify they match
     assert(parsed.version == original.version)

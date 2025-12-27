@@ -10,16 +10,16 @@ import Foundation
 /// ```swift
 /// // Parsing
 /// let data = try Data(contentsOf: uddfFileURL)
-/// let document = try UDDF.parse(data)
+/// let document = try UDDFSerialization.parse(data)
 ///
 /// // Writing
 /// let document = UDDFDocument(
 ///     version: "3.2.1",
 ///     generator: Generator(name: "MyApp", version: "1.0")
 /// )
-/// let xmlData = try UDDF.write(document)
+/// let xmlData = try UDDFSerialization.write(document)
 /// ```
-public struct UDDF {
+public struct UDDFSerialization {
     // MARK: - Parsing
 
     /// Parse UDDF from Data

@@ -9,7 +9,7 @@ final class ValidationTests: XCTestCase {
             .generator(name: "TestApp", version: "1.0.0")
             .build()
 
-        let result = UDDF.validate(document)
+        let result = UDDFSerialization.validate(document)
 
         XCTAssertTrue(result.isValid)
         XCTAssertEqual(result.errors.count, 0)
@@ -22,7 +22,7 @@ final class ValidationTests: XCTestCase {
 
         document.generator.name = ""
 
-        let result = UDDF.validate(document)
+        let result = UDDFSerialization.validate(document)
 
         XCTAssertFalse(result.isValid)
         XCTAssertTrue(result.errors.contains { $0.field == "generator.name" })
@@ -43,7 +43,7 @@ final class ValidationTests: XCTestCase {
             .addDive(dive)
             .build()
 
-        let result = UDDF.validate(document)
+        let result = UDDFSerialization.validate(document)
 
         XCTAssertFalse(result.isValid)
         XCTAssertTrue(result.errors.contains { $0.message.contains("negative") })
@@ -63,7 +63,7 @@ final class ValidationTests: XCTestCase {
             .addDive(dive)
             .build()
 
-        let result = UDDF.validate(document)
+        let result = UDDFSerialization.validate(document)
 
         XCTAssertTrue(result.isValid)
     }
@@ -78,7 +78,7 @@ final class ValidationTests: XCTestCase {
             .addGasMix(invalidMix)
             .build()
 
-        let result = UDDF.validate(document)
+        let result = UDDFSerialization.validate(document)
 
         XCTAssertFalse(result.isValid)
         XCTAssertTrue(result.errors.contains { $0.message.contains("between 0 and 1") })
@@ -92,7 +92,7 @@ final class ValidationTests: XCTestCase {
             .addGasMix(mix)
             .build()
 
-        let result = UDDF.validate(document)
+        let result = UDDFSerialization.validate(document)
 
         XCTAssertTrue(result.isValid) // Still valid (just a warning)
         XCTAssertTrue(result.hasWarnings)
@@ -114,7 +114,7 @@ final class ValidationTests: XCTestCase {
             .addDiveSite(site)
             .build()
 
-        let result = UDDF.validate(document)
+        let result = UDDFSerialization.validate(document)
 
         XCTAssertFalse(result.isValid)
         XCTAssertTrue(result.errors.contains { $0.message.contains("Latitude") })
@@ -133,7 +133,7 @@ final class ValidationTests: XCTestCase {
             .addDiveSite(site)
             .build()
 
-        let result = UDDF.validate(document)
+        let result = UDDFSerialization.validate(document)
 
         XCTAssertFalse(result.isValid)
         XCTAssertTrue(result.errors.contains { $0.message.contains("Longitude") })
@@ -152,7 +152,7 @@ final class ValidationTests: XCTestCase {
             .addDiveSite(site)
             .build()
 
-        let result = UDDF.validate(document)
+        let result = UDDFSerialization.validate(document)
 
         XCTAssertTrue(result.isValid)
     }
@@ -167,7 +167,7 @@ final class ValidationTests: XCTestCase {
 
         document.diver?.owner?[0].id = ""
 
-        let result = UDDF.validate(document)
+        let result = UDDFSerialization.validate(document)
 
         XCTAssertFalse(result.isValid)
         XCTAssertTrue(result.errors.contains { $0.message.contains("ID cannot be empty") })
@@ -183,7 +183,7 @@ final class ValidationTests: XCTestCase {
             .addOwner(owner)
             .build()
 
-        let result = UDDF.validate(document)
+        let result = UDDFSerialization.validate(document)
 
         XCTAssertTrue(result.isValid)
     }
@@ -201,7 +201,7 @@ final class ValidationTests: XCTestCase {
         var options = UDDFValidator.Options()
         options.strictMode = true
 
-        let result = UDDF.validate(document, options: options)
+        let result = UDDFSerialization.validate(document, options: options)
 
         // In strict mode, warnings become errors
         XCTAssertFalse(result.isValid)
@@ -224,7 +224,7 @@ final class ValidationTests: XCTestCase {
         var options = UDDFValidator.Options()
         options.validateRanges = false
 
-        let result = UDDF.validate(document, options: options)
+        let result = UDDFSerialization.validate(document, options: options)
 
         // With range validation disabled, negative depth is allowed
         XCTAssertTrue(result.isValid)

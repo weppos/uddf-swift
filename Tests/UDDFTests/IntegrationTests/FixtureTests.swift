@@ -15,20 +15,20 @@ final class FixtureTests: XCTestCase {
 
     func testMinimalFixture() throws {
         let url = fixtureURL("minimal.uddf")
-        let document = try UDDF.parse(contentsOf: url)
+        let document = try UDDFSerialization.parse(contentsOf: url)
 
         XCTAssertEqual(document.version, "3.2.1")
         XCTAssertEqual(document.generator.name, "TestApp")
         XCTAssertEqual(document.generator.version, "1.0.0")
 
         // Validate
-        let validation = UDDF.validate(document)
+        let validation = UDDFSerialization.validate(document)
         XCTAssertTrue(validation.isValid, "Minimal fixture should be valid")
     }
 
     func testFullProfileFixture() throws {
         let url = fixtureURL("full_profile.uddf")
-        let document = try UDDF.parse(contentsOf: url)
+        let document = try UDDFSerialization.parse(contentsOf: url)
 
         // Verify generator
         XCTAssertEqual(document.generator.name, "DiveLogPro")
@@ -75,13 +75,13 @@ final class FixtureTests: XCTestCase {
         XCTAssertEqual(dive?.informationafterdive?.diveduration?.seconds, 1500.0)
 
         // Validate
-        let validation = UDDF.validate(document)
+        let validation = UDDFSerialization.validate(document)
         XCTAssertTrue(validation.isValid, "Full profile fixture should be valid")
     }
 
     func testCrossReferencesFixture() throws {
         let url = fixtureURL("cross_references.uddf")
-        let (document, resolution) = try UDDF.parseAndResolve(contentsOf: url)
+        let (document, resolution) = try UDDFSerialization.parseAndResolve(contentsOf: url)
 
         // Should have no resolution errors
         XCTAssertTrue(resolution.isValid, "All references should resolve")
@@ -113,7 +113,7 @@ final class FixtureTests: XCTestCase {
 
     func testGasDefinitionsFixture() throws {
         let url = fixtureURL("gas_definitions.uddf")
-        let document = try UDDF.parse(contentsOf: url)
+        let document = try UDDFSerialization.parse(contentsOf: url)
 
         let mixes = document.gasdefinitions?.mix ?? []
         XCTAssertEqual(mixes.count, 6)
@@ -142,13 +142,13 @@ final class FixtureTests: XCTestCase {
         XCTAssertEqual(o2?.o2, 1.0)
 
         // Validate all gas mixes
-        let validation = UDDF.validate(document)
+        let validation = UDDFSerialization.validate(document)
         XCTAssertTrue(validation.isValid)
     }
 
     func testAllSectionsFixture() throws {
         let url = fixtureURL("all_sections.uddf")
-        let document = try UDDF.parse(contentsOf: url)
+        let document = try UDDFSerialization.parse(contentsOf: url)
 
         // Verify all 13 sections are present
         XCTAssertNotNil(document.generator) // required
@@ -176,7 +176,7 @@ final class FixtureTests: XCTestCase {
         XCTAssertEqual(document.divetrip?.count, 1)
 
         // Validate
-        let validation = UDDF.validate(document)
+        let validation = UDDFSerialization.validate(document)
         XCTAssertTrue(validation.isValid)
     }
 
@@ -186,7 +186,7 @@ final class FixtureTests: XCTestCase {
         let url = fixtureURL("invalid/missing_generator.uddf")
 
         // Should throw during parsing (generator is required)
-        XCTAssertThrowsError(try UDDF.parse(contentsOf: url)) { error in
+        XCTAssertThrowsError(try UDDFSerialization.parse(contentsOf: url)) { error in
             // XMLCoder will throw a decoding error for missing required field
             XCTAssertTrue(error is DecodingError || error is UDDFError, "Expected DecodingError or UDDFError, got: \(type(of: error))")
         }
@@ -196,7 +196,7 @@ final class FixtureTests: XCTestCase {
         let url = fixtureURL("invalid/bad_xml.uddf")
 
         // Should throw during parsing
-        XCTAssertThrowsError(try UDDF.parse(contentsOf: url)) { error in
+        XCTAssertThrowsError(try UDDFSerialization.parse(contentsOf: url)) { error in
             guard case UDDFError.invalidXML = error else {
                 XCTFail("Expected invalidXML error")
                 return
@@ -208,7 +208,7 @@ final class FixtureTests: XCTestCase {
         let url = fixtureURL("invalid/unresolved_reference.uddf")
 
         // Parsing should succeed
-        let document = try UDDF.parse(contentsOf: url)
+        let document = try UDDFSerialization.parse(contentsOf: url)
         XCTAssertNotNil(document)
 
         // Document structure is valid
@@ -216,7 +216,7 @@ final class FixtureTests: XCTestCase {
         XCTAssertEqual(document.profiledata?.repetitiongroup?.count, 2)
 
         // Validation should pass (basic structure is fine)
-        let validation = UDDF.validate(document)
+        let validation = UDDFSerialization.validate(document)
         XCTAssertTrue(validation.isValid)
     }
 
@@ -224,11 +224,11 @@ final class FixtureTests: XCTestCase {
 
     func testRoundTripMinimal() throws {
         let url = fixtureURL("minimal.uddf")
-        let original = try UDDF.parse(contentsOf: url)
+        let original = try UDDFSerialization.parse(contentsOf: url)
 
         // Write and re-parse
-        let xmlData = try UDDF.write(original)
-        let reparsed = try UDDF.parse(xmlData)
+        let xmlData = try UDDFSerialization.write(original)
+        let reparsed = try UDDFSerialization.parse(xmlData)
 
         // Should be identical
         XCTAssertEqual(reparsed.version, original.version)
@@ -238,11 +238,11 @@ final class FixtureTests: XCTestCase {
 
     func testRoundTripFullProfile() throws {
         let url = fixtureURL("full_profile.uddf")
-        let original = try UDDF.parse(contentsOf: url)
+        let original = try UDDFSerialization.parse(contentsOf: url)
 
         // Write and re-parse
-        let xmlData = try UDDF.write(original)
-        let reparsed = try UDDF.parse(xmlData)
+        let xmlData = try UDDFSerialization.write(original)
+        let reparsed = try UDDFSerialization.parse(xmlData)
 
         // Verify key data preserved
         XCTAssertEqual(reparsed.generator.name, original.generator.name)
@@ -266,11 +266,11 @@ final class FixtureTests: XCTestCase {
 
     func testRoundTripAllSections() throws {
         let url = fixtureURL("all_sections.uddf")
-        let original = try UDDF.parse(contentsOf: url)
+        let original = try UDDFSerialization.parse(contentsOf: url)
 
         // Write and re-parse
-        let xmlData = try UDDF.write(original)
-        let reparsed = try UDDF.parse(xmlData)
+        let xmlData = try UDDFSerialization.write(original)
+        let reparsed = try UDDFSerialization.parse(xmlData)
 
         // All sections should still be present
         XCTAssertNotNil(reparsed.mediadata)

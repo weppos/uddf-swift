@@ -23,7 +23,7 @@ final class ReferenceResolutionTests: XCTestCase {
         """
 
         let data = xml.data(using: .utf8)!
-        let (document, result) = try UDDF.parseAndResolve(data)
+        let (document, result) = try UDDFSerialization.parseAndResolve(data)
 
         XCTAssertTrue(result.isValid)
         XCTAssertEqual(result.errors.count, 0)
@@ -64,7 +64,7 @@ final class ReferenceResolutionTests: XCTestCase {
         """
 
         let data = xml.data(using: .utf8)!
-        let (_, result) = try UDDF.parseAndResolve(data)
+        let (_, result) = try UDDFSerialization.parseAndResolve(data)
 
         XCTAssertTrue(result.isValid)
         XCTAssertEqual(result.registry.count, 3)
@@ -96,7 +96,7 @@ final class ReferenceResolutionTests: XCTestCase {
         """
 
         let data = xml.data(using: .utf8)!
-        let (_, result) = try UDDF.parseAndResolve(data)
+        let (_, result) = try UDDFSerialization.parseAndResolve(data)
 
         XCTAssertTrue(result.isValid)
         XCTAssertEqual(result.registry.count, 2)
@@ -124,7 +124,7 @@ final class ReferenceResolutionTests: XCTestCase {
         """
 
         let data = xml.data(using: .utf8)!
-        let (_, result) = try UDDF.parseAndResolve(data)
+        let (_, result) = try UDDFSerialization.parseAndResolve(data)
 
         XCTAssertTrue(result.isValid)
         XCTAssertEqual(result.registry.count, 2)
@@ -157,7 +157,7 @@ final class ReferenceResolutionTests: XCTestCase {
         """
 
         let data = xml.data(using: .utf8)!
-        let (_, result) = try UDDF.parseAndResolve(data)
+        let (_, result) = try UDDFSerialization.parseAndResolve(data)
 
         XCTAssertTrue(result.isValid)
         XCTAssertEqual(result.registry.count, 3)
@@ -192,7 +192,7 @@ final class ReferenceResolutionTests: XCTestCase {
 
         let data = xml.data(using: .utf8)!
 
-        XCTAssertThrowsError(try UDDF.parseAndResolve(data)) { error in
+        XCTAssertThrowsError(try UDDFSerialization.parseAndResolve(data)) { error in
             guard case UDDFError.duplicateID(let id) = error else {
                 XCTFail("Expected duplicateID error, got \(error)")
                 return
@@ -224,7 +224,7 @@ final class ReferenceResolutionTests: XCTestCase {
 
         let data = xml.data(using: .utf8)!
 
-        XCTAssertThrowsError(try UDDF.parseAndResolve(data)) { error in
+        XCTAssertThrowsError(try UDDFSerialization.parseAndResolve(data)) { error in
             guard case UDDFError.unresolvedReference = error else {
                 XCTFail("Expected unresolvedReference error, got \(error)")
                 return
@@ -275,7 +275,7 @@ final class ReferenceResolutionTests: XCTestCase {
         """
 
         let data = xml.data(using: .utf8)!
-        let (_, result) = try UDDF.parseAndResolve(data)
+        let (_, result) = try UDDFSerialization.parseAndResolve(data)
 
         XCTAssertTrue(result.isValid)
         XCTAssertEqual(result.registry.count, 6)
@@ -309,7 +309,7 @@ final class ReferenceResolutionTests: XCTestCase {
         """
 
         let data = xml.data(using: .utf8)!
-        let document = try UDDF.parse(data)
+        let document = try UDDFSerialization.parse(data)
 
         let resolver = ReferenceResolver()
         _ = try resolver.resolve(document)
@@ -341,7 +341,7 @@ final class ReferenceResolutionTests: XCTestCase {
         """
 
         let data = xml.data(using: .utf8)!
-        let document = try UDDF.parse(data)
+        let document = try UDDFSerialization.parse(data)
 
         let resolver = ReferenceResolver()
         _ = try resolver.resolve(document)

@@ -42,10 +42,10 @@ import UDDF
 
 // Parse from Data
 let xmlData = try Data(contentsOf: uddfFileURL)
-let document = try UDDF.parse(xmlData)
+let document = try UDDFSerialization.parse(xmlData)
 
 // Parse directly from file
-let document = try UDDF.parse(contentsOf: uddfFileURL)
+let document = try UDDFSerialization.parse(contentsOf: uddfFileURL)
 
 // Access parsed data
 print("Generator: \(document.generator.name)")
@@ -76,20 +76,20 @@ let document = UDDFDocument(
 )
 
 // Write to Data
-let xmlData = try UDDF.write(document)
+let xmlData = try UDDFSerialization.write(document)
 
 // Write directly to file
-try UDDF.write(document, to: outputURL)
+try UDDFSerialization.write(document, to: outputURL)
 
 // Write without pretty printing (compact XML)
-let compactData = try UDDF.write(document, prettyPrinted: false)
+let compactData = try UDDFSerialization.write(document, prettyPrinted: false)
 ```
 
 ### Error Handling
 
 ```swift
 do {
-    let document = try UDDF.parse(xmlData)
+    let document = try UDDFSerialization.parse(xmlData)
     // Process document
 } catch UDDFError.invalidXML(let detail) {
     print("Invalid XML: \(detail)")
@@ -147,7 +147,7 @@ let document = try UDDFBuilder()
     .build()
 
 // Write to file
-try UDDF.write(document, to: outputURL)
+try UDDFSerialization.write(document, to: outputURL)
 ```
 
 ### Validation
@@ -157,10 +157,10 @@ Validate UDDF documents with comprehensive checks:
 ```swift
 import UDDF
 
-let document = try UDDF.parse(xmlData)
+let document = try UDDFSerialization.parse(xmlData)
 
 // Basic validation
-let result = UDDF.validate(document)
+let result = UDDFSerialization.validate(document)
 
 if result.isValid {
     print("✓ Document is valid")
@@ -179,16 +179,16 @@ if result.hasWarnings {
 }
 
 // Parse and validate in one step
-let (doc, validation) = try UDDF.parseAndValidate(xmlData)
+let (doc, validation) = try UDDFSerialization.parseAndValidate(xmlData)
 
 // Strict mode (warnings become errors)
 var options = UDDFValidator.Options()
 options.strictMode = true
-let strictResult = UDDF.validate(document, options: options)
+let strictResult = UDDFSerialization.validate(document, options: options)
 
 // Disable range validation for special cases
 options.validateRanges = false
-let lenientResult = UDDF.validate(document, options: options)
+let lenientResult = UDDFSerialization.validate(document, options: options)
 ```
 
 ### Reference Resolution
@@ -199,7 +199,7 @@ Validate ID/IDREF cross-references:
 import UDDF
 
 // Parse and resolve all references
-let (document, resolution) = try UDDF.parseAndResolve(xmlData)
+let (document, resolution) = try UDDFSerialization.parseAndResolve(xmlData)
 
 if resolution.isValid {
     print("✓ All references resolved successfully")
@@ -212,8 +212,8 @@ if resolution.isValid {
 }
 
 // Or resolve separately
-let document = try UDDF.parse(xmlData)
-let resolution = try UDDF.resolveReferences(in: document)
+let document = try UDDFSerialization.parse(xmlData)
+let resolution = try UDDFSerialization.resolveReferences(in: document)
 ```
 
 ### Working with Unit Types
