@@ -53,9 +53,9 @@ public struct UDDF {
     /// - Parameter data: XML data to parse
     /// - Returns: A tuple containing the parsed document and resolution result
     /// - Throws: UDDFError if parsing fails or references are invalid
-    public static func parseAndResolve(_ data: Data) throws -> (document: UDDFDocument, resolution: UDDFResolutionResult) {
+    public static func parseAndResolve(_ data: Data) throws -> (document: UDDFDocument, resolution: ResolutionResult) {
         let document = try parse(data)
-        let resolver = UDDFReferenceResolver()
+        let resolver = ReferenceResolver()
         let result = try resolver.resolve(document)
 
         // Throw if there are unresolved references
@@ -72,7 +72,7 @@ public struct UDDF {
     /// - Parameter url: File URL to parse
     /// - Returns: A tuple containing the parsed document and resolution result
     /// - Throws: UDDFError if parsing fails or references are invalid
-    public static func parseAndResolve(contentsOf url: URL) throws -> (document: UDDFDocument, resolution: UDDFResolutionResult) {
+    public static func parseAndResolve(contentsOf url: URL) throws -> (document: UDDFDocument, resolution: ResolutionResult) {
         let data = try Data(contentsOf: url)
         return try parseAndResolve(data)
     }
@@ -82,8 +82,8 @@ public struct UDDF {
     /// - Parameter document: The UDDF document to resolve
     /// - Returns: Resolution result with registry and any errors
     /// - Throws: UDDFError if resolution fails
-    public static func resolveReferences(in document: UDDFDocument) throws -> UDDFResolutionResult {
-        let resolver = UDDFReferenceResolver()
+    public static func resolveReferences(in document: UDDFDocument) throws -> ResolutionResult {
+        let resolver = ReferenceResolver()
         return try resolver.resolve(document)
     }
 
@@ -101,7 +101,7 @@ public struct UDDF {
     public static func validate(
         _ document: UDDFDocument,
         options: UDDFValidator.Options = UDDFValidator.Options()
-    ) -> UDDFValidationResult {
+    ) -> ValidationResult {
         let validator = UDDFValidator(options: options)
         return validator.validate(document)
     }
@@ -116,7 +116,7 @@ public struct UDDF {
     public static func parseAndValidate(
         _ data: Data,
         options: UDDFValidator.Options = UDDFValidator.Options()
-    ) throws -> (document: UDDFDocument, validation: UDDFValidationResult) {
+    ) throws -> (document: UDDFDocument, validation: ValidationResult) {
         let document = try parse(data)
         let validation = validate(document, options: options)
         return (document, validation)

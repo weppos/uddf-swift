@@ -17,18 +17,18 @@ import Foundation
 /// ```
 public class UDDFBuilder {
     private var version: String
-    private var generator: UDDFGenerator?
-    private var mediadata: UDDFMediaData?
-    private var makers: [UDDFMaker] = []
-    private var businesses: [UDDFBusiness] = []
-    private var diverData: UDDFDiverData?
-    private var diveSites: [UDDFDiveSite] = []
-    private var gasDefinitions: UDDFGasDefinitions?
-    private var decoModels: [UDDFDecoModel] = []
-    private var profileData: UDDFProfileData?
-    private var tableGeneration: UDDFTableGeneration?
-    private var diveTrips: [UDDFDiveTrip] = []
-    private var diveComputerControl: UDDFDiveComputerControl?
+    private var generator: Generator?
+    private var mediadata: MediaData?
+    private var makers: [Maker] = []
+    private var businesses: [Business] = []
+    private var diverData: DiverData?
+    private var diveSites: [DiveSite] = []
+    private var gasDefinitions: GasDefinitions?
+    private var decoModels: [DecoModel] = []
+    private var profileData: ProfileData?
+    private var tableGeneration: TableGeneration?
+    private var diveTrips: [DiveTrip] = []
+    private var diveComputerControl: DiveComputerControl?
 
     /// Initialize a new UDDF builder
     ///
@@ -51,10 +51,10 @@ public class UDDFBuilder {
     public func generator(
         name: String,
         version: String? = nil,
-        manufacturer: UDDFManufacturerInfo? = nil,
+        manufacturer: ManufacturerInfo? = nil,
         datetime: Date? = nil
     ) -> Self {
-        self.generator = UDDFGenerator(
+        self.generator = Generator(
             name: name,
             manufacturer: manufacturer,
             version: version,
@@ -68,7 +68,7 @@ public class UDDFBuilder {
     /// - Parameter generator: Generator object
     /// - Returns: Self for method chaining
     @discardableResult
-    public func generator(_ generator: UDDFGenerator) -> Self {
+    public func generator(_ generator: Generator) -> Self {
         self.generator = generator
         return self
     }
@@ -80,9 +80,9 @@ public class UDDFBuilder {
     /// - Parameter owner: Owner information
     /// - Returns: Self for method chaining
     @discardableResult
-    public func addOwner(_ owner: UDDFOwner) -> Self {
+    public func addOwner(_ owner: Owner) -> Self {
         if diverData == nil {
-            diverData = UDDFDiverData()
+            diverData = DiverData()
         }
         if diverData?.owner == nil {
             diverData?.owner = []
@@ -96,9 +96,9 @@ public class UDDFBuilder {
     /// - Parameter buddy: Buddy information
     /// - Returns: Self for method chaining
     @discardableResult
-    public func addBuddy(_ buddy: UDDFBuddy) -> Self {
+    public func addBuddy(_ buddy: Buddy) -> Self {
         if diverData == nil {
-            diverData = UDDFDiverData()
+            diverData = DiverData()
         }
         if diverData?.buddy == nil {
             diverData?.buddy = []
@@ -114,7 +114,7 @@ public class UDDFBuilder {
     /// - Parameter site: Dive site information
     /// - Returns: Self for method chaining
     @discardableResult
-    public func addDiveSite(_ site: UDDFDiveSite) -> Self {
+    public func addDiveSite(_ site: DiveSite) -> Self {
         diveSites.append(site)
         return self
     }
@@ -126,9 +126,9 @@ public class UDDFBuilder {
     /// - Parameter mix: Gas mixture
     /// - Returns: Self for method chaining
     @discardableResult
-    public func addGasMix(_ mix: UDDFMix) -> Self {
+    public func addGasMix(_ mix: Mix) -> Self {
         if gasDefinitions == nil {
-            gasDefinitions = UDDFGasDefinitions()
+            gasDefinitions = GasDefinitions()
         }
         if gasDefinitions?.mix == nil {
             gasDefinitions?.mix = []
@@ -143,7 +143,7 @@ public class UDDFBuilder {
     /// - Returns: Self for method chaining
     @discardableResult
     public func addAir(id: String = "air") -> Self {
-        let air = UDDFMix(id: id, name: "Air", o2: 0.21, n2: 0.79)
+        let air = Mix(id: id, name: "Air", o2: 0.21, n2: 0.79)
         return addGasMix(air)
     }
 
@@ -157,7 +157,7 @@ public class UDDFBuilder {
     public func addNitrox(id: String, oxygenPercent: Double) -> Self {
         let o2 = oxygenPercent / 100.0
         let n2 = 1.0 - o2
-        let mix = UDDFMix(
+        let mix = Mix(
             id: id,
             name: "EAN\(Int(oxygenPercent))",
             o2: o2,
@@ -173,9 +173,9 @@ public class UDDFBuilder {
     /// - Parameter group: Repetition group
     /// - Returns: Self for method chaining
     @discardableResult
-    public func addRepetitionGroup(_ group: UDDFRepetitionGroup) -> Self {
+    public func addRepetitionGroup(_ group: RepetitionGroup) -> Self {
         if profileData == nil {
-            profileData = UDDFProfileData()
+            profileData = ProfileData()
         }
         if profileData?.repetitiongroup == nil {
             profileData?.repetitiongroup = []
@@ -189,12 +189,12 @@ public class UDDFBuilder {
     /// - Parameter dive: Dive information
     /// - Returns: Self for method chaining
     @discardableResult
-    public func addDive(_ dive: UDDFDive) -> Self {
+    public func addDive(_ dive: Dive) -> Self {
         if profileData == nil {
-            profileData = UDDFProfileData()
+            profileData = ProfileData()
         }
         if profileData?.repetitiongroup == nil {
-            profileData?.repetitiongroup = [UDDFRepetitionGroup()]
+            profileData?.repetitiongroup = [RepetitionGroup()]
         }
         if profileData?.repetitiongroup?[0].dive == nil {
             profileData?.repetitiongroup?[0].dive = []
@@ -210,9 +210,9 @@ public class UDDFBuilder {
     /// - Parameter image: Image media
     /// - Returns: Self for method chaining
     @discardableResult
-    public func addImage(_ image: UDDFImageMedia) -> Self {
+    public func addImage(_ image: ImageMedia) -> Self {
         if mediadata == nil {
-            mediadata = UDDFMediaData()
+            mediadata = MediaData()
         }
         if mediadata?.image == nil {
             mediadata?.image = []
@@ -228,7 +228,7 @@ public class UDDFBuilder {
     /// - Parameter maker: Maker information
     /// - Returns: Self for method chaining
     @discardableResult
-    public func addMaker(_ maker: UDDFMaker) -> Self {
+    public func addMaker(_ maker: Maker) -> Self {
         makers.append(maker)
         return self
     }
@@ -238,7 +238,7 @@ public class UDDFBuilder {
     /// - Parameter business: Business information
     /// - Returns: Self for method chaining
     @discardableResult
-    public func addBusiness(_ business: UDDFBusiness) -> Self {
+    public func addBusiness(_ business: Business) -> Self {
         businesses.append(business)
         return self
     }
@@ -248,7 +248,7 @@ public class UDDFBuilder {
     /// - Parameter model: Decompression model
     /// - Returns: Self for method chaining
     @discardableResult
-    public func addDecoModel(_ model: UDDFDecoModel) -> Self {
+    public func addDecoModel(_ model: DecoModel) -> Self {
         decoModels.append(model)
         return self
     }
@@ -258,7 +258,7 @@ public class UDDFBuilder {
     /// - Parameter trip: Dive trip
     /// - Returns: Self for method chaining
     @discardableResult
-    public func addDiveTrip(_ trip: UDDFDiveTrip) -> Self {
+    public func addDiveTrip(_ trip: DiveTrip) -> Self {
         diveTrips.append(trip)
         return self
     }

@@ -28,7 +28,7 @@ public struct UDDFReference<T>: Codable, Equatable where T: Codable & Equatable 
 /// A resolved reference that contains both the ID and the referenced object
 ///
 /// After reference resolution, this type contains the actual referenced object.
-public enum UDDFResolvedReference<T>: Equatable where T: Equatable {
+public enum ResolvedReference<T>: Equatable where T: Equatable {
     /// The element is defined inline (not a reference)
     case inline(T)
 

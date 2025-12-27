@@ -10,44 +10,44 @@ public struct UDDFDocument: Codable, Equatable {
     public var version: String
 
     /// REQUIRED: Information about the software that generated this file
-    public var generator: UDDFGenerator
+    public var generator: Generator
 
     /// OPTIONAL: Multimedia data (images, audio, video)
-    public var mediadata: UDDFMediaData?
+    public var mediadata: MediaData?
 
     /// OPTIONAL: Manufacturer information
-    public var maker: [UDDFMaker]?
+    public var maker: [Maker]?
 
     /// OPTIONAL: Business entities (dive shops, training organizations)
-    public var business: [UDDFBusiness]?
+    public var business: [Business]?
 
     /// OPTIONAL: Diver profiles and certifications
-    public var diver: UDDFDiverData?
+    public var diver: DiverData?
 
     /// OPTIONAL: Dive site descriptions
-    public var divesite: [UDDFDiveSite]?
+    public var divesite: [DiveSite]?
 
     /// OPTIONAL: Gas mixture definitions
-    public var gasdefinitions: UDDFGasDefinitions?
+    public var gasdefinitions: GasDefinitions?
 
     /// OPTIONAL: Decompression model parameters
-    public var decomodel: [UDDFDecoModel]?
+    public var decomodel: [DecoModel]?
 
     /// OPTIONAL: Recorded dive profiles
-    public var profiledata: UDDFProfileData?
+    public var profiledata: ProfileData?
 
     /// OPTIONAL: Dive table generation parameters
-    public var tablegeneration: UDDFTableGeneration?
+    public var tablegeneration: TableGeneration?
 
     /// OPTIONAL: Multi-dive trip information
-    public var divetrip: [UDDFDiveTrip]?
+    public var divetrip: [DiveTrip]?
 
     /// OPTIONAL: Dive computer configuration
-    public var divecomputercontrol: UDDFDiveComputerControl?
+    public var divecomputercontrol: DiveComputerControl?
 
     public init(
         version: String = "3.2.1",
-        generator: UDDFGenerator
+        generator: Generator
     ) {
         self.version = version
         self.generator = generator

@@ -5,9 +5,9 @@ import Foundation
 /// UDDF uses XML ID and IDREF attributes to link elements across different sections.
 /// This resolver builds a registry of all elements with IDs and validates that all
 /// references can be resolved.
-public class UDDFReferenceResolver {
+public class ReferenceResolver {
     /// Registry mapping IDs to their element types
-    private var registry: [String: UDDFReferenceableElement] = [:]
+    private var registry: [String: ReferenceableElement] = [:]
 
     /// Tracks references during resolution to detect circular dependencies
     private var resolutionStack: Set<String> = []
@@ -21,7 +21,7 @@ public class UDDFReferenceResolver {
     /// - Parameter document: The UDDF document to resolve
     /// - Returns: A validation result indicating success or failures
     /// - Throws: UDDFError if resolution fails
-    public func resolve(_ document: UDDFDocument) throws -> UDDFResolutionResult {
+    public func resolve(_ document: UDDFDocument) throws -> ResolutionResult {
         // Clear previous state
         registry.removeAll()
         resolutionStack.removeAll()
@@ -32,7 +32,7 @@ public class UDDFReferenceResolver {
         // Validate references
         let validationErrors = validateReferences(document)
 
-        return UDDFResolutionResult(
+        return ResolutionResult(
             registry: registry,
             errors: validationErrors
         )
@@ -155,7 +155,7 @@ public class UDDFReferenceResolver {
         }
     }
 
-    private func register(id: String, element: UDDFReferenceableElement) throws {
+    private func register(id: String, element: ReferenceableElement) throws {
         if registry[id] != nil {
             throw UDDFError.duplicateID(id)
         }
@@ -164,8 +164,8 @@ public class UDDFReferenceResolver {
 
     // MARK: - Reference Validation
 
-    private func validateReferences(_ document: UDDFDocument) -> [UDDFReferenceError] {
-        var errors: [UDDFReferenceError] = []
+    private func validateReferences(_ document: UDDFDocument) -> [ReferenceError] {
+        var errors: [ReferenceError] = []
 
         // Validate references in notes/links
         if let groups = document.profiledata?.repetitiongroup {
@@ -189,7 +189,7 @@ public class UDDFReferenceResolver {
         // Validate table generation references
         if let link = document.tablegeneration?.link {
             if let ref = link.ref, !registry.keys.contains(ref) {
-                errors.append(UDDFReferenceError(
+                errors.append(ReferenceError(
                     referenceID: ref,
                     location: "tablegeneration.link",
                     message: "Unresolved reference to '\(ref)'"
@@ -200,12 +200,12 @@ public class UDDFReferenceResolver {
         return errors
     }
 
-    private func validateLinkReferences(in notes: UDDFNotes) -> [UDDFReferenceError] {
-        var errors: [UDDFReferenceError] = []
+    private func validateLinkReferences(in notes: Notes) -> [ReferenceError] {
+        var errors: [ReferenceError] = []
 
         if let link = notes.link {
             if let ref = link.ref, !registry.keys.contains(ref) {
-                errors.append(UDDFReferenceError(
+                errors.append(ReferenceError(
                     referenceID: ref,
                     location: "notes.link",
                     message: "Unresolved reference to '\(ref)'"
@@ -219,7 +219,7 @@ public class UDDFReferenceResolver {
     // MARK: - Public Query Methods
 
     /// Look up an element by its ID
-    public func element(for id: String) -> UDDFReferenceableElement? {
+    public func element(for id: String) -> ReferenceableElement? {
         registry[id]
     }
 
@@ -237,24 +237,24 @@ public class UDDFReferenceResolver {
 // MARK: - Supporting Types
 
 /// Elements that can be referenced by ID
-public enum UDDFReferenceableElement: Equatable {
-    case diver(UDDFOwner)
-    case buddy(UDDFBuddy)
-    case diveSite(UDDFDiveSite)
-    case gasMix(UDDFMix)
-    case repetitionGroup(UDDFRepetitionGroup)
-    case dive(UDDFDive)
-    case image(UDDFImageMedia)
-    case audio(UDDFAudioMedia)
-    case video(UDDFVideoMedia)
-    case maker(UDDFMaker)
-    case business(UDDFBusiness)
-    case decoModel(UDDFDecoModel)
-    case diveTrip(UDDFDiveTrip)
+public enum ReferenceableElement: Equatable {
+    case diver(Owner)
+    case buddy(Buddy)
+    case diveSite(DiveSite)
+    case gasMix(Mix)
+    case repetitionGroup(RepetitionGroup)
+    case dive(Dive)
+    case image(ImageMedia)
+    case audio(AudioMedia)
+    case video(VideoMedia)
+    case maker(Maker)
+    case business(Business)
+    case decoModel(DecoModel)
+    case diveTrip(DiveTrip)
 }
 
 /// A reference resolution error
-public struct UDDFReferenceError: Equatable {
+public struct ReferenceError: Equatable {
     /// The reference ID that couldn't be resolved
     public let referenceID: String
 
@@ -266,12 +266,12 @@ public struct UDDFReferenceError: Equatable {
 }
 
 /// Result of reference resolution
-public struct UDDFResolutionResult {
+public struct ResolutionResult {
     /// The ID registry
-    public let registry: [String: UDDFReferenceableElement]
+    public let registry: [String: ReferenceableElement]
 
     /// Any errors found during resolution
-    public let errors: [UDDFReferenceError]
+    public let errors: [ReferenceError]
 
     /// Whether resolution was successful (no errors)
     public var isValid: Bool {

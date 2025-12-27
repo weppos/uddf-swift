@@ -4,17 +4,17 @@ import XMLCoder
 /// Multimedia data (images, audio, video)
 ///
 /// Contains references to multimedia files associated with dives.
-public struct UDDFMediaData: Codable, Equatable {
+public struct MediaData: Codable, Equatable {
     /// Image files
-    public var image: [UDDFImageMedia]?
+    public var image: [ImageMedia]?
 
     /// Audio files
-    public var audio: [UDDFAudioMedia]?
+    public var audio: [AudioMedia]?
 
     /// Video files
-    public var video: [UDDFVideoMedia]?
+    public var video: [VideoMedia]?
 
-    public init(image: [UDDFImageMedia]? = nil, audio: [UDDFAudioMedia]? = nil, video: [UDDFVideoMedia]? = nil) {
+    public init(image: [ImageMedia]? = nil, audio: [AudioMedia]? = nil, video: [VideoMedia]? = nil) {
         self.image = image
         self.audio = audio
         self.video = video
@@ -22,7 +22,7 @@ public struct UDDFMediaData: Codable, Equatable {
 }
 
 /// Image file reference
-public struct UDDFImageMedia: Codable, Equatable {
+public struct ImageMedia: Codable, Equatable {
     /// Unique identifier
     public var id: String?
 
@@ -47,7 +47,7 @@ public struct UDDFImageMedia: Codable, Equatable {
 
 // MARK: - DynamicNodeEncoding
 
-extension UDDFImageMedia: DynamicNodeEncoding {
+extension ImageMedia: DynamicNodeEncoding {
     public static func nodeEncoding(for key: CodingKey) -> XMLEncoder.NodeEncoding {
         guard let codingKey = key as? CodingKeys else {
             return .element
@@ -63,7 +63,7 @@ extension UDDFImageMedia: DynamicNodeEncoding {
 }
 
 /// Audio file reference
-public struct UDDFAudioMedia: Codable, Equatable {
+public struct AudioMedia: Codable, Equatable {
     /// Unique identifier
     public var id: String?
 
@@ -88,7 +88,7 @@ public struct UDDFAudioMedia: Codable, Equatable {
 
 // MARK: - DynamicNodeEncoding
 
-extension UDDFAudioMedia: DynamicNodeEncoding {
+extension AudioMedia: DynamicNodeEncoding {
     public static func nodeEncoding(for key: CodingKey) -> XMLEncoder.NodeEncoding {
         guard let codingKey = key as? CodingKeys else {
             return .element
@@ -104,7 +104,7 @@ extension UDDFAudioMedia: DynamicNodeEncoding {
 }
 
 /// Video file reference
-public struct UDDFVideoMedia: Codable, Equatable {
+public struct VideoMedia: Codable, Equatable {
     /// Unique identifier
     public var id: String?
 
@@ -129,7 +129,7 @@ public struct UDDFVideoMedia: Codable, Equatable {
 
 // MARK: - DynamicNodeEncoding
 
-extension UDDFVideoMedia: DynamicNodeEncoding {
+extension VideoMedia: DynamicNodeEncoding {
     public static func nodeEncoding(for key: CodingKey) -> XMLEncoder.NodeEncoding {
         guard let codingKey = key as? CodingKeys else {
             return .element

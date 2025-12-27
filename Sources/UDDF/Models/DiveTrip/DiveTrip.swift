@@ -1,35 +1,35 @@
 import Foundation
 import XMLCoder
 
-/// Business entities (dive shops, training organizations)
+/// Multi-dive trip information
 ///
-/// Information about commercial diving businesses.
-public struct UDDFBusiness: Codable, Equatable {
+/// Contains information about a dive trip spanning multiple days or dives.
+public struct DiveTrip: Codable, Equatable {
     /// Unique identifier
     public var id: String?
 
-    /// Business name
+    /// Trip name
     public var name: String?
 
-    /// Contact information
-    public var contact: UDDFContact?
+    /// Trip notes
+    public var notes: Notes?
 
-    public init(id: String? = nil, name: String? = nil, contact: UDDFContact? = nil) {
+    public init(id: String? = nil, name: String? = nil, notes: Notes? = nil) {
         self.id = id
         self.name = name
-        self.contact = contact
+        self.notes = notes
     }
 
     enum CodingKeys: String, CodingKey {
         case id
         case name
-        case contact
+        case notes
     }
 }
 
 // MARK: - DynamicNodeEncoding
 
-extension UDDFBusiness: DynamicNodeEncoding {
+extension DiveTrip: DynamicNodeEncoding {
     public static func nodeEncoding(for key: CodingKey) -> XMLEncoder.NodeEncoding {
         guard let codingKey = key as? CodingKeys else {
             return .element

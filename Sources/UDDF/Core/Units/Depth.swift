@@ -4,7 +4,7 @@ import Foundation
 ///
 /// UDDF stores depths in meters. This type provides automatic conversion
 /// to feet and other common depth units.
-public struct UDDFDepth: Codable, Equatable, Hashable {
+public struct Depth: Codable, Equatable, Hashable {
     /// Depth in meters (UDDF standard unit)
     public var meters: Double
 
@@ -36,15 +36,15 @@ public struct UDDFDepth: Codable, Equatable, Hashable {
 
 // MARK: - Comparable
 
-extension UDDFDepth: Comparable {
-    public static func < (lhs: UDDFDepth, rhs: UDDFDepth) -> Bool {
+extension Depth: Comparable {
+    public static func < (lhs: Depth, rhs: Depth) -> Bool {
         lhs.meters < rhs.meters
     }
 }
 
 // MARK: - CustomStringConvertible
 
-extension UDDFDepth: CustomStringConvertible {
+extension Depth: CustomStringConvertible {
     public var description: String {
         "\(meters)m"
     }

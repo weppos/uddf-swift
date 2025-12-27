@@ -1,7 +1,7 @@
 import Foundation
 
 /// A validation error with context
-public struct UDDFValidationError: Error, Equatable {
+public struct ValidationError: Error, Equatable {
     /// The severity of the validation error
     public enum Severity: String, Equatable {
         case error
@@ -35,7 +35,7 @@ public struct UDDFValidationError: Error, Equatable {
 
 // MARK: - CustomStringConvertible
 
-extension UDDFValidationError: CustomStringConvertible {
+extension ValidationError: CustomStringConvertible {
     public var description: String {
         let severityStr = severity == .error ? "Error" : "Warning"
         var desc = "[\(severityStr)] \(field): \(message)"
@@ -48,12 +48,12 @@ extension UDDFValidationError: CustomStringConvertible {
 }
 
 /// Result of document validation
-public struct UDDFValidationResult: Equatable {
+public struct ValidationResult: Equatable {
     /// All validation errors found
-    public let errors: [UDDFValidationError]
+    public let errors: [ValidationError]
 
     /// All validation warnings found
-    public let warnings: [UDDFValidationError]
+    public let warnings: [ValidationError]
 
     /// Whether validation passed (no errors)
     public var isValid: Bool {
@@ -70,7 +70,7 @@ public struct UDDFValidationResult: Equatable {
         errors.count + warnings.count
     }
 
-    public init(errors: [UDDFValidationError] = [], warnings: [UDDFValidationError] = []) {
+    public init(errors: [ValidationError] = [], warnings: [ValidationError] = []) {
         self.errors = errors
         self.warnings = warnings
     }
@@ -78,7 +78,7 @@ public struct UDDFValidationResult: Equatable {
 
 // MARK: - CustomStringConvertible
 
-extension UDDFValidationResult: CustomStringConvertible {
+extension ValidationResult: CustomStringConvertible {
     public var description: String {
         if isValid && !hasWarnings {
             return "Validation passed"

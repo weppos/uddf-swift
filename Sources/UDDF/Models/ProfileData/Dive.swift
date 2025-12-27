@@ -5,24 +5,24 @@ import XMLCoder
 ///
 /// Contains information before, during, and after the dive, including
 /// samples (waypoints) recorded during the dive.
-public struct UDDFDive: Codable, Equatable {
+public struct Dive: Codable, Equatable {
     /// Unique identifier for this dive
     public var id: String?
 
     /// Information recorded before the dive started
-    public var informationbeforedive: UDDFInformationBeforeDive?
+    public var informationbeforedive: InformationBeforeDive?
 
     /// Information recorded after the dive ended
-    public var informationafterdive: UDDFInformationAfterDive?
+    public var informationafterdive: InformationAfterDive?
 
     /// Dive profile samples (waypoints)
-    public var samples: UDDFSamples?
+    public var samples: Samples?
 
     public init(
         id: String? = nil,
-        informationbeforedive: UDDFInformationBeforeDive? = nil,
-        informationafterdive: UDDFInformationAfterDive? = nil,
-        samples: UDDFSamples? = nil
+        informationbeforedive: InformationBeforeDive? = nil,
+        informationafterdive: InformationAfterDive? = nil,
+        samples: Samples? = nil
     ) {
         self.id = id
         self.informationbeforedive = informationbeforedive
@@ -40,7 +40,7 @@ public struct UDDFDive: Codable, Equatable {
 
 // MARK: - DynamicNodeEncoding
 
-extension UDDFDive: DynamicNodeEncoding {
+extension Dive: DynamicNodeEncoding {
     public static func nodeEncoding(for key: CodingKey) -> XMLEncoder.NodeEncoding {
         guard let codingKey = key as? CodingKeys else {
             return .element
@@ -56,24 +56,24 @@ extension UDDFDive: DynamicNodeEncoding {
 }
 
 /// Information recorded before the dive
-public struct UDDFInformationBeforeDive: Codable, Equatable {
+public struct InformationBeforeDive: Codable, Equatable {
     /// Date and time when the dive started
     public var datetime: Date?
 
     /// Air temperature at surface
-    public var airtemperature: UDDFTemperature?
+    public var airtemperature: Temperature?
 
     /// Reference to dive site
     public var divenumber: Int?
 
     /// Notes or comments before the dive
-    public var notes: UDDFNotes?
+    public var notes: Notes?
 
     public init(
         datetime: Date? = nil,
-        airtemperature: UDDFTemperature? = nil,
+        airtemperature: Temperature? = nil,
         divenumber: Int? = nil,
-        notes: UDDFNotes? = nil
+        notes: Notes? = nil
     ) {
         self.datetime = datetime
         self.airtemperature = airtemperature
@@ -83,28 +83,28 @@ public struct UDDFInformationBeforeDive: Codable, Equatable {
 }
 
 /// Information recorded after the dive
-public struct UDDFInformationAfterDive: Codable, Equatable {
+public struct InformationAfterDive: Codable, Equatable {
     /// Lowest temperature during the dive
-    public var lowesttemperature: UDDFTemperature?
+    public var lowesttemperature: Temperature?
 
     /// Greatest depth reached during the dive
-    public var greatestdepth: UDDFDepth?
+    public var greatestdepth: Depth?
 
     /// Average depth during the dive
-    public var averagedepth: UDDFDepth?
+    public var averagedepth: Depth?
 
     /// Total dive time
-    public var diveduration: UDDFDuration?
+    public var diveduration: Duration?
 
     /// Notes or comments after the dive
-    public var notes: UDDFNotes?
+    public var notes: Notes?
 
     public init(
-        lowesttemperature: UDDFTemperature? = nil,
-        greatestdepth: UDDFDepth? = nil,
-        averagedepth: UDDFDepth? = nil,
-        diveduration: UDDFDuration? = nil,
-        notes: UDDFNotes? = nil
+        lowesttemperature: Temperature? = nil,
+        greatestdepth: Depth? = nil,
+        averagedepth: Depth? = nil,
+        diveduration: Duration? = nil,
+        notes: Notes? = nil
     ) {
         self.lowesttemperature = lowesttemperature
         self.greatestdepth = greatestdepth
@@ -115,21 +115,21 @@ public struct UDDFInformationAfterDive: Codable, Equatable {
 }
 
 /// Notes or comments (text content)
-public struct UDDFNotes: Codable, Equatable {
+public struct Notes: Codable, Equatable {
     /// Link to related note/media
-    public var link: UDDFLink?
+    public var link: Link?
 
     /// Text content of the note
     public var para: [String]?
 
-    public init(link: UDDFLink? = nil, para: [String]? = nil) {
+    public init(link: Link? = nil, para: [String]? = nil) {
         self.link = link
         self.para = para
     }
 }
 
 /// Reference link
-public struct UDDFLink: Codable, Equatable {
+public struct Link: Codable, Equatable {
     /// Reference ID
     public var ref: String?
 
@@ -144,7 +144,7 @@ public struct UDDFLink: Codable, Equatable {
 
 // MARK: - DynamicNodeEncoding
 
-extension UDDFLink: DynamicNodeEncoding {
+extension Link: DynamicNodeEncoding {
     public static func nodeEncoding(for key: CodingKey) -> XMLEncoder.NodeEncoding {
         guard let codingKey = key as? CodingKeys else {
             return .element

@@ -4,7 +4,7 @@ import XMLCoder
 /// Manufacturer information
 ///
 /// Information about manufacturers of diving equipment and software.
-public struct UDDFMaker: Codable, Equatable {
+public struct Maker: Codable, Equatable {
     /// Unique identifier
     public var id: String?
 
@@ -12,9 +12,9 @@ public struct UDDFMaker: Codable, Equatable {
     public var name: String?
 
     /// Contact information
-    public var contact: UDDFContact?
+    public var contact: Contact?
 
-    public init(id: String? = nil, name: String? = nil, contact: UDDFContact? = nil) {
+    public init(id: String? = nil, name: String? = nil, contact: Contact? = nil) {
         self.id = id
         self.name = name
         self.contact = contact
@@ -29,7 +29,7 @@ public struct UDDFMaker: Codable, Equatable {
 
 // MARK: - DynamicNodeEncoding
 
-extension UDDFMaker: DynamicNodeEncoding {
+extension Maker: DynamicNodeEncoding {
     public static func nodeEncoding(for key: CodingKey) -> XMLEncoder.NodeEncoding {
         guard let codingKey = key as? CodingKeys else {
             return .element

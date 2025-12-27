@@ -4,7 +4,7 @@ import Foundation
 ///
 /// UDDF stores pressure in bar. This type provides automatic conversion
 /// to PSI and other common pressure units.
-public struct UDDFPressure: Codable, Equatable, Hashable {
+public struct Pressure: Codable, Equatable, Hashable {
     /// Pressure in bar (UDDF standard unit)
     public var bar: Double
 
@@ -50,15 +50,15 @@ public struct UDDFPressure: Codable, Equatable, Hashable {
 
 // MARK: - Comparable
 
-extension UDDFPressure: Comparable {
-    public static func < (lhs: UDDFPressure, rhs: UDDFPressure) -> Bool {
+extension Pressure: Comparable {
+    public static func < (lhs: Pressure, rhs: Pressure) -> Bool {
         lhs.bar < rhs.bar
     }
 }
 
 // MARK: - CustomStringConvertible
 
-extension UDDFPressure: CustomStringConvertible {
+extension Pressure: CustomStringConvertible {
     public var description: String {
         "\(bar) bar"
     }
