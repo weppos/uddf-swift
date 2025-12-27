@@ -87,6 +87,41 @@ public struct UDDF {
         return try resolver.resolve(document)
     }
 
+    // MARK: - Validation
+
+    /// Validate a UDDF document
+    ///
+    /// Performs comprehensive validation including required elements, value ranges,
+    /// and reference integrity.
+    ///
+    /// - Parameters:
+    ///   - document: Document to validate
+    ///   - options: Validation options
+    /// - Returns: Validation result with errors and warnings
+    public static func validate(
+        _ document: UDDFDocument,
+        options: UDDFValidator.Options = UDDFValidator.Options()
+    ) -> ValidationResult {
+        let validator = UDDFValidator(options: options)
+        return validator.validate(document)
+    }
+
+    /// Parse and validate a UDDF document
+    ///
+    /// - Parameters:
+    ///   - data: XML data to parse
+    ///   - options: Validation options
+    /// - Returns: Tuple of parsed document and validation result
+    /// - Throws: UDDFError if parsing fails
+    public static func parseAndValidate(
+        _ data: Data,
+        options: UDDFValidator.Options = UDDFValidator.Options()
+    ) throws -> (document: UDDFDocument, validation: ValidationResult) {
+        let document = try parse(data)
+        let validation = validate(document, options: options)
+        return (document, validation)
+    }
+
     // MARK: - Writing
 
     /// Write UDDF document to Data

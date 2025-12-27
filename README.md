@@ -143,18 +143,29 @@ do {
 - [x] 10 comprehensive reference resolution tests
 - [x] Total: 36 passing tests
 
+### Phase 4: Builder API & Validation (Complete ✓)
+
+- [x] UDDFBuilder fluent API with method chaining
+- [x] Convenience methods (addAir, addNitrox)
+- [x] ValidationError and ValidationResult types
+- [x] UDDFValidator with comprehensive checks
+- [x] Generator validation
+- [x] Depth/duration range validation
+- [x] Gas mixture percentage validation
+- [x] GPS coordinate validation
+- [x] ID uniqueness and format validation
+- [x] Reference integrity validation
+- [x] Validation options (strict mode, disable ranges)
+- [x] parseAndValidate() API
+- [x] 11 builder tests + 14 validation tests
+- [x] Total: 61 passing tests
+
 ### Upcoming Phases
 
-**Phase 4: Builder API & Validation** (Next)
-
-- [ ] Fluent builder API
-- [ ] Validation framework
-- [ ] Lenient parsing mode
-
-**Phase 5: Documentation & Polish**
+**Phase 5: Documentation & Polish** (Next)
 
 - [ ] Complete DocC documentation
-- [ ] Example projects
+- [ ] Usage examples
 - [ ] Performance optimization
 
 ## Requirements
