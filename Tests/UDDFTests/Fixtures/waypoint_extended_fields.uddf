@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Synthetic test fixture for extended waypoint fields
+
+  This fixture demonstrates all UDDF 3.2.1 waypoint child elements including:
+
+  - batterychargecondition (battery voltage)
+  - calculatedpo2 (PPO2 for CCR diving)
+  - ceiling (decompression ceiling)
+  - cns (CNS oxygen toxicity percentage)
+  - decostop (decompression stop requirements with decreasing duration)
+  - divemode (closed circuit rebreather)
+  - gradientfactor (decompression gradient factor)
+  - heartrate (heart rate in BPM)
+  - nodecotime (no-decompression time remaining)
+  - remainingbottomtime (RBT - time before ascent required)
+  - setpo2 (rebreather setpoint)
+  - switchmix (gas mix changes)
+  - tankpressure (cylinder pressure)
+  - tts (time-to-surface)
+-->
+<uddf xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.2.1" xmlns="http://www.streit.cc/uddf/3.2/">
+  <generator>
+    <name>UDDF Test Suite</name>
+  </generator>
+  <gasdefinitions>
+    <mix id="mix1">
+      <name>Trimix 15/55</name>
+      <o2>0.15</o2>
+      <he>0.55</he>
+    </mix>
+  </gasdefinitions>
+  <profiledata>
+    <repetitiongroup id="rg1">
+      <dive id="dive1">
+        <informationbeforedive>
+          <datetime>2025-01-15T10:00:00Z</datetime>
+          <divenumber>1</divenumber>
+        </informationbeforedive>
+        <informationafterdive>
+          <greatestdepth>45.0</greatestdepth>
+          <diveduration>3600</diveduration>
+        </informationafterdive>
+        <samples>
+          <!-- Waypoint 0: Surface, initial setpoint -->
+          <waypoint>
+            <batterychargecondition>3.5</batterychargecondition>
+            <calculatedpo2>1.2</calculatedpo2>
+            <depth>0</depth>
+            <divetime>0</divetime>
+            <setpo2>1.2e5</setpo2>
+            <switchmix ref="mix1" />
+            <tankpressure>2.0e7</tankpressure>
+            <temperature>293.15</temperature>
+            <divemode type="closedcircuit" />
+            <gradientfactor>0</gradientfactor>
+          </waypoint>
+
+          <!-- Waypoint 1: Shallow, with RBT and NDL -->
+          <waypoint>
+            <batterychargecondition>3.48</batterychargecondition>
+            <depth>5.0</depth>
+            <divetime>60</divetime>
+            <heartrate>75</heartrate>
+            <nodecotime>5940</nodecotime>
+            <remainingbottomtime>1800</remainingbottomtime>
+            <setpo2>1.2e5</setpo2>
+            <tankpressure>1.95e7</tankpressure>
+            <temperature>293.15</temperature>
+            <divemode type="closedcircuit" />
+            <gradientfactor>5</gradientfactor>
+          </waypoint>
+
+          <!-- Waypoint 2: Depth, entering deco -->
+          <waypoint>
+            <cns>8</cns>
+            <decostop kind="mandatory" decodepth="6" duration="300" />
+            <depth>40.0</depth>
+            <divetime>1200</divetime>
+            <heartrate>80</heartrate>
+            <setpo2>1.3e5</setpo2>
+            <tankpressure>1.8e7</tankpressure>
+            <temperature>285.15</temperature>
+            <tts>600</tts>
+            <divemode type="closedcircuit" />
+            <gradientfactor>65</gradientfactor>
+          </waypoint>
+        </samples>
+      </dive>
+    </repetitiongroup>
+  </profiledata>
+</uddf>

@@ -55,6 +55,12 @@ public struct Waypoint: Codable, Equatable {
     /// No-decompression time remaining at this waypoint
     public var nodecotime: Duration?
 
+    /// Remaining bottom time at this waypoint (time before ascent required)
+    public var remainingbottomtime: Duration?
+
+    /// Rebreather setpoint (PPO2) at this waypoint
+    public var setpo2: Pressure?
+
     /// Reference to gas mix being used (for gas switches)
     public var switchmix: SwitchMix?
 
@@ -80,6 +86,8 @@ public struct Waypoint: Codable, Equatable {
         gradientfactor: Double? = nil,
         heartrate: UInt? = nil,
         nodecotime: Duration? = nil,
+        remainingbottomtime: Duration? = nil,
+        setpo2: Pressure? = nil,
         switchmix: SwitchMix? = nil,
         tankpressure: Pressure? = nil,
         temperature: Temperature? = nil,
@@ -97,6 +105,8 @@ public struct Waypoint: Codable, Equatable {
         self.gradientfactor = gradientfactor
         self.heartrate = heartrate
         self.nodecotime = nodecotime
+        self.remainingbottomtime = remainingbottomtime
+        self.setpo2 = setpo2
         self.switchmix = switchmix
         self.tankpressure = tankpressure
         self.temperature = temperature
