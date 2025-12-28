@@ -4,73 +4,27 @@
 
 The UDDF specification defines many attributes with fixed, enumerated values (e.g., `divemode type="closedcircuit"`). This document describes the three approaches for implementing these in Swift and when to use each.
 
-### Option 1: Type-Safe Enum (PREFERRED)
+**TL;DR**: Use **Option 2 (Hybrid Enum)** for robustness in real-world scenarios.
 
-Use type-safe enums for attributes with **compulsory fixed values** defined by the UDDF spec.
+### Option 2: Hybrid Enum with Unknown Case (PREFERRED)
 
-**When to use:**
-
-- The UDDF spec defines a fixed, closed set of values
-- Values are compulsory (not just recommended)
-- The set of values is unlikely to expand frequently
-
-**Implementation:**
-
-```swift
-public struct DiveMode: Codable, Equatable {
-    public enum ModeType: String, Codable {
-        case apnoe = "apnoe"
-        case closedCircuit = "closedcircuit"
-        case openCircuit = "opencircuit"
-        case semiClosedCircuit = "semiclosedcircuit"
-    }
-
-    public var type: ModeType?
-
-    public init(type: ModeType? = nil) {
-        self.type = type
-    }
-}
-```
-
-**Benefits:**
-
-- ✓ Compile-time type safety
-- ✓ Autocomplete in IDEs
-- ✓ Exhaustive switch coverage
-- ✓ Self-documenting API
-- ✓ Prevents invalid values
-
-**Usage:**
-
-```swift
-// Creating
-let mode = DiveMode(type: .closedCircuit)
-
-// Pattern matching
-switch waypoint.divemode?.type {
-case .closedCircuit:
-    print("CCR dive")
-case .openCircuit:
-    print("OC dive")
-case .apnoe:
-    print("Freediving")
-case .semiClosedCircuit:
-    print("SCR dive")
-case .none:
-    print("No mode specified")
-}
-```
-
-### Option 2: Hybrid Enum with Custom Case (FALLBACK)
-
-Use for attributes with fixed values that **may expand in future UDDF versions** or when parsing files from unknown sources.
+Use for attributes with fixed UDDF values that need resilience for real-world usage.
 
 **When to use:**
 
-- The UDDF spec defines fixed values but may expand
-- Need forward compatibility with unknown values
-- Parsing files that might use non-standard extensions
+- The UDDF spec defines fixed values (compulsory or recommended)
+- Need to parse files from various sources without failure
+- Future UDDF versions might add new values
+- Need type safety for known values while handling unknowns gracefully
+
+**Why this is preferred:**
+
+- ✓ **Parsing never fails** - Unknown values don't crash the parser
+- ✓ **Forward compatible** - New UDDF spec values handled automatically
+- ✓ **Type safety** for known standard values
+- ✓ **String conversion** always succeeds (database, user input, etc.)
+- ✓ **Pattern matching** still exhaustive
+- ✓ **Detect non-standard** values with `.isStandard` property
 
 **Implementation:**
 
@@ -81,7 +35,7 @@ public struct DiveMode: Codable, Equatable {
         case closedCircuit
         case openCircuit
         case semiClosedCircuit
-        case custom(String)
+        case unknown(String)  // Handles any non-standard value
 
         public var rawValue: String {
             switch self {
@@ -89,8 +43,25 @@ public struct DiveMode: Codable, Equatable {
             case .closedCircuit: return "closedcircuit"
             case .openCircuit: return "opencircuit"
             case .semiClosedCircuit: return "semiclosedcircuit"
-            case .custom(let value): return value
+            case .unknown(let value): return value
             }
+        }
+
+        public init(rawValue: String) {
+            switch rawValue {
+            case "apnoe": self = .apnoe
+            case "closedcircuit": self = .closedCircuit
+            case "opencircuit": self = .openCircuit
+            case "semiclosedcircuit": self = .semiClosedCircuit
+            default: self = .unknown(rawValue)
+            }
+        }
+
+        public var isStandard: Bool {
+            if case .unknown = self {
+                return false
+            }
+            return true
         }
     }
 
@@ -101,14 +72,7 @@ extension DiveMode.ModeType: Codable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
         let value = try container.decode(String.self)
-
-        switch value {
-        case "apnoe": self = .apnoe
-        case "closedcircuit": self = .closedCircuit
-        case "opencircuit": self = .openCircuit
-        case "semiclosedcircuit": self = .semiClosedCircuit
-        default: self = .custom(value)
-        }
+        self.init(rawValue: value)
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -120,34 +84,88 @@ extension DiveMode.ModeType: Codable {
 
 **Benefits:**
 
-- ✓ Type safety for known values
-- ✓ Forward compatibility
-- ✓ Graceful handling of unknown values
-- ✓ Can still use pattern matching
+- ✓ Type safety for known values with exhaustive pattern matching
+- ✓ Graceful degradation for unknown values
+- ✓ Can detect and log non-standard values
+- ✓ Database/string conversion via `init(rawValue:)` never fails
 
 **Usage:**
 
 ```swift
-// Pattern matching with unknown values
+// 1. Parsing files with unknown values - NO FAILURE!
+// XML: <divemode type="gauge" />  (not in standard)
+let doc = try UDDFSerialization.parse(data)  // ✓ Succeeds!
+
+if let mode = waypoint.divemode?.type {
+    if !mode.isStandard {
+        print("⚠️  Non-standard mode: \(mode.rawValue)")
+        // Log to analytics, warn user, etc.
+    }
+}
+
+// 2. String conversion from database - ALWAYS SUCCEEDS!
+let dbValue = "gauge"
+let mode = DiveMode.ModeType(rawValue: dbValue)  // ✓ Creates .unknown("gauge")
+
+// 3. Pattern matching with exhaustive checking
 switch waypoint.divemode?.type {
 case .closedCircuit:
     print("CCR dive")
-case .custom(let value):
-    print("Unknown mode: \(value)")
-default:
-    break
+case .openCircuit:
+    print("OC dive")
+case .apnoe:
+    print("Freediving")
+case .semiClosedCircuit:
+    print("SCR dive")
+case .unknown(let value):
+    print("Non-standard mode: \(value)")
+case .none:
+    print("No mode specified")
 }
+
+// 4. Creating values - Type-safe for standard, flexible for unknown
+waypoint.divemode = DiveMode(type: .closedCircuit)  // ✓ Type-safe
+waypoint.divemode = DiveMode(type: .unknown("gauge"))  // ✓ Also works
 ```
 
-### Option 3: String Constants (RESERVED)
+### Option 1: Simple Type-Safe Enum (FALLBACK)
 
-Use only for **recommended but not compulsory values** where users might need arbitrary strings.
+Use only when you control all data sources and know they're strictly UDDF-compliant.
 
 **When to use:**
 
-- Values are recommended but not required by spec
-- Users need flexibility for custom values
-- The attribute accepts free-form text with common conventions
+- You control all UDDF file generation
+- Data is guaranteed to only use standard values
+- Want simpler code without `.unknown` case
+
+**Warning:** ⚠️ Parsing will **fail completely** if file contains unknown values!
+
+**Implementation:**
+
+```swift
+public enum ModeType: String, Codable {
+    case apnoe = "apnoe"
+    case closedCircuit = "closedcircuit"
+    case openCircuit = "opencircuit"
+    case semiClosedCircuit = "semiclosedcircuit"
+}
+```
+
+**Problems:**
+
+- ❌ Parsing fails on unknown values (throws `DecodingError`)
+- ❌ String conversion returns `nil` for unknown values
+- ❌ No forward compatibility with future UDDF specs
+
+### Option 3: String Constants (SPECIAL CASES)
+
+Use only for **recommended but not compulsory values** where users need arbitrary strings.
+
+**When to use:**
+
+- Values are recommended guidelines, not requirements
+- Users legitimately need custom values
+- The attribute accepts free-form text
 
 **Implementation:**
 
@@ -156,67 +174,120 @@ public struct SomeElement: Codable, Equatable {
     public struct CommonValues {
         public static let recommended1 = "value1"
         public static let recommended2 = "value2"
-        public static let recommended3 = "value3"
     }
 
-    public var attribute: String?
+    public var attribute: String?  // Any string allowed
 }
 ```
-
-**Benefits:**
-
-- ✓ Maximum flexibility
-- ✓ Discoverable constants
-- ✓ Backward/forward compatible
 
 **Usage:**
 
 ```swift
-// Using constants
 element.attribute = SomeElement.CommonValues.recommended1
-
-// Or custom values
-element.attribute = "my-custom-value"
+element.attribute = "my-custom-value"  // Also valid
 ```
 
 ## Decision Tree
 
 ```
-Is the attribute value compulsory and fixed by UDDF spec?
-├─ Yes → Use Option 1 (Type-Safe Enum)
+Does the UDDF spec define fixed enumerated values?
+├─ Yes → Use Option 2 (Hybrid Enum) ✓ PREFERRED
+│        - Resilient to unknown values
+│        - Type-safe for known values
+│        - Forward compatible
 │
-└─ No → Could the spec expand or are extensions likely?
-    ├─ Yes → Use Option 2 (Hybrid Enum)
+└─ No → Are there recommended common values?
+    ├─ Yes → Use Option 3 (String Constants)
     │
-    └─ No → Are these just recommended values?
-        └─ Yes → Use Option 3 (String Constants)
+    └─ No → Use plain String
+```
+
+## Real-World Scenarios
+
+### Scenario 1: Parsing Unknown Values
+
+**Problem:** File from Shearwater contains `<divemode type="gauge" />` (gauge mode not in UDDF 3.2.1)
+
+**Option 1 Result:**
+```swift
+try UDDFSerialization.parse(data)  // ❌ Throws error, parsing fails
+```
+
+**Option 2 Result:**
+```swift
+let doc = try UDDFSerialization.parse(data)  // ✓ Succeeds
+let mode = waypoint.divemode?.type  // .unknown("gauge")
+print(mode?.isStandard)  // false
+```
+
+### Scenario 2: Database String Conversion
+
+**Problem:** Need to create enum from database string `"gauge"`
+
+**Option 1 Result:**
+```swift
+if let mode = ModeType(rawValue: "gauge") {
+    // Never executes - returns nil
+} else {
+    // ❌ Conversion failed, need error handling
+}
+```
+
+**Option 2 Result:**
+```swift
+let mode = ModeType(rawValue: "gauge")  // ✓ Always succeeds
+// Returns .unknown("gauge")
+```
+
+### Scenario 3: Logging Non-Standard Values
+
+**Option 2 Only:**
+```swift
+func validateDive(_ dive: Dive) {
+    for waypoint in dive.samples?.waypoint ?? [] {
+        if let mode = waypoint.divemode?.type, !mode.isStandard {
+            logger.warning("Non-standard dive mode: \(mode.rawValue)")
+        }
+
+        if let kind = waypoint.decostop?.kind, !kind.isStandard {
+            logger.warning("Non-standard deco stop: \(kind.rawValue)")
+        }
+    }
+}
 ```
 
 ## Examples in This Library
 
-### Option 1 (Type-Safe Enum)
+### Implemented with Option 2
 
-- `DiveMode.ModeType` - Fixed set of dive modes
-- `DecoStop.Kind` - Fixed decompression stop types
+- **`DiveMode.ModeType`** - Dive breathing apparatus modes
+  - Standard: `.apnoe`, `.closedCircuit`, `.openCircuit`, `.semiClosedCircuit`
+  - Unknown: `.unknown(String)`
 
-### Option 2 (Hybrid Enum)
+- **`DecoStop.StopKind`** - Decompression stop types
+  - Standard: `.mandatory`, `.safety`
+  - Unknown: `.unknown(String)`
 
-- Not currently used, reserved for future extensibility needs
+### Not Currently Used
 
-### Option 3 (String Constants)
-
-- Not currently used, would be appropriate for free-form fields like notes or custom identifiers
+- **Option 1**: Reserved for strictly controlled environments only
+- **Option 3**: Would be appropriate for free-form fields (not yet needed)
 
 ## Adding New Enumerated Types
 
 When adding support for a new UDDF element with enumerated values:
 
 1. Check the [UDDF specification](https://www.streit.cc/extern/uddf_v321/en/) for the attribute definition
-2. Determine if values are compulsory or recommended
-3. Choose the appropriate option using the decision tree above
-4. Implement the enum as a nested type within the parent struct
-5. Add documentation with links to the relevant UDDF spec section
-6. Add test cases covering all enum values
+2. **Default to Option 2** (hybrid enum) unless you have a specific reason not to
+3. Implement as a nested type within the parent struct
+4. Include `.unknown(String)` case and `.isStandard` property
+5. Add `init(rawValue:)` and manual `Codable` conformance
+6. Document with links to the relevant UDDF spec section
+7. Add test cases for:
+   - All standard enum values
+   - Unknown/non-standard values
+   - String-to-enum conversion
+   - Parsing resilience
 
 ## References
 

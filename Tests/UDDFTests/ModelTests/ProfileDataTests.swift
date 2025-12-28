@@ -132,4 +132,75 @@ final class ProfileDataTests: XCTestCase {
         XCTAssertEqual(waypoint9?.decostop?.duration, 180)
         XCTAssertEqual(waypoint9?.gradientfactor, 52)
     }
+
+    func testEnumUnknownValues() throws {
+        // Test that unknown enum values are parsed gracefully
+        let xml = """
+        <?xml version="1.0" encoding="UTF-8"?>
+        <uddf version="3.2.1">
+            <generator>
+                <name>TestApp</name>
+            </generator>
+            <profiledata>
+                <repetitiongroup>
+                    <dive>
+                        <samples>
+                            <waypoint>
+                                <divemode type="gauge" />
+                                <decostop kind="recommended" decodepth="3" duration="180" />
+                                <depth>10</depth>
+                                <divetime>60</divetime>
+                            </waypoint>
+                        </samples>
+                    </dive>
+                </repetitiongroup>
+            </profiledata>
+        </uddf>
+        """
+
+        let data = xml.data(using: .utf8)!
+        let document = try UDDFSerialization.parse(data)
+
+        let waypoint = document.profiledata?.repetitiongroup?.first?.dive?.first?.samples?.waypoint?.first
+        XCTAssertNotNil(waypoint)
+
+        // Unknown dive mode should parse as .unknown("gauge")
+        XCTAssertEqual(waypoint?.divemode?.type?.rawValue, "gauge")
+        XCTAssertEqual(waypoint?.divemode?.type?.isStandard, false)
+        if case .unknown(let value) = waypoint?.divemode?.type {
+            XCTAssertEqual(value, "gauge")
+        } else {
+            XCTFail("Expected .unknown case")
+        }
+
+        // Unknown deco stop kind should parse as .unknown("recommended")
+        XCTAssertEqual(waypoint?.decostop?.kind?.rawValue, "recommended")
+        XCTAssertEqual(waypoint?.decostop?.kind?.isStandard, false)
+        if case .unknown(let value) = waypoint?.decostop?.kind {
+            XCTAssertEqual(value, "recommended")
+        } else {
+            XCTFail("Expected .unknown case")
+        }
+    }
+
+    func testEnumStringConversion() {
+        // Test standard values
+        let mode1 = DiveMode.ModeType(rawValue: "closedcircuit")
+        XCTAssertEqual(mode1, .closedCircuit)
+        XCTAssertEqual(mode1.isStandard, true)
+
+        // Test unknown values
+        let mode2 = DiveMode.ModeType(rawValue: "gauge")
+        XCTAssertEqual(mode2.rawValue, "gauge")
+        XCTAssertEqual(mode2.isStandard, false)
+
+        // Test DecoStop
+        let kind1 = DecoStop.StopKind(rawValue: "mandatory")
+        XCTAssertEqual(kind1, .mandatory)
+        XCTAssertEqual(kind1.isStandard, true)
+
+        let kind2 = DecoStop.StopKind(rawValue: "deep")
+        XCTAssertEqual(kind2.rawValue, "deep")
+        XCTAssertEqual(kind2.isStandard, false)
+    }
 }

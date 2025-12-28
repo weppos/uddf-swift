@@ -241,12 +241,44 @@ public struct DecoStop: Codable, Equatable {
     ///
     /// Specifies whether the stop is mandatory (required for safety)
     /// or a safety stop (recommended but not required).
-    public enum StopKind: String, Codable {
+    /// Uses a hybrid enum to gracefully handle unknown values.
+    public enum StopKind: Equatable {
         /// Mandatory decompression stop (required)
-        case mandatory = "mandatory"
+        case mandatory
 
         /// Safety stop (recommended)
-        case safety = "safety"
+        case safety
+
+        /// Non-standard or unknown stop kind
+        case unknown(String)
+
+        /// The raw string value for this stop kind
+        public var rawValue: String {
+            switch self {
+            case .mandatory: return "mandatory"
+            case .safety: return "safety"
+            case .unknown(let value): return value
+            }
+        }
+
+        /// Initialize from a raw string value
+        ///
+        /// Standard UDDF values map to known cases, all others to `.unknown(String)`
+        public init(rawValue: String) {
+            switch rawValue {
+            case "mandatory": self = .mandatory
+            case "safety": self = .safety
+            default: self = .unknown(rawValue)
+            }
+        }
+
+        /// Returns true if this is a standard UDDF stop kind
+        public var isStandard: Bool {
+            if case .unknown = self {
+                return false
+            }
+            return true
+        }
     }
 
     /// The kind of decompression stop
@@ -272,6 +304,21 @@ public struct DecoStop: Codable, Equatable {
         case kind
         case decodepth
         case duration
+    }
+}
+
+// MARK: - StopKind Codable
+
+extension DecoStop.StopKind: Codable {
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        let value = try container.decode(String.self)
+        self.init(rawValue: value)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode(self.rawValue)
     }
 }
 
