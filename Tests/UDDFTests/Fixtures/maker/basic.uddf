@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uddf version="3.2.1">
+    <generator>
+        <name>MakerApp</name>
+    </generator>
+
+    <maker id="maker1">
+        <name>ScubaPro</name>
+        <contact>
+            <homepage>https://scubapro.com</homepage>
+        </contact>
+    </maker>
+
+    <maker id="maker2">
+        <name>Shearwater Research</name>
+        <contact>
+            <homepage>https://shearwater.com</homepage>
+            <email>support@shearwater.com</email>
+        </contact>
+    </maker>
+</uddf>

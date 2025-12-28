@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uddf version="3.2.1">
+    <generator>
+        <name>DecoApp</name>
+    </generator>
+
+    <decomodel id="deco1">
+        <name>Buhlmann ZHL-16C</name>
+    </decomodel>
+
+    <decomodel id="deco2">
+        <name>VPM-B</name>
+    </decomodel>
+</uddf>

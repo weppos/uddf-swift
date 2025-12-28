@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uddf version="3.2.1">
+    <generator>
+        <name>BusinessApp</name>
+    </generator>
+
+    <business id="shop1">
+        <name>Local Dive Shop</name>
+        <contact>
+            <homepage>https://localdiveshop.com</homepage>
+            <email>info@localdiveshop.com</email>
+            <phone>+1-555-0100</phone>
+        </contact>
+    </business>
+</uddf>

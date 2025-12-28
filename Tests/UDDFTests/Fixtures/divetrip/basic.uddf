@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uddf version="3.2.1">
+    <generator>
+        <name>TripApp</name>
+    </generator>
+
+    <diver>
+        <owner id="owner1">
+            <personal>
+                <firstname>John</firstname>
+                <lastname>Diver</lastname>
+            </personal>
+        </owner>
+    </diver>
+
+    <divesite id="site1">
+        <name>Test Site</name>
+        <geography>
+            <location>Test Location</location>
+        </geography>
+    </divesite>
+
+    <gasdefinitions>
+        <mix id="air">
+            <name>Air</name>
+            <o2>0.21</o2>
+            <n2>0.79</n2>
+        </mix>
+    </gasdefinitions>
+
+    <profiledata>
+        <repetitiongroup id="rg1">
+            <dive id="dive1">
+                <informationbeforedive>
+                    <diverref>owner1</diverref>
+                    <divesiteref>site1</divesiteref>
+                </informationbeforedive>
+                <samples>
+                    <waypoint>
+                        <divetime>0.0</divetime>
+                        <depth>0.0</depth>
+                    </waypoint>
+                    <waypoint>
+                        <divetime>600.0</divetime>
+                        <depth>10.0</depth>
+                    </waypoint>
+                </samples>
+                <informationafterdive>
+                    <greatestdepth>10.0</greatestdepth>
+                    <diveduration>600.0</diveduration>
+                </informationafterdive>
+            </dive>
+        </repetitiongroup>
+    </profiledata>
+
+    <divetrip id="trip1">
+        <name>Red Sea 2025</name>
+        <trippart>
+            <repgroupref>rg1</repgroupref>
+        </trippart>
+    </divetrip>
+</uddf>

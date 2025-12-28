@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uddf version="3.2.1">
+    <generator>
+        <name>DiverApp</name>
+    </generator>
+
+    <diver>
+        <owner id="owner1">
+            <personal>
+                <firstname>John</firstname>
+                <lastname>Diver</lastname>
+            </personal>
+            <equipment>
+                <leadquantity>2.0</leadquantity>
+            </equipment>
+        </owner>
+        <buddy id="buddy1">
+            <personal>
+                <firstname>Jane</firstname>
+                <lastname>Smith</lastname>
+            </personal>
+        </buddy>
+    </diver>
+</uddf>

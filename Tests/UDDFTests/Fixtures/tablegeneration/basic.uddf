@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uddf version="3.2.1">
+    <generator>
+        <name>TableApp</name>
+    </generator>
+
+    <tablegeneration id="table1">
+        <title>Test Dive Table</title>
+    </tablegeneration>
+</uddf>

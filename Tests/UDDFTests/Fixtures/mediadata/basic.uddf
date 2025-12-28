@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uddf version="3.2.1">
+    <generator>
+        <name>MediaApp</name>
+    </generator>
+
+    <mediadata>
+        <image id="img1">
+            <title>Dive Photo</title>
+            <objectname>dive_photo_001.jpg</objectname>
+        </image>
+        <video id="vid1">
+            <title>Dive Video</title>
+            <objectname>dive_video_001.mp4</objectname>
+        </video>
+        <audio id="aud1">
+            <title>Dive Audio</title>
+            <objectname>dive_audio_001.mp3</objectname>
+        </audio>
+    </mediadata>
+</uddf>

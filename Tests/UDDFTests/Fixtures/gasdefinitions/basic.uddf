@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uddf version="3.2.1">
+    <generator>
+        <name>GasMixApp</name>
+    </generator>
+
+    <gasdefinitions>
+        <!-- Standard Air -->
+        <mix id="air">
+            <name>Air</name>
+            <o2>0.21</o2>
+            <n2>0.79</n2>
+        </mix>
+
+        <!-- Nitrox Mixes -->
+        <mix id="ean32">
+            <name>EAN32</name>
+            <o2>0.32</o2>
+            <n2>0.68</n2>
+        </mix>
+        <mix id="ean36">
+            <name>EAN36</name>
+            <o2>0.36</o2>
+            <n2>0.64</n2>
+        </mix>
+
+        <!-- Trimix -->
+        <mix id="tx1845">
+            <name>Trimix 18/45</name>
+            <o2>0.18</o2>
+            <n2>0.37</n2>
+            <he>0.45</he>
+        </mix>
+
+        <!-- Pure Oxygen (Deco) -->
+        <mix id="o2">
+            <name>Oxygen</name>
+            <o2>1.0</o2>
+            <n2>0.0</n2>
+        </mix>
+    </gasdefinitions>
+</uddf>

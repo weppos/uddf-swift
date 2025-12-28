@@ -84,7 +84,7 @@ final class ProfileDataTests: XCTestCase {
         let fixtureURL = Bundle.module.url(
             forResource: "waypoint_extended_fields",
             withExtension: "uddf",
-            subdirectory: "Fixtures"
+            subdirectory: "Fixtures/profiledata"
         )!
         let data = try Data(contentsOf: fixtureURL)
         let document = try UDDFSerialization.parse(data)

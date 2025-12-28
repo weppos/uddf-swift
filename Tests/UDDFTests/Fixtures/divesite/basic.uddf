@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uddf version="3.2.1">
+    <generator>
+        <name>DiveSiteApp</name>
+    </generator>
+
+    <divesite id="site1">
+        <name>Blue Hole</name>
+        <geography>
+            <location>Red Sea, Egypt</location>
+            <gps>
+                <latitude>28.123456</latitude>
+                <longitude>34.567890</longitude>
+            </gps>
+            <altitude>0.0</altitude>
+        </geography>
+    </divesite>
+
+    <divesite id="site2">
+        <name>Coral Garden</name>
+        <geography>
+            <location>Caribbean Sea</location>
+        </geography>
+    </divesite>
+</uddf>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uddf version="3.2.1">
+    <generator>
+        <name>DiveLogPro</name>
+        <version>2.5.0</version>
+        <manufacturer>
+            <name>DiveSoft Inc</name>
+            <contact>
+                <homepage>https://example.com</homepage>
+                <email>info@example.com</email>
+            </contact>
+        </manufacturer>
+        <datetime>2025-01-15T10:30:00Z</datetime>
+    </generator>
+</uddf>
