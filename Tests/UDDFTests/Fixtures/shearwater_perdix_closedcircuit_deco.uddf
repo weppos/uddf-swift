@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Test fixture based on Shearwater Perdix AI export
+  Source: Shearwater Cloud Desktop v2.12.9
+  Original dive: 2025-09-30 12:49:17Z (CCR dive with Trimix 15/55)
+
+  This fixture demonstrates extended waypoint fields including:
+
+  - batterychargecondition (battery voltage)
+  - calculatedpo2 (PPO2 for CCR diving)
+  - switchmix (gas mix changes)
+  - divemode (closed circuit rebreather)
+  - gradientfactor (decompression gradient factor)
+  - nodecotime (no-decompression time remaining)
+  - decostop (decompression stop requirements with decreasing duration)
+  - cns (CNS oxygen toxicity percentage)
+-->
+<uddf xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.2.1" xmlns="http://www.streit.cc/uddf/3.2/">
+  <generator>
+    <name>Shearwater Cloud Desktop</name>
+  </generator>
+  <gasdefinitions>
+    <mix id="CC4:15/55">
+      <name>CC4</name>
+      <o2>0.15</o2>
+      <he>0.55</he>
+    </mix>
+  </gasdefinitions>
+  <profiledata>
+    <repetitiongroup id="rg1">
+      <dive id="dive1">
+        <informationbeforedive>
+          <datetime>2025-09-30T12:49:17Z</datetime>
+          <divenumber>963</divenumber>
+        </informationbeforedive>
+        <informationafterdive>
+          <greatestdepth>46.6</greatestdepth>
+          <diveduration>4952</diveduration>
+        </informationafterdive>
+        <samples>
+          <waypoint>
+            <batterychargecondition>3.43</batterychargecondition>
+            <calculatedpo2>1.19999993</calculatedpo2>
+            <depth>0</depth>
+            <divetime>0</divetime>
+            <switchmix ref="CC4:15/55" />
+            <temperature>299.15</temperature>
+            <divemode type="closedcircuit" />
+            <gradientfactor>0</gradientfactor>
+          </waypoint>
+          <waypoint>
+            <batterychargecondition>3.45</batterychargecondition>
+            <depth>3.4</depth>
+            <divetime>10</divetime>
+            <temperature>299.15</temperature>
+            <divemode type="closedcircuit" />
+            <gradientfactor>1</gradientfactor>
+            <nodecotime>5940</nodecotime>
+          </waypoint>
+          <waypoint>
+            <depth>7.8</depth>
+            <divetime>30</divetime>
+            <temperature>299.15</temperature>
+            <divemode type="closedcircuit" />
+            <gradientfactor>1</gradientfactor>
+            <nodecotime>5940</nodecotime>
+          </waypoint>
+          <waypoint>
+            <cns>5</cns>
+            <decostop kind="mandatory" decodepth="6" duration="480" />
+            <depth>42.9</depth>
+            <divetime>750</divetime>
+            <temperature>291.15</temperature>
+            <divemode type="closedcircuit" />
+            <gradientfactor>45</gradientfactor>
+          </waypoint>
+          <waypoint>
+            <cns>5</cns>
+            <decostop kind="mandatory" decodepth="6" duration="480" />
+            <depth>42.5</depth>
+            <divetime>760</divetime>
+            <temperature>291.15</temperature>
+            <divemode type="closedcircuit" />
+            <gradientfactor>45</gradientfactor>
+          </waypoint>
+          <waypoint>
+            <cns>6</cns>
+            <decostop kind="mandatory" decodepth="6" duration="420" />
+            <depth>40.2</depth>
+            <divetime>800</divetime>
+            <temperature>291.15</temperature>
+            <divemode type="closedcircuit" />
+            <gradientfactor>46</gradientfactor>
+          </waypoint>
+          <waypoint>
+            <cns>6</cns>
+            <decostop kind="mandatory" decodepth="6" duration="360" />
+            <depth>35.8</depth>
+            <divetime>850</divetime>
+            <temperature>290.15</temperature>
+            <divemode type="closedcircuit" />
+            <gradientfactor>47</gradientfactor>
+          </waypoint>
+          <waypoint>
+            <cns>7</cns>
+            <decostop kind="mandatory" decodepth="6" duration="300" />
+            <depth>28.4</depth>
+            <divetime>900</divetime>
+            <temperature>292.15</temperature>
+            <divemode type="closedcircuit" />
+            <gradientfactor>48</gradientfactor>
+          </waypoint>
+          <waypoint>
+            <cns>7</cns>
+            <decostop kind="mandatory" decodepth="6" duration="240" />
+            <depth>18.6</depth>
+            <divetime>950</divetime>
+            <temperature>294.15</temperature>
+            <divemode type="closedcircuit" />
+            <gradientfactor>50</gradientfactor>
+          </waypoint>
+          <waypoint>
+            <cns>8</cns>
+            <decostop kind="mandatory" decodepth="6" duration="180" />
+            <depth>12.3</depth>
+            <divetime>1000</divetime>
+            <temperature>295.15</temperature>
+            <divemode type="closedcircuit" />
+            <gradientfactor>52</gradientfactor>
+          </waypoint>
+        </samples>
+      </dive>
+    </repetitiongroup>
+  </profiledata>
+</uddf>
