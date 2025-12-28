@@ -134,16 +134,87 @@ extension SwitchMix: DynamicNodeEncoding {
 }
 
 /// Dive mode at a waypoint (open circuit, closed circuit, etc.)
+///
+/// See: https://www.streit.cc/extern/uddf_v321/en/divemode.html
 public struct DiveMode: Codable, Equatable {
-    /// Type of dive mode (e.g., "opencircuit", "closedcircuit", "gauge")
-    public var type: String?
+    /// Type of dive mode
+    ///
+    /// Specifies the breathing apparatus mode used at this waypoint.
+    /// Uses a hybrid enum to gracefully handle unknown values while providing
+    /// type safety for standard UDDF values.
+    public enum ModeType: Equatable {
+        /// Freediving (breath-hold diving)
+        case apnoe
 
-    public init(type: String? = nil) {
+        /// Closed-circuit rebreather
+        case closedCircuit
+
+        /// Open-circuit scuba
+        case openCircuit
+
+        /// Semi-closed rebreather
+        case semiClosedCircuit
+
+        /// Non-standard or unknown dive mode
+        case unknown(String)
+
+        /// The raw string value for this mode type
+        public var rawValue: String {
+            switch self {
+            case .apnoe: return "apnoe"
+            case .closedCircuit: return "closedcircuit"
+            case .openCircuit: return "opencircuit"
+            case .semiClosedCircuit: return "semiclosedcircuit"
+            case .unknown(let value): return value
+            }
+        }
+
+        /// Initialize from a raw string value
+        ///
+        /// Standard UDDF values map to known cases, all others to `.unknown(String)`
+        public init(rawValue: String) {
+            switch rawValue {
+            case "apnoe": self = .apnoe
+            case "closedcircuit": self = .closedCircuit
+            case "opencircuit": self = .openCircuit
+            case "semiclosedcircuit": self = .semiClosedCircuit
+            default: self = .unknown(rawValue)
+            }
+        }
+
+        /// Returns true if this is a standard UDDF dive mode
+        public var isStandard: Bool {
+            if case .unknown = self {
+                return false
+            }
+            return true
+        }
+    }
+
+    /// The dive mode type at this waypoint
+    public var type: ModeType?
+
+    public init(type: ModeType? = nil) {
         self.type = type
     }
 
     enum CodingKeys: String, CodingKey {
         case type
+    }
+}
+
+// MARK: - ModeType Codable
+
+extension DiveMode.ModeType: Codable {
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        let value = try container.decode(String.self)
+        self.init(rawValue: value)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode(self.rawValue)
     }
 }
 
@@ -163,9 +234,23 @@ extension DiveMode: DynamicNodeEncoding {
 }
 
 /// Decompression stop information at a waypoint
+///
+/// Represents a required or recommended decompression stop during ascent.
 public struct DecoStop: Codable, Equatable {
-    /// Kind of decompression stop (e.g., "mandatory", "safety")
-    public var kind: String?
+    /// Kind of decompression stop
+    ///
+    /// Specifies whether the stop is mandatory (required for safety)
+    /// or a safety stop (recommended but not required).
+    public enum StopKind: String, Codable {
+        /// Mandatory decompression stop (required)
+        case mandatory = "mandatory"
+
+        /// Safety stop (recommended)
+        case safety = "safety"
+    }
+
+    /// The kind of decompression stop
+    public var kind: StopKind?
 
     /// Depth of the decompression stop (in meters)
     public var decodepth: Double?
@@ -174,7 +259,7 @@ public struct DecoStop: Codable, Equatable {
     public var duration: Double?
 
     public init(
-        kind: String? = nil,
+        kind: StopKind? = nil,
         decodepth: Double? = nil,
         duration: Double? = nil
     ) {
