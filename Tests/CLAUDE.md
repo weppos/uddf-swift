@@ -1,6 +1,6 @@
-# Test Fixtures Organization
+# Tests
 
-## Directory Structure
+## Fixtures Organization
 
 Test fixtures in `Tests/UDDFTests/Fixtures/` are organized by UDDF specification sections for better discoverability and maintenance.
 
