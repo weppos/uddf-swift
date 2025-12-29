@@ -2,8 +2,9 @@ import Foundation
 
 /// Pressure measurement with automatic unit conversion
 ///
-/// UDDF stores pressure in bar. This type provides automatic conversion
-/// to PSI and other common pressure units.
+/// UDDF stores pressure in pascals in the XML format, but this type stores
+/// values internally in bar for convenience and provides automatic conversion
+/// to PSI, pascals, and other common pressure units.
 public struct Pressure: Codable, Equatable, Hashable {
     /// Pressure in bar (UDDF standard unit)
     public var bar: Double
@@ -39,12 +40,15 @@ public struct Pressure: Codable, Equatable, Hashable {
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
-        bar = try container.decode(Double.self)
+        let pascals = try container.decode(Double.self)
+        // UDDF stores pressure in pascals, convert to bar for internal storage
+        bar = pascals / 100000
     }
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.singleValueContainer()
-        try container.encode(bar)
+        // UDDF stores pressure in pascals, convert from bar
+        try container.encode(bar * 100000)
     }
 }
 
