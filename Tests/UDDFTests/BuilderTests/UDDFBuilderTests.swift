@@ -180,8 +180,8 @@ final class UDDFBuilderTests: XCTestCase {
             .addAir()
             .build()
 
-        let xmlData = try UDDF.write(originalDoc)
-        let parsedDoc = try UDDF.parse(xmlData)
+        let xmlData = try UDDFSerialization.write(originalDoc)
+        let parsedDoc = try UDDFSerialization.parse(xmlData)
 
         XCTAssertEqual(parsedDoc.generator.name, originalDoc.generator.name)
         XCTAssertEqual(parsedDoc.generator.version, originalDoc.generator.version)

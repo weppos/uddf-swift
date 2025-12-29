@@ -52,23 +52,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: List available Xcode versions
-        run: ls /Applications | grep Xcode
-
       - name: Swift version
         run: swift --version
 
-      - name: Build for iOS
-        run: |
-          xcodebuild build-for-testing \
-            -scheme UDDF \
-            -destination 'platform=iOS Simulator,name=iPhone 15 Pro'
-
-      - name: Test on iOS
+      - name: Build and test for iOS
         run: |
           xcodebuild test \
             -scheme UDDF \
-            -destination 'platform=iOS Simulator,name=iPhone 15 Pro' \
+            -destination 'platform=iOS Simulator,name=Any iOS Simulator Device' \
             -enableCodeCoverage YES
 
   # coverage:

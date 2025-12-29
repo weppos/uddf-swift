@@ -242,7 +242,7 @@ final class ValidationTests: XCTestCase {
         </uddf>
         """
 
-        let (document, validation) = try UDDF.parseAndValidate(xml.data(using: .utf8)!)
+        let (document, validation) = try UDDFSerialization.parseAndValidate(xml.data(using: .utf8)!)
 
         XCTAssertEqual(document.generator.name, "TestApp")
         XCTAssertTrue(validation.isValid)

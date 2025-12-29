@@ -51,7 +51,7 @@ final class GasDefinitionsTests: XCTestCase {
         """
 
         let data = xml.data(using: .utf8)!
-        let document = try UDDF.parse(data)
+        let document = try UDDFSerialization.parse(data)
 
         XCTAssertNotNil(document.gasdefinitions)
         XCTAssertEqual(document.gasdefinitions?.mix?.count, 2)

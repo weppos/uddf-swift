@@ -68,7 +68,7 @@ final class UDDFParserTests: XCTestCase {
         let originalDocument = UDDFDocument(version: "3.2.1", generator: generator)
 
         // Write it
-        let xmlData = try UDDF.write(originalDocument)
+        let xmlData = try UDDFSerialization.write(originalDocument)
 
         // Parse it back
         let reparsedDocument = try UDDFSerialization.parse(xmlData)
@@ -82,7 +82,7 @@ final class UDDFParserTests: XCTestCase {
         let generator = Generator(name: "TestApp", version: "1.0.0")
         let originalDocument = UDDFDocument(version: "3.2.1", generator: generator)
 
-        let xmlData = try UDDF.write(originalDocument, prettyPrinted: false)
+        let xmlData = try UDDFSerialization.write(originalDocument, prettyPrinted: false)
         let reparsedDocument = try UDDFSerialization.parse(xmlData)
 
         XCTAssertEqual(reparsedDocument.generator, originalDocument.generator)
@@ -141,7 +141,7 @@ final class UDDFParserTests: XCTestCase {
         let tempFile = tempDir.appendingPathComponent("test.uddf")
 
         // Write to file
-        try UDDF.write(document, to: tempFile)
+        try UDDFSerialization.write(document, to: tempFile)
 
         // Read back from file
         let readDocument = try UDDFSerialization.parse(contentsOf: tempFile)
