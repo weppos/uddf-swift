@@ -33,11 +33,7 @@ class UDDFParser {
         do {
             let document = try decoder.decode(UDDFDocument.self, from: data)
 
-            // Validate that generator is present
-            if document.generator.name.isEmpty {
-                throw UDDFError.missingGenerator
-            }
-
+            // Parser is permissive - parse what exists, validate separately
             return document
         } catch let error as UDDFError {
             throw error

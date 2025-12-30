@@ -15,7 +15,22 @@ final class ValidationTests: XCTestCase {
         XCTAssertEqual(result.errors.count, 0)
     }
 
-    func testInvalidEmptyGeneratorName() throws {
+    func testMissingGeneratorNameProducesWarning() throws {
+        var document = try UDDFBuilder()
+            .generator(name: "TestApp")
+            .build()
+
+        document.generator.name = nil
+
+        let result = UDDFSerialization.validate(document)
+
+        // Should be valid with warning in default mode
+        XCTAssertTrue(result.isValid)
+        XCTAssertTrue(result.hasWarnings)
+        XCTAssertTrue(result.warnings.contains { $0.field == "generator.name" })
+    }
+
+    func testEmptyGeneratorNameProducesWarning() throws {
         var document = try UDDFBuilder()
             .generator(name: "TestApp")
             .build()
@@ -24,6 +39,25 @@ final class ValidationTests: XCTestCase {
 
         let result = UDDFSerialization.validate(document)
 
+        // Should be valid with warning in default mode
+        XCTAssertTrue(result.isValid)
+        XCTAssertTrue(result.hasWarnings)
+        XCTAssertTrue(result.warnings.contains { $0.field == "generator.name" })
+    }
+
+    func testMissingGeneratorNameBecomesErrorInStrictMode() throws {
+        var document = try UDDFBuilder()
+            .generator(name: "TestApp")
+            .build()
+
+        document.generator.name = nil
+
+        var options = UDDFValidator.Options()
+        options.strictMode = true
+
+        let result = UDDFSerialization.validate(document, options: options)
+
+        // Should fail in strict mode
         XCTAssertFalse(result.isValid)
         XCTAssertTrue(result.errors.contains { $0.field == "generator.name" })
     }

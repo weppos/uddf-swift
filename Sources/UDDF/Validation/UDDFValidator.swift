@@ -84,8 +84,11 @@ public class UDDFValidator {
     // MARK: - Generator Validation
 
     private func validateGenerator(_ generator: Generator) {
-        if generator.name.isEmpty {
-            addError(field: "generator.name", message: "Generator name cannot be empty")
+        // Generator name is recommended but not strictly required
+        // In strictMode: this warning becomes an error
+        // In default mode: this is just a warning
+        if generator.name == nil || generator.name?.isEmpty == true {
+            addWarning(field: "generator.name", message: "Generator name is missing")
         }
 
         if let version = generator.version, version.isEmpty {

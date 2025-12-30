@@ -61,10 +61,8 @@ class UDDFWriter {
     // MARK: - Private Helpers
 
     private func validateDocument(_ document: UDDFDocument) throws {
-        // Ensure generator name is not empty
-        if document.generator.name.isEmpty {
-            throw UDDFError.missingGenerator
-        }
+        // Writer validates structure, not content
+        // Content validation happens in UDDFValidator
 
         // Ensure version is valid
         if document.version.isEmpty {

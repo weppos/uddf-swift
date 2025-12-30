@@ -6,7 +6,12 @@ import Foundation
 /// application that created or last modified the file.
 public struct Generator: Codable, Equatable {
     /// Name of the generating application
-    public var name: String
+    ///
+    /// Recommended but not strictly required. Missing names produce
+    /// a validation warning (or error in strict mode).
+    ///
+    /// Some real-world dive computers may omit this field.
+    public var name: String?
 
     /// Manufacturer or developer of the application
     public var manufacturer: ManufacturerInfo?
@@ -21,7 +26,7 @@ public struct Generator: Codable, Equatable {
     public var datetime: Date?
 
     public init(
-        name: String,
+        name: String? = nil,
         manufacturer: ManufacturerInfo? = nil,
         contact: Contact? = nil,
         version: String? = nil,

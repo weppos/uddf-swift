@@ -39,17 +39,17 @@ public class UDDFBuilder {
 
     // MARK: - Generator
 
-    /// Set the generator information (required)
+    /// Set the generator information
     ///
     /// - Parameters:
-    ///   - name: Application name
+    ///   - name: Application name (recommended)
     ///   - version: Application version
     ///   - manufacturer: Manufacturer information
     ///   - datetime: Creation date/time
     /// - Returns: Self for method chaining
     @discardableResult
     public func generator(
-        name: String,
+        name: String? = nil,
         version: String? = nil,
         manufacturer: ManufacturerInfo? = nil,
         datetime: Date? = nil
