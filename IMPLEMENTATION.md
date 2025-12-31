@@ -202,9 +202,9 @@ Does the UDDF spec define fixed enumerated values?
     └─ No → Use plain String
 ```
 
-## Real-World Scenarios
+### Real-World Scenarios
 
-### Scenario 1: Parsing Unknown Values
+#### Scenario 1: Parsing Unknown Values
 
 **Problem:** File from Shearwater contains `<divemode type="gauge" />` (gauge mode not in UDDF 3.2.1)
 
@@ -220,11 +220,12 @@ let mode = waypoint.divemode?.type  // .unknown("gauge")
 print(mode?.isStandard)  // false
 ```
 
-### Scenario 2: Database String Conversion
+#### Scenario 2: Database String Conversion
 
 **Problem:** Need to create enum from database string `"gauge"`
 
 **Option 1 Result:**
+
 ```swift
 if let mode = ModeType(rawValue: "gauge") {
     // Never executes - returns nil
@@ -234,12 +235,13 @@ if let mode = ModeType(rawValue: "gauge") {
 ```
 
 **Option 2 Result:**
+
 ```swift
 let mode = ModeType(rawValue: "gauge")  // ✓ Always succeeds
 // Returns .unknown("gauge")
 ```
 
-### Scenario 3: Logging Non-Standard Values
+#### Scenario 3: Logging Non-Standard Values
 
 **Option 2 Only:**
 ```swift
@@ -256,9 +258,9 @@ func validateDive(_ dive: Dive) {
 }
 ```
 
-## Examples in This Library
+### Examples in This Library
 
-### Implemented with Option 2
+#### Implemented with Option 2
 
 - **`DiveMode.ModeType`** - Dive breathing apparatus modes
   - Standard: `.apnoe`, `.closedCircuit`, `.openCircuit`, `.semiClosedCircuit`
@@ -268,12 +270,12 @@ func validateDive(_ dive: Dive) {
   - Standard: `.mandatory`, `.safety`
   - Unknown: `.unknown(String)`
 
-### Not Currently Used
+#### Not Currently Used
 
 - **Option 1**: Reserved for strictly controlled environments only
 - **Option 3**: Would be appropriate for free-form fields (not yet needed)
 
-## Adding New Enumerated Types
+### Adding New Enumerated Types
 
 When adding support for a new UDDF element with enumerated values:
 
