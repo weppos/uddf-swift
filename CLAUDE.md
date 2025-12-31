@@ -14,26 +14,11 @@ UDDF Swift is a Swift library for parsing, validating, and writing Universal Div
 
 ## Project-Specific Context
 
-### Parser vs Validator Philosophy
-
-- **Parser**: Permissive - parse whatever valid XML exists, don't enforce UDDF rules
-- **Validator**: Two modes
-  - Default (strictMode: false): Allow real-world deviations with warnings
-  - Strict (strictMode: true): Warnings become errors, full spec compliance
-
-Use `addWarning()` for recommended fields (like generator.name), `addError()` for truly required data.
-
-### Real-World First
-
-The library prioritizes working with actual dive computer exports over strict spec compliance. When real-world files don't conform to spec recommendations (not requirements), the library should handle them gracefully with warnings, not errors.
-
 ### Code Style Notes
 
-- Follow user's formatting rules in `~/.claude/CLAUDE.md`
-- Never include Claude Code attribution in commits or code
-- Use Conventional Commits format (see CONTRIBUTING.md)
-- Follow Swift API Design Guidelines
-- Use Swift's type system effectively (optionals, value types, etc.)
+- Use Conventional Commits format (see [CONTRIBUTING.md](CONTRIBUTING.md#commit-message-guidelines))
+- Follow Swift API Design Guidelines (see [CONTRIBUTING.md](CONTRIBUTING.md#code-style))
+- Use Swift's type system effectively (optionals, value types, etc.) (see [CONTRIBUTING.md](CONTRIBUTING.md#swift-specific-guidelines))
 
 ## Project Structure
 
@@ -55,11 +40,3 @@ Tests/UDDFTests/
 └── Fixtures/            # Test fixtures
 ```
 
-## Swift-Specific Notes
-
-- Uses **XMLCoder** for XML encoding/decoding
-- Value types (structs) for models
-- Codable conformance for serialization
-- Leverage optionals for missing/optional fields
-- Use `try`/`throws` for error handling
-- Protocol-oriented design where appropriate

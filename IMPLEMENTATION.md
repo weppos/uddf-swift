@@ -1,5 +1,18 @@
 # UDDF Swift Implementation Notes
 
+## Parser vs Validator Philosophy
+
+- **Parser**: Permissive - parse whatever valid XML exists, don't enforce UDDF rules
+- **Validator**: Two modes
+  - Default (strictMode: false): Allow real-world deviations with warnings
+  - Strict (strictMode: true): Warnings become errors, full spec compliance
+
+Use `addWarning()` for recommended fields (like generator.name), `addError()` for truly required data.
+
+### Real-World First
+
+The library prioritizes working with actual dive computer exports over strict spec compliance. When real-world files don't conform to spec recommendations (not requirements), the library should handle them gracefully with warnings, not errors.
+
 ## Handling Enumerated Values in UDDF
 
 The UDDF specification defines many attributes with fixed, enumerated values (e.g., `divemode type="closedcircuit"`). This document describes the three approaches for implementing these in Swift and when to use each.
@@ -187,7 +200,7 @@ element.attribute = SomeElement.CommonValues.recommended1
 element.attribute = "my-custom-value"  // Also valid
 ```
 
-## Decision Tree
+### Decision Tree
 
 ```
 Does the UDDF spec define fixed enumerated values?
@@ -206,14 +219,16 @@ Does the UDDF spec define fixed enumerated values?
 
 #### Scenario 1: Parsing Unknown Values
 
-**Problem:** File from Shearwater contains `<divemode type="gauge" />` (gauge mode not in UDDF 3.2.1)
+**Problem:** File from Shearwater contains `<divemode type="gauge" />` (gauge mode not in UDDF 3.2.1))
 
 **Option 1 Result:**
+
 ```swift
 try UDDFSerialization.parse(data)  // ❌ Throws error, parsing fails
 ```
 
 **Option 2 Result:**
+
 ```swift
 let doc = try UDDFSerialization.parse(data)  // ✓ Succeeds
 let mode = waypoint.divemode?.type  // .unknown("gauge")
@@ -244,6 +259,7 @@ let mode = ModeType(rawValue: "gauge")  // ✓ Always succeeds
 #### Scenario 3: Logging Non-Standard Values
 
 **Option 2 Only:**
+
 ```swift
 func validateDive(_ dive: Dive) {
     for waypoint in dive.samples?.waypoint ?? [] {
@@ -262,11 +278,11 @@ func validateDive(_ dive: Dive) {
 
 #### Implemented with Option 2
 
-- **`DiveMode.ModeType`** - Dive breathing apparatus modes
+- **`DiveMode.ModeType`** - Dive breathing apparatus modes in [UDDF divemode element](https://www.streit.cc/extern/uddf_v321/en/divemode.html
   - Standard: `.apnoe`, `.closedCircuit`, `.openCircuit`, `.semiClosedCircuit`
   - Unknown: `.unknown(String)`
 
-- **`DecoStop.StopKind`** - Decompression stop types
+- **`DecoStop.StopKind`** - Decompression stop types in [UDDF waypoint element](https://www.streit.cc/extern/uddf_v321/en/waypoint.html)
   - Standard: `.mandatory`, `.safety`
   - Unknown: `.unknown(String)`
 
@@ -290,9 +306,3 @@ When adding support for a new UDDF element with enumerated values:
    - Unknown/non-standard values
    - String-to-enum conversion
    - Parsing resilience
-
-## References
-
-- [UDDF 3.2.1 Specification](https://www.streit.cc/extern/uddf_v321/en/)
-- [UDDF divemode element](https://www.streit.cc/extern/uddf_v321/en/divemode.html)
-- [UDDF waypoint element](https://www.streit.cc/extern/uddf_v321/en/waypoint.html)

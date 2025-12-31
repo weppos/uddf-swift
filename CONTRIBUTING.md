@@ -131,15 +131,19 @@ func testOceanicMissingGeneratorName() throws {
 
 ### Swift-Specific Guidelines
 
+- Uses **XMLCoder** for XML encoding/decoding
 - Use value types (struct) where appropriate
-- Leverage Swift's type system and optionals
+- Codable conformance for serialization
+- Leverage Swift's type system and optionals for missing/optional fields
+- Use `try`/`throws` for error handling
+- Protocol-oriented design where appropriate
 - Prefer immutability when possible
 - Use guard for early returns
-- Add `// MARK:` sections for organization
 
 ### Documentation
 
 - Add documentation comments (`///`) for public APIs
+- Add `// MARK:` sections for organization
 - Include code examples in documentation
 - Update README.md for user-facing changes
 - Keep inline comments minimal - prefer self-documenting code
