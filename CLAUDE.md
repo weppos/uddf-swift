@@ -8,6 +8,8 @@ UDDF Swift is a Swift library for parsing, validating, and writing Universal Div
 
 ## Key Documentation
 
+- **[README.md](README.md)** - Library overview, features, usage examples, and API reference
+- **[IMPLEMENTATION.md](IMPLEMENTATION.md)** - Implementation philosophy, design patterns, and technical decisions. **Update this file** when adding significant implementation caveats, design patterns, or architectural notes that future contributors should know.
 - **[CONTRIBUTING.md](CONTRIBUTING.md)** - Contribution guidelines, commit format, testing approach
 - **[UDDF Specification](https://www.streit.cc/extern/uddf_v321/en/)** - Official UDDF 3.2.1 specification
 - **[Swift API Design Guidelines](https://swift.org/documentation/api-design-guidelines/)** - Apple's Swift style guide
