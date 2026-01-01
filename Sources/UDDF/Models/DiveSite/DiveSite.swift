@@ -4,7 +4,7 @@ import XMLCoder
 /// Dive site information
 ///
 /// Contains location and environmental information about a dive site.
-public struct DiveSite: Codable, Equatable {
+public struct DiveSite: Codable, Equatable, Sendable {
     /// Unique identifier
     public var id: String?
 
@@ -61,7 +61,7 @@ extension DiveSite: DynamicNodeEncoding {
 }
 
 /// Geographic location information
-public struct Geography: Codable, Equatable {
+public struct Geography: Codable, Equatable, Sendable {
     /// Location description
     public var location: String?
 
@@ -88,7 +88,7 @@ public struct Geography: Codable, Equatable {
 }
 
 /// GPS coordinates
-public struct GPS: Codable, Equatable {
+public struct GPS: Codable, Equatable, Sendable {
     /// Latitude in decimal degrees
     public var latitude: Double?
 
@@ -102,7 +102,7 @@ public struct GPS: Codable, Equatable {
 }
 
 /// Site data and ratings
-public struct SiteData: Codable, Equatable {
+public struct SiteData: Codable, Equatable, Sendable {
     /// Difficulty rating
     public var difficulty: String?
 

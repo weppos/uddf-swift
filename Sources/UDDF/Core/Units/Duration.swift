@@ -4,7 +4,7 @@ import Foundation
 ///
 /// UDDF stores durations in seconds. This type provides convenient
 /// conversion to minutes and hours.
-public struct Duration: Codable, Equatable, Hashable {
+public struct Duration: Codable, Equatable, Hashable, Sendable {
     /// Duration in seconds (UDDF standard unit)
     public var seconds: Double
 

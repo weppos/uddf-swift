@@ -5,7 +5,7 @@ import XMLCoder
 ///
 /// Defines breathing gas mixtures used during dives, including air, nitrox,
 /// trimix, and other gas blends.
-public struct GasDefinitions: Codable, Equatable {
+public struct GasDefinitions: Codable, Equatable, Sendable {
     /// Individual gas mixtures
     public var mix: [Mix]?
 
@@ -18,7 +18,7 @@ public struct GasDefinitions: Codable, Equatable {
 ///
 /// Defines the composition of a breathing gas, typically oxygen, nitrogen,
 /// and helium percentages.
-public struct Mix: Codable, Equatable {
+public struct Mix: Codable, Equatable, Sendable {
     /// Unique identifier for this gas mix
     public var id: String?
 

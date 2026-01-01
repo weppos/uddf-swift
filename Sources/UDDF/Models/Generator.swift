@@ -4,7 +4,7 @@ import Foundation
 ///
 /// Every UDDF file must contain a generator section that identifies the
 /// application that created or last modified the file.
-public struct Generator: Codable, Equatable {
+public struct Generator: Codable, Equatable, Sendable {
     /// Name of the generating application
     ///
     /// Recommended but not strictly required. Missing names produce
@@ -49,7 +49,7 @@ public struct Generator: Codable, Equatable {
 }
 
 /// Manufacturer or developer information
-public struct ManufacturerInfo: Codable, Equatable {
+public struct ManufacturerInfo: Codable, Equatable, Sendable {
     /// Name of the manufacturer
     public var name: String
 
@@ -63,7 +63,7 @@ public struct ManufacturerInfo: Codable, Equatable {
 }
 
 /// Contact information
-public struct Contact: Codable, Equatable {
+public struct Contact: Codable, Equatable, Sendable {
     /// Website URL
     public var homepage: String?
 

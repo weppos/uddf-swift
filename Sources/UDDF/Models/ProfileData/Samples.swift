@@ -5,7 +5,7 @@ import XMLCoder
 ///
 /// Samples are waypoints recorded during the dive, typically at regular intervals.
 /// Each waypoint contains depth, time, and optionally temperature and other data.
-public struct Samples: Codable, Equatable {
+public struct Samples: Codable, Equatable, Sendable {
     /// Individual waypoints
     public var waypoint: [Waypoint]?
 
@@ -18,7 +18,7 @@ public struct Samples: Codable, Equatable {
 ///
 /// Represents a point in time during the dive with depth and other measurements.
 /// Fields are alphabetically ordered to match UDDF spec.
-public struct Waypoint: Codable, Equatable {
+public struct Waypoint: Codable, Equatable, Sendable {
     /// Alarm or warning at this waypoint
     public var alarm: String?
 
@@ -115,7 +115,7 @@ public struct Waypoint: Codable, Equatable {
 }
 
 /// Reference to a gas mix (for gas switches during dive)
-public struct SwitchMix: Codable, Equatable {
+public struct SwitchMix: Codable, Equatable, Sendable {
     /// Reference to a mix ID from gasdefinitions
     public var ref: String?
 
@@ -146,13 +146,13 @@ extension SwitchMix: DynamicNodeEncoding {
 /// Dive mode at a waypoint (open circuit, closed circuit, etc.)
 ///
 /// See: https://www.streit.cc/extern/uddf_v321/en/divemode.html
-public struct DiveMode: Codable, Equatable {
+public struct DiveMode: Codable, Equatable, Sendable {
     /// Type of dive mode
     ///
     /// Specifies the breathing apparatus mode used at this waypoint.
     /// Uses a hybrid enum to gracefully handle unknown values while providing
     /// type safety for standard UDDF values.
-    public enum ModeType: Equatable {
+    public enum ModeType: Equatable, Sendable {
         /// Freediving (breath-hold diving)
         case apnoe
 
@@ -246,13 +246,13 @@ extension DiveMode: DynamicNodeEncoding {
 /// Decompression stop information at a waypoint
 ///
 /// Represents a required or recommended decompression stop during ascent.
-public struct DecoStop: Codable, Equatable {
+public struct DecoStop: Codable, Equatable, Sendable {
     /// Kind of decompression stop
     ///
     /// Specifies whether the stop is mandatory (required for safety)
     /// or a safety stop (recommended but not required).
     /// Uses a hybrid enum to gracefully handle unknown values.
-    public enum StopKind: Equatable {
+    public enum StopKind: Equatable, Sendable {
         /// Mandatory decompression stop (required)
         case mandatory
 

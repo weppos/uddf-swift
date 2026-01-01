@@ -5,7 +5,7 @@ import XMLCoder
 ///
 /// This is the root element of a UDDF file. Every UDDF file must have a version
 /// attribute and a required generator section. All other sections are optional.
-public struct UDDFDocument: Codable, Equatable {
+public struct UDDFDocument: Codable, Equatable, Sendable {
     /// UDDF version number (e.g., "3.2.1")
     public var version: String
 

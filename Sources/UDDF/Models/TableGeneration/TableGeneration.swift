@@ -3,7 +3,7 @@ import Foundation
 /// Dive table generation parameters
 ///
 /// Parameters used to generate dive tables.
-public struct TableGeneration: Codable, Equatable {
+public struct TableGeneration: Codable, Equatable, Sendable {
     /// Link to decompression model
     public var link: Link?
 

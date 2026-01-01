@@ -4,7 +4,7 @@ import XMLCoder
 /// Manufacturer information
 ///
 /// Information about manufacturers of diving equipment and software.
-public struct Maker: Codable, Equatable {
+public struct Maker: Codable, Equatable, Sendable {
     /// Unique identifier
     public var id: String?
 

@@ -4,7 +4,7 @@ import XMLCoder
 /// Decompression model parameters
 ///
 /// Contains decompression algorithm settings and parameters.
-public struct DecoModel: Codable, Equatable {
+public struct DecoModel: Codable, Equatable, Sendable {
     /// Unique identifier
     public var id: String?
 
