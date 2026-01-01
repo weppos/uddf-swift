@@ -1,6 +1,6 @@
-# Claude Code Instructions
+# Agent Instructions
 
-Instructions for Claude Code when working on this project.
+Instructions for AI coding agents when working on this project.
 
 ## Project Overview
 
@@ -21,6 +21,7 @@ UDDF Swift is a Swift library for parsing, validating, and writing Universal Div
 - Use Conventional Commits format (see [CONTRIBUTING.md](CONTRIBUTING.md#commit-message-guidelines))
 - Follow Swift API Design Guidelines (see [CONTRIBUTING.md](CONTRIBUTING.md#code-style))
 - Use Swift's type system effectively (optionals, value types, etc.) (see [CONTRIBUTING.md](CONTRIBUTING.md#swift-specific-guidelines))
+- Do not include AI attribution in commit messages or code comments
 
 ## Project Structure
 

@@ -1,4 +1,4 @@
-# Tests
+# Agent Instructions for Tests
 
 ## Fixtures Organization
 
