@@ -4,7 +4,7 @@ import Foundation
 ///
 /// This section contains one or more repetition groups, which group dives
 /// that were performed in sequence (same day or dive trip).
-public struct ProfileData: Codable, Equatable {
+public struct ProfileData: Codable, Equatable, Sendable {
     /// One or more repetition groups
     public var repetitiongroup: [RepetitionGroup]?
 

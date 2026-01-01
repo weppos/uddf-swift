@@ -4,7 +4,7 @@ import XMLCoder
 /// Multi-dive trip information
 ///
 /// Contains information about a dive trip spanning multiple days or dives.
-public struct DiveTrip: Codable, Equatable {
+public struct DiveTrip: Codable, Equatable, Sendable {
     /// Unique identifier
     public var id: String?
 

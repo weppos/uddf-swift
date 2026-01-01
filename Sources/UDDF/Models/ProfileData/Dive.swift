@@ -5,7 +5,7 @@ import XMLCoder
 ///
 /// Contains information before, during, and after the dive, including
 /// samples (waypoints) recorded during the dive.
-public struct Dive: Codable, Equatable {
+public struct Dive: Codable, Equatable, Sendable {
     /// Unique identifier for this dive
     public var id: String?
 
@@ -56,7 +56,7 @@ extension Dive: DynamicNodeEncoding {
 }
 
 /// Information recorded before the dive
-public struct InformationBeforeDive: Codable, Equatable {
+public struct InformationBeforeDive: Codable, Equatable, Sendable {
     /// Date and time when the dive started
     public var datetime: Date?
 
@@ -83,7 +83,7 @@ public struct InformationBeforeDive: Codable, Equatable {
 }
 
 /// Information recorded after the dive
-public struct InformationAfterDive: Codable, Equatable {
+public struct InformationAfterDive: Codable, Equatable, Sendable {
     /// Lowest temperature during the dive
     public var lowesttemperature: Temperature?
 
@@ -115,7 +115,7 @@ public struct InformationAfterDive: Codable, Equatable {
 }
 
 /// Notes or comments (text content)
-public struct Notes: Codable, Equatable {
+public struct Notes: Codable, Equatable, Sendable {
     /// Link to related note/media
     public var link: Link?
 
@@ -129,7 +129,7 @@ public struct Notes: Codable, Equatable {
 }
 
 /// Reference link
-public struct Link: Codable, Equatable {
+public struct Link: Codable, Equatable, Sendable {
     /// Reference ID
     public var ref: String?
 

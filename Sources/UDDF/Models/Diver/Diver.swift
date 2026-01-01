@@ -5,7 +5,7 @@ import XMLCoder
 ///
 /// Contains information about divers, including the owner (primary diver),
 /// buddies, and dive instructors.
-public struct DiverData: Codable, Equatable {
+public struct DiverData: Codable, Equatable, Sendable {
     /// The primary diver (owner of the dive log)
     public var owner: [Owner]?
 
@@ -19,7 +19,7 @@ public struct DiverData: Codable, Equatable {
 }
 
 /// Primary diver (owner) information
-public struct Owner: Codable, Equatable {
+public struct Owner: Codable, Equatable, Sendable {
     /// Unique identifier
     public var id: String?
 
@@ -60,7 +60,7 @@ extension Owner: DynamicNodeEncoding {
 }
 
 /// Buddy (dive partner) information
-public struct Buddy: Codable, Equatable {
+public struct Buddy: Codable, Equatable, Sendable {
     /// Unique identifier
     public var id: String?
 
@@ -96,7 +96,7 @@ extension Buddy: DynamicNodeEncoding {
 }
 
 /// Personal information about a diver
-public struct Personal: Codable, Equatable {
+public struct Personal: Codable, Equatable, Sendable {
     /// First name
     public var firstname: String?
 
@@ -133,7 +133,7 @@ public struct Personal: Codable, Equatable {
 }
 
 /// Equipment used by a diver
-public struct Equipment: Codable, Equatable {
+public struct Equipment: Codable, Equatable, Sendable {
     /// Buoyancy control device
     public var bc: String?
 

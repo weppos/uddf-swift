@@ -9,7 +9,7 @@ on:
 
 jobs:
   test-macos:
-    name: Test (macOS)
+    name: Test (macOS, Swift 6)
     runs-on: macos-latest
 
     steps:
@@ -26,10 +26,13 @@ jobs:
         run: swift test
 
   test-linux:
-    name: Test (Linux)
+    name: Test (Linux, Swift ${{ matrix.swift }})
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        swift: ['5.9', '6.0']
     container:
-      image: swift:5.9
+      image: swift:${{ matrix.swift }}
 
     steps:
       - name: Checkout code

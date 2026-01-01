@@ -5,7 +5,7 @@ import Foundation
 /// UDDF stores pressure in pascals in the XML format, but this type stores
 /// values internally in bar for convenience and provides automatic conversion
 /// to PSI, pascals, and other common pressure units.
-public struct Pressure: Codable, Equatable, Hashable {
+public struct Pressure: Codable, Equatable, Hashable, Sendable {
     /// Pressure in bar (UDDF standard unit)
     public var bar: Double
 

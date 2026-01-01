@@ -5,7 +5,7 @@ import XMLCoder
 ///
 /// Dives within a repetition group are related (e.g., performed on the same
 /// day or as part of the same dive trip) and may affect decompression calculations.
-public struct RepetitionGroup: Codable, Equatable {
+public struct RepetitionGroup: Codable, Equatable, Sendable {
     /// Unique identifier for this repetition group
     public var id: String?
 

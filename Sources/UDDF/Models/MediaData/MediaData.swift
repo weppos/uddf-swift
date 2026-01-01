@@ -4,7 +4,7 @@ import XMLCoder
 /// Multimedia data (images, audio, video)
 ///
 /// Contains references to multimedia files associated with dives.
-public struct MediaData: Codable, Equatable {
+public struct MediaData: Codable, Equatable, Sendable {
     /// Image files
     public var image: [ImageMedia]?
 
@@ -22,7 +22,7 @@ public struct MediaData: Codable, Equatable {
 }
 
 /// Image file reference
-public struct ImageMedia: Codable, Equatable {
+public struct ImageMedia: Codable, Equatable, Sendable {
     /// Unique identifier
     public var id: String?
 
@@ -63,7 +63,7 @@ extension ImageMedia: DynamicNodeEncoding {
 }
 
 /// Audio file reference
-public struct AudioMedia: Codable, Equatable {
+public struct AudioMedia: Codable, Equatable, Sendable {
     /// Unique identifier
     public var id: String?
 
@@ -104,7 +104,7 @@ extension AudioMedia: DynamicNodeEncoding {
 }
 
 /// Video file reference
-public struct VideoMedia: Codable, Equatable {
+public struct VideoMedia: Codable, Equatable, Sendable {
     /// Unique identifier
     public var id: String?
 

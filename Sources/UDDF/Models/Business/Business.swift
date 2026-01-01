@@ -4,7 +4,7 @@ import XMLCoder
 /// Business entities (dive shops, training organizations)
 ///
 /// Information about commercial diving businesses.
-public struct Business: Codable, Equatable {
+public struct Business: Codable, Equatable, Sendable {
     /// Unique identifier
     public var id: String?
 
