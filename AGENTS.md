@@ -2,6 +2,13 @@
 
 Instructions for AI coding agents when working on this project.
 
+## Agent Organization
+
+When creating agent instruction files:
+
+- The main file should always be named `AGENTS.md`
+- Create a `CLAUDE.md` symlink pointing to `AGENTS.md` for compatibility with Claude Code
+
 ## Project Overview
 
 UDDF Swift is a Swift library for parsing, validating, and writing Universal Dive Data Format (UDDF) files. The library handles both spec-compliant files and real-world dive computer exports that may deviate from the specification.
