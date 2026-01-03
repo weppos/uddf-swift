@@ -15,7 +15,7 @@ Thank you for your interest in contributing to UDDF Swift!
 
 ## Commit Message Guidelines
 
-**This project uses [Conventional Commits](https://www.conventionalcommits.org/) format.**
+We follow the [Conventional Commits](https://www.conventionalcommits.org/) specification for commit messages.
 
 ### Format
 
@@ -26,6 +26,8 @@ Thank you for your interest in contributing to UDDF Swift!
 
 <footer>
 ```
+
+Use lowercase for `<type>`. Capitalize the first letter of `<subject>` (sentence-style). See examples below.
 
 ### Type
 
