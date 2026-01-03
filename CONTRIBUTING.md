@@ -54,13 +54,13 @@ Use lowercase for `<type>`. Capitalize the first letter of `<subject>` (sentence
 ### Examples
 
 ```bash
-feat(parser): add support for UDDF 3.3.0 format
+feat(parser): Add support for UDDF 3.3.0 format
 
-fix(validation): allow missing generator names in real-world files
+fix(validation): Allow missing generator names in real-world files
 
 docs: update API examples in README
 
-refactor(core): simplify depth unit conversions
+refactor(core): Simplify depth unit conversions
 ```
 
 ### Breaking Changes
@@ -68,7 +68,7 @@ refactor(core): simplify depth unit conversions
 Add `BREAKING CHANGE:` in the footer:
 
 ```
-feat(validation): change validation return type
+feat(validation): Change validation return type
 
 BREAKING CHANGE: ValidationResult now uses Set instead of Array.
 Update code accessing result.errors accordingly.
