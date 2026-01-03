@@ -13,7 +13,7 @@ public struct Salinity: Codable, Equatable, Sendable {
 
     public init(type: WaterType, density: Double? = nil) {
         self.type = type
-        self.density = density
+        self._density = Attribute(density)
     }
 
     enum CodingKeys: String, CodingKey {
@@ -37,10 +37,11 @@ public enum WaterType: Equatable, Sendable {
     }
 
     public init(rawValue: String) {
-        switch rawValue.lowercased() {
+        let trimmed = rawValue.trimmingCharacters(in: .whitespacesAndNewlines)
+        switch trimmed.lowercased() {
         case "fresh": self = .fresh
         case "salt": self = .salt
-        default: self = .unknown(rawValue)
+        default: self = .unknown(trimmed)
         }
     }
 }
