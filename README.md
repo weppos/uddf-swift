@@ -299,7 +299,7 @@ https://www.streit.cc/extern/uddf_v321/en/index.html
 
 ## License
 
-MIT License
+MIT License. See `LICENSE.txt`.
 
 ## Contributing
 
