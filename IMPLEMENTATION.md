@@ -13,6 +13,16 @@ Use `addWarning()` for recommended fields (like generator.name), `addError()` fo
 
 The library prioritizes working with actual dive computer exports over strict spec compliance. When real-world files don't conform to spec recommendations (not requirements), the library should handle them gracefully with warnings, not errors.
 
+## UDDF Extensions
+
+Some dive computer exporters include fields that are not part of the UDDF 3.2.1 specification. We support a limited set of these extensions when they are widely used in practice.
+
+- **Salinity (`<salinity>`)**: Stored under `<informationbeforedive>` as `<salinity density="...">fresh|salt</salinity>`. This is an extension based on libdivecomputer's de-facto UDDF export behavior. Treat it as optional and preserve it on round-trip.
+
+    ```xml
+    <salinity density="1025.0">salt</salinity>
+    ```
+
 ## Handling Enumerated Values in UDDF
 
 The UDDF specification defines many attributes with fixed, enumerated values (e.g., `divemode type="closedcircuit"`). This document describes the three approaches for implementing these in Swift and when to use each.

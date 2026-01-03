@@ -12,7 +12,14 @@ UDDF is an XML-based format for dive data exchange between applications and dive
 - **Writing support**: Generate valid UDDF files from Swift models
 - **Error handling**: Comprehensive error types with clear messages
 - **Round-trip fidelity**: Parse → write → parse produces identical results
+- **Real-world extensions**: Supports common non-standard fields
 - **iOS and macOS support**: Works on iOS 15+ and macOS 12+
+
+## UDDF Extensions
+
+UDDF Swift supports a small number of non-standard tags that appear in real-world exports. These are treated as optional extensions and clearly labeled as such.
+
+- **`<salinity>`**: A libdivecomputer de-facto standard used by some dive computers.
 
 ## Installation
 

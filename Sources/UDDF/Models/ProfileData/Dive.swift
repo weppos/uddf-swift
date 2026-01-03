@@ -63,6 +63,11 @@ public struct InformationBeforeDive: Codable, Equatable, Sendable {
     /// Air temperature at surface
     public var airtemperature: Temperature?
 
+    /// Water salinity (fresh/salt) for the dive site.
+    ///
+    /// EXTENSION: libdivecomputer export
+    public var salinity: Salinity?
+
     /// Reference to dive site
     public var divenumber: Int?
 
@@ -72,11 +77,13 @@ public struct InformationBeforeDive: Codable, Equatable, Sendable {
     public init(
         datetime: Date? = nil,
         airtemperature: Temperature? = nil,
+        salinity: Salinity? = nil,
         divenumber: Int? = nil,
         notes: Notes? = nil
     ) {
         self.datetime = datetime
         self.airtemperature = airtemperature
+        self.salinity = salinity
         self.divenumber = divenumber
         self.notes = notes
     }

@@ -190,6 +190,40 @@ final class ProfileDataTests: XCTestCase {
         XCTAssertEqual(waypoint9?.gradientfactor, 52)
     }
 
+    func testParseExtensionSalinity() throws {
+        let xml = """
+        <?xml version="1.0" encoding="UTF-8"?>
+        <uddf version="3.2.1">
+            <generator>
+                <name>TestApp</name>
+            </generator>
+            <profiledata>
+                <repetitiongroup>
+                    <dive>
+                        <informationbeforedive>
+                            <salinity density="1025.0">salt</salinity>
+                        </informationbeforedive>
+                    </dive>
+                </repetitiongroup>
+            </profiledata>
+        </uddf>
+        """
+
+        let data = xml.data(using: .utf8)!
+        let document = try UDDFSerialization.parse(data)
+
+        let salinity = document.profiledata?.repetitiongroup?.first?.dive?.first?.informationbeforedive?.salinity
+        XCTAssertNotNil(salinity)
+        XCTAssertEqual(salinity?.type, .salt)
+        XCTAssertEqual(salinity?.density, 1025.0)
+
+        let roundTrip = try UDDFSerialization.write(document)
+        let reparsed = try UDDFSerialization.parse(roundTrip)
+        let roundTripSalinity = reparsed.profiledata?.repetitiongroup?.first?.dive?.first?.informationbeforedive?.salinity
+        XCTAssertEqual(roundTripSalinity?.type, .salt)
+        XCTAssertEqual(roundTripSalinity?.density, 1025.0)
+    }
+
     func testEnumUnknownValues() throws {
         // Test that unknown enum values are parsed gracefully
         let xml = """
