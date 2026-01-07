@@ -2,6 +2,9 @@
 
 A comprehensive Swift library for parsing and writing UDDF (Universal Dive Data Format) v3.2.1 files.
 
+> [!WARNING]
+> This library is a development preview and the API can still change. The builder API is experimental.
+
 ## Overview
 
 UDDF is an XML-based format for dive data exchange between applications and dive computers. This library provides type-safe parsing and writing capabilities with a clean, modern Swift API.
