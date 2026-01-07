@@ -15,19 +15,17 @@ Thank you for your interest in contributing to UDDF Swift!
 
 ## Commit Message Guidelines
 
-We follow the [Conventional Commits](https://www.conventionalcommits.org/) specification for commit messages.
+We follow the [Conventional Commits](https://www.conventionalcommits.org/) specification for commit messages, with a capitalized description. Use the project-specific conventions below.
 
 ### Format
 
 ```
-<type>(<scope>): <subject>
+<type>(<scope>): <description>
 
-<body>
+[optional body]
 
-<footer>
+[optional footer(s)]
 ```
-
-Use lowercase for `<type>`. Capitalize the first letter of `<subject>` (sentence-style). See examples below.
 
 ### Type
 
