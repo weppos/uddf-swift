@@ -9,21 +9,27 @@ This document describes the steps to release a new version of UDDF Swift.
 
 ## Release process
 
-1. **Determine the new version**
+1. **Determine the new version** using [Semantic Versioning](https://semver.org/)
 
    ```shell
    VERSION=0.X.0
    ```
 
+   - **MAJOR** version for incompatible API changes
+   - **MINOR** version for backwards-compatible functionality additions
+   - **PATCH** version for backwards-compatible bug fixes
+
 2. **Update CHANGELOG.md**
 
-   Move changes from `Unreleased` to a new release section:
+   Move changes from `Unreleased` to a new release section following the [Common Changelog](https://common-changelog.org/) format (see [CONTRIBUTING.md](CONTRIBUTING.md) for details):
 
    ```markdown
-   ## [X.X.X] - YYYY-MM-DD
-   ```
+   ## X.Y.Z - YYYY-MM-DD
 
-   Add entries following Common Changelog format.
+   ### Changed
+
+   - Description of changes
+   ```
 
 3. **Run tests** and confirm they pass
 
@@ -41,13 +47,13 @@ This document describes the steps to release a new version of UDDF Swift.
 
    ```shell
    git add .
-   git commit -m "Description of changes"
+   git commit -m "Release $VERSION"
    ```
 
 6. **Create a tag**
 
    ```shell
-   git tag v$VERSION
+   git tag -a v$VERSION -s -m "Release $VERSION"
    ```
 
 7. **Push the changes and tag**
