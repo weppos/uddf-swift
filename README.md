@@ -300,10 +300,14 @@ This library implements the UDDF v3.2.1 specification:
 
 https://www.streit.cc/extern/uddf_v321/en/index.html
 
-## License
-
-MIT License. See `LICENSE.txt`.
-
 ## Contributing
 
-Contributions are welcome! Please feel free to submit issues and pull requests.
+Contributions are welcome! Please feel free to submit issues and pull requests. See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for details.
+
+## License
+
+[MIT License](LICENSE.txt)
