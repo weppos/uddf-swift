@@ -19,7 +19,7 @@ We follow the [Conventional Commits](https://www.conventionalcommits.org/) speci
 
 ### Format
 
-```
+```text
 <type>(<scope>): <description>
 
 [optional body]
@@ -51,7 +51,7 @@ We follow the [Conventional Commits](https://www.conventionalcommits.org/) speci
 
 ### Examples
 
-```bash
+```text
 feat(parser): Add support for UDDF 3.3.0 format
 
 fix(validation): Allow missing generator names in real-world files
@@ -65,7 +65,7 @@ refactor(core): Simplify depth unit conversions
 
 Add `BREAKING CHANGE:` in the footer:
 
-```
+```text
 feat(validation): Change validation return type
 
 BREAKING CHANGE: ValidationResult now uses Set instead of Array.
