@@ -242,4 +242,209 @@ final class ProfileDataTests: XCTestCase {
         XCTAssertEqual(kind2.rawValue, "deep")
         XCTAssertEqual(kind2.isStandard, false)
     }
+
+    // MARK: - EquipmentUsed Tests
+
+    func testParseEquipmentUsed() throws {
+        let xml = """
+        <?xml version="1.0" encoding="UTF-8"?>
+        <uddf version="3.2.1">
+            <generator>
+                <name>TestApp</name>
+            </generator>
+            <gasdefinitions>
+                <mix id="mix1">
+                    <name>Air</name>
+                    <o2>0.21</o2>
+                </mix>
+                <mix id="mix2">
+                    <name>EAN32</name>
+                    <o2>0.32</o2>
+                </mix>
+            </gasdefinitions>
+            <profiledata>
+                <repetitiongroup>
+                    <dive id="dive1">
+                        <informationbeforedive>
+                            <datetime>2025-01-15T14:00:00Z</datetime>
+                        </informationbeforedive>
+                        <equipmentused>
+                            <leadquantity>4.0</leadquantity>
+                            <tankdata>
+                                <link ref="mix1" />
+                                <tankvolume>0.012</tankvolume>
+                                <tankpressurebegin>20000000.0</tankpressurebegin>
+                                <tankpressureend>5000000.0</tankpressureend>
+                            </tankdata>
+                            <tankdata>
+                                <link ref="mix2" />
+                                <tankvolume>0.007</tankvolume>
+                                <tankpressurebegin>20000000.0</tankpressurebegin>
+                                <tankpressureend>15000000.0</tankpressureend>
+                            </tankdata>
+                        </equipmentused>
+                        <informationafterdive>
+                            <greatestdepth>30.0</greatestdepth>
+                        </informationafterdive>
+                    </dive>
+                </repetitiongroup>
+            </profiledata>
+        </uddf>
+        """
+
+        let data = xml.data(using: .utf8)!
+        let document = try UDDFSerialization.parse(data)
+
+        let dive = document.profiledata?.repetitiongroup?.first?.dive?.first
+        XCTAssertNotNil(dive)
+
+        let equipmentUsed = dive?.equipmentused
+        XCTAssertNotNil(equipmentUsed)
+        XCTAssertEqual(equipmentUsed?.leadquantity, 4.0)
+
+        let tankData = equipmentUsed?.tankdata
+        XCTAssertNotNil(tankData)
+        XCTAssertEqual(tankData?.count, 2)
+
+        // First tank (Air)
+        let tank1 = tankData?[0]
+        XCTAssertEqual(tank1?.link?.ref, "mix1")
+        XCTAssertEqual(tank1?.tankvolume?.liters ?? 0, 12.0, accuracy: 0.01)
+        XCTAssertEqual(tank1?.tankpressurebegin?.bar ?? 0, 200.0, accuracy: 0.01)
+        XCTAssertEqual(tank1?.tankpressureend?.bar ?? 0, 50.0, accuracy: 0.01)
+
+        // Second tank (EAN32)
+        let tank2 = tankData?[1]
+        XCTAssertEqual(tank2?.link?.ref, "mix2")
+        XCTAssertEqual(tank2?.tankvolume?.liters ?? 0, 7.0, accuracy: 0.01)
+        XCTAssertEqual(tank2?.tankpressurebegin?.bar ?? 0, 200.0, accuracy: 0.01)
+        XCTAssertEqual(tank2?.tankpressureend?.bar ?? 0, 150.0, accuracy: 0.01)
+    }
+
+    func testRoundTripEquipmentUsed() throws {
+        // Create a document with equipment used
+        let generator = Generator(name: "TestApp")
+        let gasDefs = GasDefinitions(mix: [
+            Mix(id: "mix1", name: "Air", o2: 0.21),
+            Mix(id: "mix2", name: "EAN32", o2: 0.32)
+        ])
+
+        let equipmentUsed = EquipmentUsed(
+            leadquantity: 3.5,
+            tankdata: [
+                TankData(
+                    link: Link(ref: "mix1"),
+                    tankvolume: 12.0,
+                    tankpressurebegin: Pressure(bar: 200),
+                    tankpressureend: Pressure(bar: 60)
+                ),
+                TankData(
+                    link: Link(ref: "mix2"),
+                    tankvolume: 11.0,
+                    tankpressurebegin: Pressure(bar: 200),
+                    tankpressureend: Pressure(bar: 180)
+                )
+            ]
+        )
+
+        let dive = Dive(
+            id: "dive1",
+            informationbeforedive: InformationBeforeDive(datetime: Date()),
+            equipmentused: equipmentUsed,
+            informationafterdive: InformationAfterDive(greatestdepth: Depth(meters: 25))
+        )
+
+        let repetitionGroup = RepetitionGroup(dive: [dive])
+        let profileData = ProfileData(repetitiongroup: [repetitionGroup])
+
+        var document = UDDFDocument(version: "3.2.1", generator: generator)
+        document.gasdefinitions = gasDefs
+        document.profiledata = profileData
+
+        // Write and parse back
+        let xmlData = try UDDFSerialization.write(document, prettyPrinted: true)
+        let reparsed = try UDDFSerialization.parse(xmlData)
+
+        // Verify round-trip
+        let reparsedDive = reparsed.profiledata?.repetitiongroup?.first?.dive?.first
+        XCTAssertNotNil(reparsedDive?.equipmentused)
+        XCTAssertEqual(reparsedDive?.equipmentused?.leadquantity, 3.5)
+        XCTAssertEqual(reparsedDive?.equipmentused?.tankdata?.count, 2)
+
+        let reparsedTank1 = reparsedDive?.equipmentused?.tankdata?[0]
+        XCTAssertEqual(reparsedTank1?.link?.ref, "mix1")
+        XCTAssertEqual(reparsedTank1?.tankvolume, 12.0)
+        XCTAssertEqual(reparsedTank1?.tankpressurebegin?.bar ?? 0, 200.0, accuracy: 0.01)
+        XCTAssertEqual(reparsedTank1?.tankpressureend?.bar ?? 0, 60.0, accuracy: 0.01)
+
+        let reparsedTank2 = reparsedDive?.equipmentused?.tankdata?[1]
+        XCTAssertEqual(reparsedTank2?.link?.ref, "mix2")
+    }
+
+    func testEquipmentUsedWithOnlyLeadQuantity() throws {
+        let xml = """
+        <?xml version="1.0" encoding="UTF-8"?>
+        <uddf version="3.2.1">
+            <generator>
+                <name>TestApp</name>
+            </generator>
+            <profiledata>
+                <repetitiongroup>
+                    <dive>
+                        <equipmentused>
+                            <leadquantity>2.5</leadquantity>
+                        </equipmentused>
+                    </dive>
+                </repetitiongroup>
+            </profiledata>
+        </uddf>
+        """
+
+        let data = xml.data(using: .utf8)!
+        let document = try UDDFSerialization.parse(data)
+
+        let equipmentUsed = document.profiledata?.repetitiongroup?.first?.dive?.first?.equipmentused
+        XCTAssertNotNil(equipmentUsed)
+        XCTAssertEqual(equipmentUsed?.leadquantity, 2.5)
+        XCTAssertNil(equipmentUsed?.tankdata)
+    }
+
+    func testEquipmentUsedWithOnlyTankData() throws {
+        let xml = """
+        <?xml version="1.0" encoding="UTF-8"?>
+        <uddf version="3.2.1">
+            <generator>
+                <name>TestApp</name>
+            </generator>
+            <gasdefinitions>
+                <mix id="air">
+                    <name>Air</name>
+                    <o2>0.21</o2>
+                </mix>
+            </gasdefinitions>
+            <profiledata>
+                <repetitiongroup>
+                    <dive>
+                        <equipmentused>
+                            <tankdata>
+                                <link ref="air" />
+                                <tankvolume>15.0</tankvolume>
+                            </tankdata>
+                        </equipmentused>
+                    </dive>
+                </repetitiongroup>
+            </profiledata>
+        </uddf>
+        """
+
+        let data = xml.data(using: .utf8)!
+        let document = try UDDFSerialization.parse(data)
+
+        let equipmentUsed = document.profiledata?.repetitiongroup?.first?.dive?.first?.equipmentused
+        XCTAssertNotNil(equipmentUsed)
+        XCTAssertNil(equipmentUsed?.leadquantity)
+        XCTAssertEqual(equipmentUsed?.tankdata?.count, 1)
+        XCTAssertEqual(equipmentUsed?.tankdata?.first?.link?.ref, "air")
+        XCTAssertEqual(equipmentUsed?.tankdata?.first?.tankvolume, 15.0)
+    }
 }

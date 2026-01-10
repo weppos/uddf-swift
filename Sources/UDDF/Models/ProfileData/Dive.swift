@@ -12,29 +12,35 @@ public struct Dive: Codable, Equatable, Sendable {
     /// Information recorded before the dive started
     public var informationbeforedive: InformationBeforeDive?
 
-    /// Information recorded after the dive ended
-    public var informationafterdive: InformationAfterDive?
+    /// Equipment used during this dive (tanks, weights, etc.)
+    public var equipmentused: EquipmentUsed?
 
     /// Dive profile samples (waypoints)
     public var samples: Samples?
 
+    /// Information recorded after the dive ended
+    public var informationafterdive: InformationAfterDive?
+
     public init(
         id: String? = nil,
         informationbeforedive: InformationBeforeDive? = nil,
-        informationafterdive: InformationAfterDive? = nil,
-        samples: Samples? = nil
+        equipmentused: EquipmentUsed? = nil,
+        samples: Samples? = nil,
+        informationafterdive: InformationAfterDive? = nil
     ) {
         self.id = id
         self.informationbeforedive = informationbeforedive
-        self.informationafterdive = informationafterdive
+        self.equipmentused = equipmentused
         self.samples = samples
+        self.informationafterdive = informationafterdive
     }
 
     enum CodingKeys: String, CodingKey {
         case id
         case informationbeforedive
-        case informationafterdive
+        case equipmentused
         case samples
+        case informationafterdive
     }
 }
 
