@@ -334,13 +334,13 @@ final class ProfileDataTests: XCTestCase {
             tankdata: [
                 TankData(
                     link: Link(ref: "mix1"),
-                    tankvolume: 12.0,
+                    tankvolume: Volume(liters: 12.0),
                     tankpressurebegin: Pressure(bar: 200),
                     tankpressureend: Pressure(bar: 60)
                 ),
                 TankData(
                     link: Link(ref: "mix2"),
-                    tankvolume: 11.0,
+                    tankvolume: Volume(liters: 11.0),
                     tankpressurebegin: Pressure(bar: 200),
                     tankpressureend: Pressure(bar: 180)
                 )
@@ -373,12 +373,13 @@ final class ProfileDataTests: XCTestCase {
 
         let reparsedTank1 = reparsedDive?.equipmentused?.tankdata?[0]
         XCTAssertEqual(reparsedTank1?.link?.ref, "mix1")
-        XCTAssertEqual(reparsedTank1?.tankvolume, 12.0)
+        XCTAssertEqual(reparsedTank1?.tankvolume?.liters ?? 0, 12.0, accuracy: 0.01)
         XCTAssertEqual(reparsedTank1?.tankpressurebegin?.bar ?? 0, 200.0, accuracy: 0.01)
         XCTAssertEqual(reparsedTank1?.tankpressureend?.bar ?? 0, 60.0, accuracy: 0.01)
 
         let reparsedTank2 = reparsedDive?.equipmentused?.tankdata?[1]
         XCTAssertEqual(reparsedTank2?.link?.ref, "mix2")
+        XCTAssertEqual(reparsedTank2?.tankvolume?.liters ?? 0, 11.0, accuracy: 0.01)
     }
 
     func testEquipmentUsedWithOnlyLeadQuantity() throws {
@@ -428,7 +429,7 @@ final class ProfileDataTests: XCTestCase {
                         <equipmentused>
                             <tankdata>
                                 <link ref="air" />
-                                <tankvolume>15.0</tankvolume>
+                                <tankvolume>0.015</tankvolume>
                             </tankdata>
                         </equipmentused>
                     </dive>
@@ -445,6 +446,6 @@ final class ProfileDataTests: XCTestCase {
         XCTAssertNil(equipmentUsed?.leadquantity)
         XCTAssertEqual(equipmentUsed?.tankdata?.count, 1)
         XCTAssertEqual(equipmentUsed?.tankdata?.first?.link?.ref, "air")
-        XCTAssertEqual(equipmentUsed?.tankdata?.first?.tankvolume, 15.0)
+        XCTAssertEqual(equipmentUsed?.tankdata?.first?.tankvolume?.liters ?? 0, 15.0, accuracy: 0.01)
     }
 }

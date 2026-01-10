@@ -75,6 +75,47 @@ final class UnitTests: XCTestCase {
         XCTAssertEqual(duration.seconds, 5400.0)
     }
 
+    // MARK: - Volume Tests
+
+    func testVolumeConversion() {
+        let volume = Volume(liters: 12)
+        XCTAssertEqual(volume.liters, 12.0, accuracy: 0.01)
+        XCTAssertEqual(volume.cubicMeters, 0.012, accuracy: 0.0001)
+        XCTAssertEqual(volume.cubicFeet, 0.4238, accuracy: 0.001)
+    }
+
+    func testVolumeFromCubicMeters() {
+        let volume = Volume(cubicMeters: 0.012)
+        XCTAssertEqual(volume.cubicMeters, 0.012, accuracy: 0.0001)
+        XCTAssertEqual(volume.liters, 12.0, accuracy: 0.01)
+    }
+
+    func testVolumeFromCubicFeet() {
+        let volume = Volume(cubicFeet: 80)
+        XCTAssertEqual(volume.cubicFeet, 80.0, accuracy: 0.01)
+        XCTAssertEqual(volume.liters, 2265.35, accuracy: 0.1)
+    }
+
+    func testVolumeComparable() {
+        let small = Volume(liters: 7)
+        let large = Volume(liters: 12)
+        XCTAssertTrue(small < large)
+        XCTAssertFalse(large < small)
+    }
+
+    func testVolumeCodable() throws {
+        // Volume encodes as cubic meters (SI unit)
+        let volume = Volume(liters: 12)
+        let encoder = JSONEncoder()
+        let decoder = JSONDecoder()
+
+        let data = try encoder.encode(volume)
+        let decoded = try decoder.decode(Volume.self, from: data)
+
+        XCTAssertEqual(decoded.cubicMeters, volume.cubicMeters, accuracy: 0.0001)
+        XCTAssertEqual(decoded.liters, 12.0, accuracy: 0.01)
+    }
+
     // MARK: - Codable Tests
 
     func testDepthCodable() throws {

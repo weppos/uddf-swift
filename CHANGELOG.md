@@ -8,6 +8,12 @@ All notable changes to this project will be documented in this file.
 
 - Add `EquipmentUsed` and `TankData` models for dive-specific equipment
 - Add `equipmentused` property to `Dive` struct for gas mix references per dive
+- Add `Volume` unit type with SI unit (m³) and conversions to liters and cubic feet
+
+### Changed
+
+- `TankData.tankvolume` now uses `Volume` type instead of `Double` (breaking change)
+- Standardize unit documentation with `- Unit:` tags across all models
 
 ## 0.1.0 - 2026-01-07
 
