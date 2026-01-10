@@ -14,22 +14,83 @@ public struct GasDefinitions: Codable, Equatable, Sendable {
     }
 }
 
-/// Gas usage type (libdivecomputer extension)
+/// Gas usage type
 ///
-/// Specifies the intended use of a gas mix in closed-circuit or sidemount diving.
+/// Specifies the intended use of a gas mix in diving configurations.
 ///
-/// - Note: This is a libdivecomputer de-facto extension, not part of the official UDDF specification.
-///
-/// - SeeAlso: https://github.com/libdivecomputer/libdivecomputer
-public enum GasUsage: String, Codable, Equatable, Sendable {
-    /// Oxygen for CCR bailout or deco
-    case oxygen
+/// - Note: EXTENSION libdivecomputer export
+public enum GasUsage: Equatable, Sendable {
+    /// Bottom/back gas
+    case bottom
+
+    /// Decompression gas
+    case deco
+
+    /// Sidemount configuration
+    case sidemount
+
+    /// Bailout gas
+    case bailout
 
     /// Diluent gas for CCR
     case diluent
 
-    /// Sidemount configuration
-    case sidemount
+    /// Oxygen for CCR or deco
+    case oxygen
+
+    /// Non-standard or unknown usage type
+    case unknown(String)
+
+    /// The raw string value for this usage type
+    public var rawValue: String {
+        switch self {
+        case .bottom: return "bottom"
+        case .deco: return "deco"
+        case .sidemount: return "sidemount"
+        case .bailout: return "bailout"
+        case .diluent: return "diluent"
+        case .oxygen: return "oxygen"
+        case .unknown(let value): return value
+        }
+    }
+
+    /// Initialize from a raw string value
+    ///
+    /// Standard values map to known cases, all others to `.unknown(String)`
+    public init(rawValue: String) {
+        switch rawValue {
+        case "bottom": self = .bottom
+        case "deco": self = .deco
+        case "sidemount": self = .sidemount
+        case "bailout": self = .bailout
+        case "diluent": self = .diluent
+        case "oxygen": self = .oxygen
+        default: self = .unknown(rawValue)
+        }
+    }
+
+    /// Returns true if this is a standard libdivecomputer usage type
+    public var isStandard: Bool {
+        if case .unknown = self {
+            return false
+        }
+        return true
+    }
+}
+
+// MARK: - GasUsage Codable
+
+extension GasUsage: Codable {
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        let value = try container.decode(String.self)
+        self.init(rawValue: value)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode(rawValue)
+    }
 }
 
 /// A gas mixture (breathing gas)
@@ -70,7 +131,7 @@ public struct Mix: Codable, Equatable, Sendable {
 
     /// Gas usage type (libdivecomputer extension)
     ///
-    /// Specifies the intended use of this gas mix (oxygen, diluent, sidemount).
+    /// Specifies the intended use of this gas mix (oxygen, diluent, sidemount, etc.).
     ///
     /// - Note: This is a libdivecomputer de-facto extension, not part of the official UDDF specification.
     public var usage: GasUsage?

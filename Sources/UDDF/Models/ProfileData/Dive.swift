@@ -71,7 +71,7 @@ public struct InformationBeforeDive: Codable, Equatable, Sendable {
 
     /// Water salinity (fresh/salt) for the dive site.
     ///
-    /// EXTENSION: libdivecomputer export
+    /// - Note: EXTENSION libdivecomputer export
     public var salinity: Salinity?
 
     /// Reference to dive site
