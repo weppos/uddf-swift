@@ -334,15 +334,15 @@ final class ProfileDataTests: XCTestCase {
             tankdata: [
                 TankData(
                     link: Link(ref: "mix1"),
-                    tankvolume: Volume(liters: 12.0),
                     tankpressurebegin: Pressure(bar: 200),
-                    tankpressureend: Pressure(bar: 60)
+                    tankpressureend: Pressure(bar: 60),
+                    tankvolume: Volume(liters: 12.0)
                 ),
                 TankData(
                     link: Link(ref: "mix2"),
-                    tankvolume: Volume(liters: 11.0),
                     tankpressurebegin: Pressure(bar: 200),
-                    tankpressureend: Pressure(bar: 180)
+                    tankpressureend: Pressure(bar: 180),
+                    tankvolume: Volume(liters: 11.0)
                 )
             ]
         )

@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
 - Add `EquipmentUsed` and `TankData` models for dive-specific equipment
 - Add `equipmentused` property to `Dive` struct for gas mix references per dive
 - Add `Volume` unit type with SI unit (m³) and conversions to liters and cubic feet
+- Add `TankData.id` attribute and `TankData.breathingconsumptionvolume` element per UDDF spec
 
 ### Changed
 
