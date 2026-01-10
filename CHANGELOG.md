@@ -13,6 +13,7 @@ All notable changes to this project will be documented in this file.
 ### Changed
 
 - `TankData.tankvolume` now uses `Volume` type instead of `Double` (breaking change)
+- `Pressure` now stores internally in pascals (SI unit) instead of bar (breaking change)
 - Standardize unit documentation with `- Unit:` tags across all models
 
 ## 0.1.0 - 2026-01-07
