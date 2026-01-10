@@ -19,8 +19,8 @@ class UDDFWriter {
         // Encode data as base64
         encoder.dataEncodingStrategy = .base64
 
-        // Set output formatting
-        encoder.outputFormatting = prettyPrinted ? [.prettyPrinted, .sortedKeys] : []
+        // Set output formatting (don't use sortedKeys to preserve element order)
+        encoder.outputFormatting = prettyPrinted ? [.prettyPrinted] : []
     }
 
     /// Write a UDDF document to Data

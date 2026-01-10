@@ -6,6 +6,10 @@
 
 - Add `GasUsage` enum and `Mix.usage` property (libdivecomputer)
 
+### Fixed
+
+- Preserve XML element order as defined in models instead of sorting alphabetically
+
 ## 0.2.0 - 2026-01-10
 
 ### Added
