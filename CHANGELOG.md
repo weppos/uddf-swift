@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- Add `GasUsage` enum and `Mix.usage` property (libdivecomputer extension)
+
 ## 0.2.0 - 2026-01-10
 
 ### Added

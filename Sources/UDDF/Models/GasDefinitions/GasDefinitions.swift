@@ -14,6 +14,24 @@ public struct GasDefinitions: Codable, Equatable, Sendable {
     }
 }
 
+/// Gas usage type (libdivecomputer extension)
+///
+/// Specifies the intended use of a gas mix in closed-circuit or sidemount diving.
+///
+/// - Note: This is a libdivecomputer de-facto extension, not part of the official UDDF specification.
+///
+/// - SeeAlso: https://github.com/libdivecomputer/libdivecomputer
+public enum GasUsage: String, Codable, Equatable, Sendable {
+    /// Oxygen for CCR bailout or deco
+    case oxygen
+
+    /// Diluent gas for CCR
+    case diluent
+
+    /// Sidemount configuration
+    case sidemount
+}
+
 /// A gas mixture (breathing gas)
 ///
 /// Defines the composition of a breathing gas, typically oxygen, nitrogen,
@@ -25,20 +43,37 @@ public struct Mix: Codable, Equatable, Sendable {
     /// Name of the gas mix (e.g., "Air", "EAN32", "Trimix 18/45")
     public var name: String?
 
-    /// Oxygen percentage (0.0 to 1.0, where 0.21 = 21%)
+    /// Oxygen fraction (0.0 to 1.0, where 0.21 = 21%)
+    ///
+    /// - Unit: fraction (0.0–1.0)
     public var o2: Double?
 
-    /// Nitrogen percentage (0.0 to 1.0)
+    /// Nitrogen fraction (0.0 to 1.0)
+    ///
+    /// - Unit: fraction (0.0–1.0)
     public var n2: Double?
 
-    /// Helium percentage (0.0 to 1.0)
+    /// Helium fraction (0.0 to 1.0)
+    ///
+    /// - Unit: fraction (0.0–1.0)
     public var he: Double?
 
-    /// Argon percentage (0.0 to 1.0)
+    /// Argon fraction (0.0 to 1.0)
+    ///
+    /// - Unit: fraction (0.0–1.0)
     public var ar: Double?
 
-    /// Hydrogen percentage (0.0 to 1.0)
+    /// Hydrogen fraction (0.0 to 1.0)
+    ///
+    /// - Unit: fraction (0.0–1.0)
     public var h2: Double?
+
+    /// Gas usage type (libdivecomputer extension)
+    ///
+    /// Specifies the intended use of this gas mix (oxygen, diluent, sidemount).
+    ///
+    /// - Note: This is a libdivecomputer de-facto extension, not part of the official UDDF specification.
+    public var usage: GasUsage?
 
     public init(
         id: String? = nil,
@@ -47,7 +82,8 @@ public struct Mix: Codable, Equatable, Sendable {
         n2: Double? = nil,
         he: Double? = nil,
         ar: Double? = nil,
-        h2: Double? = nil
+        h2: Double? = nil,
+        usage: GasUsage? = nil
     ) {
         self.id = id
         self.name = name
@@ -56,6 +92,7 @@ public struct Mix: Codable, Equatable, Sendable {
         self.he = he
         self.ar = ar
         self.h2 = h2
+        self.usage = usage
     }
 
     /// Convenience property: Oxygen percentage as percentage (0-100)
@@ -89,6 +126,7 @@ public struct Mix: Codable, Equatable, Sendable {
         case he
         case ar
         case h2
+        case usage
     }
 }
 
