@@ -33,7 +33,8 @@ class UDDFWriter {
             // Validate document before writing
             try validateDocument(document)
 
-            let data = try encoder.encode(document, withRootKey: "uddf")
+            let header = XMLHeader(version: 1.0, encoding: "utf-8")
+            let data = try encoder.encode(document, withRootKey: "uddf", header: header)
             return data
         } catch let error as UDDFError {
             throw error

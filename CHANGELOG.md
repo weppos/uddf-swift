@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Fixed
+
+- Include XML declaration header in exported UDDF files
+
 ## 0.3.0 - 2026-01-11
 
 ### Added
