@@ -260,31 +260,6 @@ print(duration.minutes)  // 25.0
 print(duration.hours)    // 0.417
 ```
 
-## Test Fixtures
-
-The library includes comprehensive test fixtures in `Tests/UDDFTests/Fixtures/`:
-
-- `minimal.uddf` - Minimal valid UDDF (generator only)
-- `full_profile.uddf` - Complete dive profile with all details
-- `cross_references.uddf` - Multiple dives with various IDs
-- `gas_definitions.uddf` - Various gas mixes (air, nitrox, trimix)
-- `all_sections.uddf` - Example with all 13 UDDF sections
-- `invalid/` - Malformed files for error handling tests
-
-## Current Status
-
-The UDDF Swift library is complete and production-ready:
-
-- ✓ Full UDDF 3.2.1 specification support
-- ✓ All 13 UDDF sections implemented
-- ✓ Type-safe parsing and writing
-- ✓ Fluent builder API
-- ✓ Comprehensive validation framework
-- ✓ ID/IDREF cross-reference resolution
-- ✓ Automatic unit conversions
-- ✓ 72 passing tests with >85% coverage
-- ✓ Extensive documentation and examples
-
 ## Requirements
 
 - iOS 15.0+ / macOS 12.0+
