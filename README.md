@@ -73,6 +73,7 @@ let generator = Generator(
     name: "MyDiveApp",
     version: "1.0.0",
     manufacturer: Manufacturer(
+        id: "mycompany",
         name: "My Company",
         contact: Contact(
             email: "info@example.com",

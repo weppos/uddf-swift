@@ -8,6 +8,7 @@
 - Add `Generator.aliasname` and `Generator.link` properties
 - Add `Address` struct for postal addresses (shared across models)
 - Add `Manufacturer.aliasname` and `Manufacturer.address` properties
+- Add `Manufacturer.id` attribute (compulsory per UDDF spec)
 - Add `Maker.aliasname` and `Maker.address` properties
 - Add `Business.aliasname` and `Business.address` properties
 - Add `Contact.language`, `Contact.mobilephone`, and `Contact.fax` properties

@@ -3,7 +3,7 @@
     <generator>
         <name>DiveLogPro</name>
         <version>2.5.0</version>
-        <manufacturer>
+        <manufacturer id="divesoft">
             <name>DiveSoft Inc</name>
             <contact>
                 <homepage>https://example.com</homepage>

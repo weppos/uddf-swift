@@ -13,7 +13,7 @@ final class GeneratorParserTests: XCTestCase {
                 <name>DiveLogPro</name>
                 <aliasname>DLP</aliasname>
                 <aliasname>Dive Log Professional</aliasname>
-                <manufacturer>
+                <manufacturer id="acme">
                     <name>Acme Dive Software</name>
                     <aliasname>ADS</aliasname>
                     <address>
@@ -52,6 +52,7 @@ final class GeneratorParserTests: XCTestCase {
 
         // Manufacturer
         let manufacturer = document.generator.manufacturer
+        XCTAssertEqual(manufacturer?.id, "acme")
         XCTAssertEqual(manufacturer?.name, "Acme Dive Software")
         XCTAssertEqual(manufacturer?.aliasname, ["ADS"])
 

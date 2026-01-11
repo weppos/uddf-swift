@@ -28,7 +28,7 @@ final class UDDFParserTests: XCTestCase {
             <generator>
                 <name>TestApp</name>
                 <version>1.0.0</version>
-                <manufacturer>
+                <manufacturer id="testmfr">
                     <name>Test Manufacturer</name>
                     <contact>
                         <homepage>https://example.com</homepage>
@@ -57,6 +57,7 @@ final class UDDFParserTests: XCTestCase {
         let generator = Generator(
             name: "TestApp",
             manufacturer: Manufacturer(
+                id: "testmfr",
                 name: "Test Manufacturer",
                 contact: Contact(
                     email: "info@example.com",
