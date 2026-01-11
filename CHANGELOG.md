@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.4.0 - 2026-01-11
+
 ### Added
 
 - Add `GeneratorType` enum and `Generator.type` property
