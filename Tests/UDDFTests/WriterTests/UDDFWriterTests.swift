@@ -31,4 +31,18 @@ final class UDDFWriterTests: XCTestCase {
             "XML output should start with XML declaration even when not pretty printed"
         )
     }
+
+    func testWriteIncludesXmlns() throws {
+        let document = try UDDFBuilder()
+            .generator(name: "TestApp", version: "1.0.0")
+            .build()
+
+        let data = try UDDFSerialization.write(document)
+        let xmlString = String(data: data, encoding: .utf8)!
+
+        XCTAssertTrue(
+            xmlString.contains("xmlns=\"http://www.streit.cc/uddf/3.2/\""),
+            "XML output should include UDDF namespace: \(xmlString)"
+        )
+    }
 }
