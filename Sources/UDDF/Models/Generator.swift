@@ -1,9 +1,14 @@
 import Foundation
+import XMLCoder
+
+// MARK: - Generator
 
 /// REQUIRED section identifying the software that created the UDDF file
 ///
 /// Every UDDF file must contain a generator section that identifies the
 /// application that created or last modified the file.
+///
+/// Reference: https://www.streit.cc/extern/uddf_v321/en/generator.html
 public struct Generator: Codable, Equatable, Sendable {
     /// Name of the generating application
     ///
@@ -13,11 +18,11 @@ public struct Generator: Codable, Equatable, Sendable {
     /// Some real-world dive computers may omit this field.
     public var name: String?
 
-    /// Manufacturer or developer of the application
-    public var manufacturer: ManufacturerInfo?
+    /// Alternative names for the generator
+    public var aliasname: [String]?
 
-    /// Contact information for the software developer
-    public var contact: Contact?
+    /// Manufacturer or developer of the application
+    public var manufacturer: Manufacturer?
 
     /// Version of the generating software
     public var version: String?
@@ -25,57 +30,83 @@ public struct Generator: Codable, Equatable, Sendable {
     /// Date and time when the file was created or last modified
     public var datetime: Date?
 
+    /// Type of generator (dive computer, logbook, or converter)
+    public var type: GeneratorType?
+
+    /// Cross-reference to another element
+    public var link: Link?
+
     public init(
         name: String? = nil,
-        manufacturer: ManufacturerInfo? = nil,
-        contact: Contact? = nil,
+        aliasname: [String]? = nil,
+        manufacturer: Manufacturer? = nil,
         version: String? = nil,
-        datetime: Date? = nil
+        datetime: Date? = nil,
+        type: GeneratorType? = nil,
+        link: Link? = nil
     ) {
         self.name = name
+        self.aliasname = aliasname
         self.manufacturer = manufacturer
-        self.contact = contact
         self.version = version
         self.datetime = datetime
-    }
-
-    enum CodingKeys: String, CodingKey {
-        case name
-        case manufacturer
-        case contact
-        case version
-        case datetime
+        self.type = type
+        self.link = link
     }
 }
 
-/// Manufacturer or developer information
-public struct ManufacturerInfo: Codable, Equatable, Sendable {
-    /// Name of the manufacturer
-    public var name: String
+/// Type of generator that created the UDDF file
+///
+/// Indicates whether the file was created by a dive computer, logbook software,
+/// or a converter program.
+///
+/// Reference: https://www.streit.cc/extern/uddf_v321/en/type.html
+public enum GeneratorType: Equatable, Sendable {
+    /// A converter program generated the UDDF file from a manufacturer's own format
+    case converter
+    /// A dive computer generated the UDDF file
+    case divecomputer
+    /// A logbook program generated the UDDF file
+    case logbook
+    /// Non-standard or future value
+    case unknown(String)
 
-    /// Contact information
-    public var contact: Contact?
+    public var rawValue: String {
+        switch self {
+        case .converter: return "converter"
+        case .divecomputer: return "divecomputer"
+        case .logbook: return "logbook"
+        case .unknown(let value): return value
+        }
+    }
 
-    public init(name: String, contact: Contact? = nil) {
-        self.name = name
-        self.contact = contact
+    public init(rawValue: String) {
+        switch rawValue {
+        case "converter": self = .converter
+        case "divecomputer": self = .divecomputer
+        case "logbook": self = .logbook
+        default: self = .unknown(rawValue)
+        }
+    }
+
+    /// Whether this is a standard UDDF value
+    public var isStandard: Bool {
+        if case .unknown = self {
+            return false
+        }
+        return true
     }
 }
 
-/// Contact information
-public struct Contact: Codable, Equatable, Sendable {
-    /// Website URL
-    public var homepage: String?
+extension GeneratorType: Codable {
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        let value = try container.decode(String.self)
+        self.init(rawValue: value)
+    }
 
-    /// Email address
-    public var email: String?
-
-    /// Phone number
-    public var phone: String?
-
-    public init(homepage: String? = nil, email: String? = nil, phone: String? = nil) {
-        self.homepage = homepage
-        self.email = email
-        self.phone = phone
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode(self.rawValue)
     }
 }

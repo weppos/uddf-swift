@@ -141,31 +141,3 @@ public struct Notes: Codable, Equatable, Sendable {
     }
 }
 
-/// Reference link
-public struct Link: Codable, Equatable, Sendable {
-    /// Reference ID
-    public var ref: String?
-
-    public init(ref: String? = nil) {
-        self.ref = ref
-    }
-
-    enum CodingKeys: String, CodingKey {
-        case ref
-    }
-}
-
-// MARK: - DynamicNodeEncoding
-
-extension Link: DynamicNodeEncoding {
-    public static func nodeEncoding(for key: CodingKey) -> XMLEncoder.NodeEncoding {
-        guard let codingKey = key as? CodingKeys else {
-            return .element
-        }
-
-        switch codingKey {
-        case .ref:
-            return .attribute
-        }
-    }
-}

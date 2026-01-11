@@ -51,7 +51,7 @@ public class UDDFBuilder {
     public func generator(
         name: String? = nil,
         version: String? = nil,
-        manufacturer: ManufacturerInfo? = nil,
+        manufacturer: Manufacturer? = nil,
         datetime: Date? = nil
     ) -> Self {
         self.generator = Generator(

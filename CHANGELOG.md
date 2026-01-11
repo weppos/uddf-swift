@@ -2,6 +2,24 @@
 
 ## Unreleased
 
+### Added
+
+- Add `GeneratorType` enum and `Generator.type` property
+- Add `Generator.aliasname` and `Generator.link` properties
+- Add `Address` struct for postal addresses (shared across models)
+- Add `Manufacturer.aliasname` and `Manufacturer.address` properties
+- Add `Maker.aliasname` and `Maker.address` properties
+- Add `Business.aliasname` and `Business.address` properties
+- Add `Contact.language`, `Contact.mobilephone`, and `Contact.fax` properties
+
+### Changed
+
+- Rename `ManufacturerInfo` to `Manufacturer` (breaking change)
+- Remove `Generator.contact` property (not in UDDF spec)
+- Reorder `Generator` and `Contact` properties to match UDDF spec (breaking change)
+- Move `Contact`, `Link`, and `Manufacturer` to shared `Models/Common/` directory
+- Rename `Sources/UDDF/Parser/` to `Sources/UDDF/Serialization/`
+
 ### Fixed
 
 - Include XML declaration header in exported UDDF files

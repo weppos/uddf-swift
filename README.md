@@ -72,11 +72,11 @@ import UDDF
 let generator = Generator(
     name: "MyDiveApp",
     version: "1.0.0",
-    manufacturer: ManufacturerInfo(
+    manufacturer: Manufacturer(
         name: "My Company",
         contact: Contact(
-            homepage: "https://example.com",
-            email: "info@example.com"
+            email: "info@example.com",
+            homepage: "https://example.com"
         )
     )
 )

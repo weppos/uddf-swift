@@ -7,12 +7,12 @@ func createBasicUDDFFile() throws {
     // Create a generator section (required)
     let generator = Generator(
         name: "DiveLogPro",
-        manufacturer: ManufacturerInfo(
+        manufacturer: Manufacturer(
             name: "Acme Dive Software",
             contact: Contact(
-                homepage: "https://divelogpro.example.com",
+                phone: "+1-555-DIVE-LOG",
                 email: "support@divelogpro.example.com",
-                phone: "+1-555-DIVE-LOG"
+                homepage: "https://divelogpro.example.com"
             )
         ),
         version: "2.5.1",

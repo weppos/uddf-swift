@@ -56,11 +56,11 @@ final class UDDFParserTests: XCTestCase {
         // Create a document
         let generator = Generator(
             name: "TestApp",
-            manufacturer: ManufacturerInfo(
+            manufacturer: Manufacturer(
                 name: "Test Manufacturer",
                 contact: Contact(
-                    homepage: "https://example.com",
-                    email: "info@example.com"
+                    email: "info@example.com",
+                    homepage: "https://example.com"
                 )
             ),
             version: "1.0.0"
