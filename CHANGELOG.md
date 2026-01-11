@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.3.0 - 2026-01-11
+
 ### Added
 
 - Add `GasUsage` enum and `Mix.usage` property (libdivecomputer)
