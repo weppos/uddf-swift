@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+### Added
+
+- Add `measuredpo2` field to `Waypoint` for measured PPO2 from sensors
+
+### Changed
+
+- **BREAKING**: Change `Waypoint.calculatedpo2` from `Double` to `Pressure` (pascals SI)
+
 ## 0.6.0 - 2026-01-11
 
 ### Added

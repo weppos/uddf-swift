@@ -45,7 +45,7 @@
           <!-- Waypoint 0: Surface, initial setpoint -->
           <waypoint>
             <batterychargecondition>3.5</batterychargecondition>
-            <calculatedpo2>1.2</calculatedpo2>
+            <calculatedpo2>1.2e5</calculatedpo2>
             <depth>0</depth>
             <divetime>0</divetime>
             <setpo2>1.2e5</setpo2>

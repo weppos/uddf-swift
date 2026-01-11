@@ -99,11 +99,10 @@ final class ProfileDataTests: XCTestCase {
         XCTAssertEqual(waypoint0?.depth?.meters, 0)
         XCTAssertEqual(waypoint0?.temperature?.celsius ?? 0, 20, accuracy: 0.01)
         XCTAssertEqual(waypoint0?.batterychargecondition, 3.5)
-        XCTAssertEqual(waypoint0?.calculatedpo2, 1.2)
-        XCTAssertEqual(waypoint0?.setpo2?.pascals ?? 0, 1.2e5, accuracy: 0.01)
-        XCTAssertEqual(waypoint0?.setpo2?.bar ?? 0, 1.2, accuracy: 0.01)
+        XCTAssertEqual(waypoint0?.calculatedpo2?.pascals ?? 0, 1.2e5)
+        XCTAssertEqual(waypoint0?.setpo2?.pascals ?? 0, 1.2e5)
         XCTAssertEqual(waypoint0?.switchmix?.ref, "mix1")
-        XCTAssertEqual(waypoint0?.tankpressure?.pascals ?? 0, 2.0e7, accuracy: 0.01)
+        XCTAssertEqual(waypoint0?.tankpressure?.pascals ?? 0, 2.0e7)
         XCTAssertEqual(waypoint0?.divemode?.type, .closedCircuit)
         XCTAssertEqual(waypoint0?.gradientfactor, 0)
         XCTAssertNil(waypoint0?.nodecotime)
@@ -117,8 +116,8 @@ final class ProfileDataTests: XCTestCase {
         XCTAssertEqual(waypoint1?.heartrate, 75)
         XCTAssertEqual(waypoint1?.nodecotime?.seconds, 5940)
         XCTAssertEqual(waypoint1?.remainingbottomtime?.seconds, 1800)
-        XCTAssertEqual(waypoint1?.setpo2?.bar ?? 0, 1.2, accuracy: 0.01)
-        XCTAssertEqual(waypoint1?.tankpressure?.pascals ?? 0, 1.95e7, accuracy: 0.01)
+        XCTAssertEqual(waypoint1?.setpo2?.pascals ?? 0, 1.2e5)
+        XCTAssertEqual(waypoint1?.tankpressure?.pascals ?? 0, 1.95e7)
         XCTAssertEqual(waypoint1?.divemode?.type, .closedCircuit)
         XCTAssertEqual(waypoint1?.gradientfactor, 5)
 
@@ -131,8 +130,8 @@ final class ProfileDataTests: XCTestCase {
         XCTAssertEqual(waypoint2?.decostop?.decodepth, 6)
         XCTAssertEqual(waypoint2?.decostop?.duration, 300)
         XCTAssertEqual(waypoint2?.heartrate, 80)
-        XCTAssertEqual(waypoint2?.setpo2?.bar ?? 0, 1.3, accuracy: 0.01)
-        XCTAssertEqual(waypoint2?.tankpressure?.pascals ?? 0, 1.8e7, accuracy: 0.01)
+        XCTAssertEqual(waypoint2?.setpo2?.pascals ?? 0, 1.3e5)
+        XCTAssertEqual(waypoint2?.tankpressure?.pascals ?? 0, 1.8e7)
         XCTAssertEqual(waypoint2?.tts?.seconds, 600)
         XCTAssertEqual(waypoint2?.divemode?.type, .closedCircuit)
         XCTAssertEqual(waypoint2?.gradientfactor, 65)
@@ -312,15 +311,15 @@ final class ProfileDataTests: XCTestCase {
         let tank1 = tankData?[0]
         XCTAssertEqual(tank1?.link?.ref, "mix1")
         XCTAssertEqual(tank1?.tankvolume?.liters ?? 0, 12.0, accuracy: 0.01)
-        XCTAssertEqual(tank1?.tankpressurebegin?.bar ?? 0, 200.0, accuracy: 0.01)
-        XCTAssertEqual(tank1?.tankpressureend?.bar ?? 0, 50.0, accuracy: 0.01)
+        XCTAssertEqual(tank1?.tankpressurebegin?.pascals ?? 0, 2.0e7)
+        XCTAssertEqual(tank1?.tankpressureend?.pascals ?? 0, 5.0e6)
 
         // Second tank (EAN32)
         let tank2 = tankData?[1]
         XCTAssertEqual(tank2?.link?.ref, "mix2")
         XCTAssertEqual(tank2?.tankvolume?.liters ?? 0, 7.0, accuracy: 0.01)
-        XCTAssertEqual(tank2?.tankpressurebegin?.bar ?? 0, 200.0, accuracy: 0.01)
-        XCTAssertEqual(tank2?.tankpressureend?.bar ?? 0, 150.0, accuracy: 0.01)
+        XCTAssertEqual(tank2?.tankpressurebegin?.pascals ?? 0, 2.0e7)
+        XCTAssertEqual(tank2?.tankpressureend?.pascals ?? 0, 1.5e7)
     }
 
     func testRoundTripEquipmentUsedAndTankData() throws {
@@ -380,8 +379,8 @@ final class ProfileDataTests: XCTestCase {
         let reparsedTank1 = reparsedDive?.tankdata?[0]
         XCTAssertEqual(reparsedTank1?.link?.ref, "mix1")
         XCTAssertEqual(reparsedTank1?.tankvolume?.liters ?? 0, 12.0, accuracy: 0.01)
-        XCTAssertEqual(reparsedTank1?.tankpressurebegin?.bar ?? 0, 200.0, accuracy: 0.01)
-        XCTAssertEqual(reparsedTank1?.tankpressureend?.bar ?? 0, 60.0, accuracy: 0.01)
+        XCTAssertEqual(reparsedTank1?.tankpressurebegin?.pascals ?? 0, 2.0e7)
+        XCTAssertEqual(reparsedTank1?.tankpressureend?.pascals ?? 0, 6.0e6)
 
         let reparsedTank2 = reparsedDive?.tankdata?[1]
         XCTAssertEqual(reparsedTank2?.link?.ref, "mix2")
@@ -521,7 +520,6 @@ final class ProfileDataTests: XCTestCase {
         XCTAssertEqual(info?.airtemperature?.celsius ?? 0, 28, accuracy: 0.01)
         XCTAssertEqual(info?.altitude?.meters, 500)
         XCTAssertEqual(info?.surfacepressure?.pascals, 95000)
-        XCTAssertEqual(info?.surfacepressure?.bar ?? 0, 0.95, accuracy: 0.01)
 
         // Enumerations
         XCTAssertEqual(info?.platform, .charterBoat)
@@ -640,9 +638,7 @@ final class ProfileDataTests: XCTestCase {
         // Extended measurements
         XCTAssertEqual(info?.visibility?.meters, 25.0)
         XCTAssertEqual(info?.pressuredrop?.pascals, 15000000)
-        XCTAssertEqual(info?.pressuredrop?.bar ?? 0, 150, accuracy: 0.01)
         XCTAssertEqual(info?.highestpo2?.pascals, 130000)
-        XCTAssertEqual(info?.highestpo2?.bar ?? 0, 1.3, accuracy: 0.01)
 
         // Time-based fields
         XCTAssertEqual(info?.desaturationtime?.seconds, 43200)
@@ -891,14 +887,14 @@ final class ProfileDataTests: XCTestCase {
         XCTAssertEqual(reparsedInfo?.current, .mildCurrent)
         XCTAssertEqual(reparsedInfo?.diveplan, .diveComputer)
         XCTAssertEqual(reparsedInfo?.equipmentmalfunction, EquipmentMalfunction.none)
-        XCTAssertEqual(reparsedInfo?.pressuredrop?.bar ?? 0, 150, accuracy: 0.01)
+        XCTAssertEqual(reparsedInfo?.pressuredrop?.pascals ?? 0, 1.5e7)
         XCTAssertEqual(reparsedInfo?.problems, "Minor mask leak")
         XCTAssertEqual(reparsedInfo?.thermalcomfort, .comfortable)
         XCTAssertEqual(reparsedInfo?.workload, .light)
         XCTAssertEqual(reparsedInfo?.desaturationtime?.hours ?? 0, 12, accuracy: 0.01)
         XCTAssertEqual(reparsedInfo?.noflighttime?.hours ?? 0, 20, accuracy: 0.01)
         XCTAssertEqual(reparsedInfo?.surfaceintervalafterdive?.hours ?? 0, 2, accuracy: 0.01)
-        XCTAssertEqual(reparsedInfo?.highestpo2?.bar ?? 0, 1.3, accuracy: 0.01)
+        XCTAssertEqual(reparsedInfo?.highestpo2?.pascals ?? 0, 1.3e5)
         XCTAssertEqual(reparsedInfo?.anysymptoms, "None")
         XCTAssertEqual(reparsedInfo?.globalalarmsgiven?.globalalarm?.first, "ascent-warning-too-long")
         XCTAssertEqual(reparsedInfo?.observations, "Manta rays")

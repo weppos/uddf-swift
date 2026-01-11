@@ -26,7 +26,9 @@ public struct Waypoint: Codable, Equatable, Sendable {
     public var batterychargecondition: Double?
 
     /// Calculated partial pressure of oxygen (PPO2)
-    public var calculatedpo2: Double?
+    ///
+    /// - Unit: pascals (SI)
+    public var calculatedpo2: Pressure?
 
     /// Decompression ceiling depth at this waypoint
     public var ceiling: Depth?
@@ -52,6 +54,11 @@ public struct Waypoint: Codable, Equatable, Sendable {
     /// Heart rate at this waypoint (beats per minute)
     public var heartrate: UInt?
 
+    /// Measured partial pressure of oxygen (PPO2) from sensors
+    ///
+    /// - Unit: pascals (SI)
+    public var measuredpo2: Pressure?
+
     /// No-decompression time remaining at this waypoint
     public var nodecotime: Duration?
 
@@ -59,6 +66,8 @@ public struct Waypoint: Codable, Equatable, Sendable {
     public var remainingbottomtime: Duration?
 
     /// Rebreather setpoint (PPO2) at this waypoint
+    ///
+    /// - Unit: pascals (SI)
     public var setpo2: Pressure?
 
     /// Reference to gas mix being used (for gas switches)
@@ -76,7 +85,7 @@ public struct Waypoint: Codable, Equatable, Sendable {
     public init(
         alarm: String? = nil,
         batterychargecondition: Double? = nil,
-        calculatedpo2: Double? = nil,
+        calculatedpo2: Pressure? = nil,
         ceiling: Depth? = nil,
         cns: Double? = nil,
         decostop: DecoStop? = nil,
@@ -85,6 +94,7 @@ public struct Waypoint: Codable, Equatable, Sendable {
         divetime: Duration? = nil,
         gradientfactor: Double? = nil,
         heartrate: UInt? = nil,
+        measuredpo2: Pressure? = nil,
         nodecotime: Duration? = nil,
         remainingbottomtime: Duration? = nil,
         setpo2: Pressure? = nil,
@@ -104,6 +114,7 @@ public struct Waypoint: Codable, Equatable, Sendable {
         self.divetime = divetime
         self.gradientfactor = gradientfactor
         self.heartrate = heartrate
+        self.measuredpo2 = measuredpo2
         self.nodecotime = nodecotime
         self.remainingbottomtime = remainingbottomtime
         self.setpo2 = setpo2
