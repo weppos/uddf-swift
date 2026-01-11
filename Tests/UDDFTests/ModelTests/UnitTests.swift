@@ -116,6 +116,38 @@ final class UnitTests: XCTestCase {
         XCTAssertEqual(decoded.liters, 12.0, accuracy: 0.01)
     }
 
+    // MARK: - Altitude Tests
+
+    func testAltitudeConversion() {
+        let altitude = Altitude(meters: 1000)
+        XCTAssertEqual(altitude.meters, 1000.0)
+        XCTAssertEqual(altitude.feet, 3280.84, accuracy: 0.01)
+    }
+
+    func testAltitudeFromFeet() {
+        let altitude = Altitude(feet: 5000)
+        XCTAssertEqual(altitude.feet, 5000.0, accuracy: 0.01)
+        XCTAssertEqual(altitude.meters, 1524.0, accuracy: 0.1)
+    }
+
+    func testAltitudeComparable() {
+        let low = Altitude(meters: 500)
+        let high = Altitude(meters: 1500)
+        XCTAssertTrue(low < high)
+        XCTAssertFalse(high < low)
+    }
+
+    func testAltitudeCodable() throws {
+        let altitude = Altitude(meters: 1200)
+        let encoder = JSONEncoder()
+        let decoder = JSONDecoder()
+
+        let data = try encoder.encode(altitude)
+        let decoded = try decoder.decode(Altitude.self, from: data)
+
+        XCTAssertEqual(decoded.meters, altitude.meters)
+    }
+
     // MARK: - Codable Tests
 
     func testDepthCodable() throws {

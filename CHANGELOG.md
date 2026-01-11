@@ -4,7 +4,9 @@
 
 ### Added
 
-- Add full equipment support for all 21 UDDF equipment types
+- Add full `<dive>` element support with all `<informationbeforedive>` and `<informationafterdive>` child elements
+- Add `Altitude` unit type (meters SI, feet conversion)
+- Add full `equipment` element support for all 21 UDDF equipment types
 - Add `Shop` struct for vendor/shop information
 - Add `Price` struct with currency attribute
 - Add `Purchase` struct for equipment purchase information
