@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uddf xmlns="http://www.streit.cc/uddf/3.2/" version="3.2.1">
+    <generator>
+        <name>DecoPlanner Pro</name>
+        <manufacturer id="decoplanner">
+            <name>DecoPlanner Software</name>
+        </manufacturer>
+    </generator>
+
+    <decomodel>
+        <!-- Bühlmann ZH-L16C model with gradient factors -->
+        <buehlmann id="zhl16c">
+            <tissue gas="n2" number="1" halflife="300" a="1.1696" b="0.5578" />
+            <tissue gas="n2" number="2" halflife="480" a="1.0" b="0.6514" />
+            <tissue gas="n2" number="3" halflife="720" a="0.8618" b="0.7222" />
+            <tissue gas="n2" number="4" halflife="1080" a="0.7562" b="0.7825" />
+            <tissue gas="he" number="1" halflife="113.4" a="1.7424" b="0.4245" />
+            <tissue gas="he" number="2" halflife="181.4" a="1.383" b="0.5747" />
+            <gradientfactorlow>0.3</gradientfactorlow>
+            <gradientfactorhigh>0.85</gradientfactorhigh>
+        </buehlmann>
+
+        <!-- Conservative Bühlmann configuration -->
+        <buehlmann id="zhl16c-conservative">
+            <tissue gas="n2" number="1" halflife="300" a="1.1696" b="0.5578" />
+            <gradientfactorlow>0.2</gradientfactorlow>
+            <gradientfactorhigh>0.7</gradientfactorhigh>
+        </buehlmann>
+
+        <!-- VPM-B model -->
+        <vpm id="vpmb">
+            <conservatism>1.0</conservatism>
+            <gamma>0.0179</gamma>
+            <gc>0.0114</gc>
+            <lambda>7500.0</lambda>
+            <r0>0.8</r0>
+            <tissue gas="n2" number="1" halflife="300" a="1.1696" b="0.5578" />
+            <tissue gas="n2" number="2" halflife="480" a="1.0" b="0.6514" />
+        </vpm>
+
+        <!-- RGBM model (experimental) -->
+        <rgbm id="rgbm-suunto">
+            <tissue gas="n2" number="1" halflife="300" a="1.1696" b="0.5578" />
+            <tissue gas="n2" number="2" halflife="480" a="1.0" b="0.6514" />
+        </rgbm>
+    </decomodel>
+</uddf>

@@ -37,7 +37,7 @@ public struct UDDFDocument: Codable, Equatable, Sendable {
     public var gasdefinitions: GasDefinitions?
 
     /// OPTIONAL: Decompression model parameters
-    public var decomodel: [DecoModel]?
+    public var decomodel: DecoModel?
 
     /// OPTIONAL: Recorded dive profiles
     public var profiledata: ProfileData?
@@ -90,7 +90,7 @@ public struct UDDFDocument: Codable, Equatable, Sendable {
         diver = try container.decodeIfPresent(DiverData.self, forKey: .diver)
         divesite = try container.decodeIfPresent([DiveSite].self, forKey: .divesite)
         gasdefinitions = try container.decodeIfPresent(GasDefinitions.self, forKey: .gasdefinitions)
-        decomodel = try container.decodeIfPresent([DecoModel].self, forKey: .decomodel)
+        decomodel = try container.decodeIfPresent(DecoModel.self, forKey: .decomodel)
         profiledata = try container.decodeIfPresent(ProfileData.self, forKey: .profiledata)
         tablegeneration = try container.decodeIfPresent(TableGeneration.self, forKey: .tablegeneration)
         divetrip = try container.decodeIfPresent([DiveTrip].self, forKey: .divetrip)

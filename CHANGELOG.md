@@ -8,10 +8,16 @@
 - Add `Shop` struct for vendor/shop information
 - Add `Price` struct with currency attribute
 - Add `Purchase` struct for equipment purchase information
+- Add full `decomodel` support with `Buehlmann`, `VPM`, and `RGBM` models
+- Add `Tissue` struct with gas, number, halflife, a, b attributes
+- Add `TissueGas` enum (n2, he, h2) with hybrid pattern for forward compatibility
+- Add `UDDFBuilder.addBuehlmann()`, `addVPM()`, `addRGBM()` methods for building decomodels
 
 ### Changed
 
 - Move `Notes` to `Models/Common/` for reuse by equipment types
+- **BREAKING**: Rewrite `DecoModel` as container with `buehlmann[]`, `vpm[]`, `rgbm[]` arrays
+- **BREAKING**: Change `UDDFDocument.decomodel` from `[DecoModel]?` to `DecoModel?`
 
 ## 0.4.0 - 2026-01-11
 

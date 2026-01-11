@@ -137,10 +137,23 @@ public class ReferenceResolver {
         }
 
         // Register decompression models
-        if let models = document.decomodel {
-            for model in models {
-                if let id = model.id {
-                    try register(id: id, element: .decoModel(model))
+        if let decomodel = document.decomodel {
+            // Register Bühlmann models
+            if let buehlmannModels = decomodel.buehlmann {
+                for model in buehlmannModels {
+                    try register(id: model.id, element: .buehlmann(model))
+                }
+            }
+            // Register VPM models
+            if let vpmModels = decomodel.vpm {
+                for model in vpmModels {
+                    try register(id: model.id, element: .vpm(model))
+                }
+            }
+            // Register RGBM models
+            if let rgbmModels = decomodel.rgbm {
+                for model in rgbmModels {
+                    try register(id: model.id, element: .rgbm(model))
                 }
             }
         }
@@ -249,7 +262,9 @@ public enum ReferenceableElement: Equatable {
     case video(VideoMedia)
     case maker(Maker)
     case business(Business)
-    case decoModel(DecoModel)
+    case buehlmann(Buehlmann)
+    case vpm(VPM)
+    case rgbm(RGBM)
     case diveTrip(DiveTrip)
 }
 

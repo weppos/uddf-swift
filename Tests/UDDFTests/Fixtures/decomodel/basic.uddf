@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<uddf version="3.2.1">
+<uddf xmlns="http://www.streit.cc/uddf/3.2/" version="3.2.1">
     <generator>
         <name>DecoApp</name>
+        <manufacturer id="decoapp">
+            <name>DecoApp Inc</name>
+        </manufacturer>
     </generator>
 
-    <decomodel id="deco1">
-        <name>Buhlmann ZHL-16C</name>
-    </decomodel>
-
-    <decomodel id="deco2">
-        <name>VPM-B</name>
+    <decomodel>
+        <buehlmann id="zhl16c">
+            <tissue gas="n2" number="1" halflife="300" a="1.1696" b="0.5578" />
+            <tissue gas="n2" number="2" halflife="480" a="1.0" b="0.6514" />
+            <gradientfactorlow>0.3</gradientfactorlow>
+            <gradientfactorhigh>0.85</gradientfactorhigh>
+        </buehlmann>
     </decomodel>
 </uddf>

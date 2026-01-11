@@ -24,7 +24,7 @@ public class UDDFBuilder {
     private var diverData: DiverData?
     private var diveSites: [DiveSite] = []
     private var gasDefinitions: GasDefinitions?
-    private var decoModels: [DecoModel] = []
+    private var decomodel: DecoModel?
     private var profileData: ProfileData?
     private var tableGeneration: TableGeneration?
     private var diveTrips: [DiveTrip] = []
@@ -243,13 +243,61 @@ public class UDDFBuilder {
         return self
     }
 
-    /// Add a decompression model
+    /// Set the decompression model container
     ///
-    /// - Parameter model: Decompression model
+    /// - Parameter model: Decompression model container
     /// - Returns: Self for method chaining
     @discardableResult
-    public func addDecoModel(_ model: DecoModel) -> Self {
-        decoModels.append(model)
+    public func setDecoModel(_ model: DecoModel) -> Self {
+        decomodel = model
+        return self
+    }
+
+    /// Add a Bühlmann decompression model
+    ///
+    /// - Parameter model: Bühlmann model parameters
+    /// - Returns: Self for method chaining
+    @discardableResult
+    public func addBuehlmann(_ model: Buehlmann) -> Self {
+        if decomodel == nil {
+            decomodel = DecoModel()
+        }
+        if decomodel?.buehlmann == nil {
+            decomodel?.buehlmann = []
+        }
+        decomodel?.buehlmann?.append(model)
+        return self
+    }
+
+    /// Add a VPM decompression model
+    ///
+    /// - Parameter model: VPM model parameters
+    /// - Returns: Self for method chaining
+    @discardableResult
+    public func addVPM(_ model: VPM) -> Self {
+        if decomodel == nil {
+            decomodel = DecoModel()
+        }
+        if decomodel?.vpm == nil {
+            decomodel?.vpm = []
+        }
+        decomodel?.vpm?.append(model)
+        return self
+    }
+
+    /// Add an RGBM decompression model
+    ///
+    /// - Parameter model: RGBM model parameters
+    /// - Returns: Self for method chaining
+    @discardableResult
+    public func addRGBM(_ model: RGBM) -> Self {
+        if decomodel == nil {
+            decomodel = DecoModel()
+        }
+        if decomodel?.rgbm == nil {
+            decomodel?.rgbm = []
+        }
+        decomodel?.rgbm?.append(model)
         return self
     }
 
@@ -281,7 +329,7 @@ public class UDDFBuilder {
         document.diver = diverData
         document.divesite = diveSites.isEmpty ? nil : diveSites
         document.gasdefinitions = gasDefinitions
-        document.decomodel = decoModels.isEmpty ? nil : decoModels
+        document.decomodel = decomodel
         document.profiledata = profileData
         document.tablegeneration = tableGeneration
         document.divetrip = diveTrips.isEmpty ? nil : diveTrips

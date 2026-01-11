@@ -51,8 +51,12 @@
         </mix>
     </gasdefinitions>
 
-    <decomodel id="deco1">
-        <name>Buhlmann ZHL-16C</name>
+    <decomodel>
+        <buehlmann id="zhl16c">
+            <tissue gas="n2" number="1" halflife="300" a="1.1696" b="0.5578" />
+            <gradientfactorlow>0.3</gradientfactorlow>
+            <gradientfactorhigh>0.85</gradientfactorhigh>
+        </buehlmann>
     </decomodel>
 
     <profiledata>

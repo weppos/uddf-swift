@@ -171,7 +171,7 @@ final class FixtureTests: XCTestCase {
         XCTAssertEqual(document.diver?.owner?.count, 1)
         XCTAssertEqual(document.divesite?.count, 1)
         XCTAssertEqual(document.gasdefinitions?.mix?.count, 1)
-        XCTAssertEqual(document.decomodel?.count, 1)
+        XCTAssertEqual(document.decomodel?.buehlmann?.count, 1)
         XCTAssertEqual(document.profiledata?.repetitiongroup?.count, 1)
         XCTAssertEqual(document.divetrip?.count, 1)
 
