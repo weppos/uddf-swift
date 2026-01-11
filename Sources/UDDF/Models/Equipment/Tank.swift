@@ -45,7 +45,7 @@ public struct Tank: Codable, Equatable, Sendable {
 
     /// Tank volume
     ///
-    /// - Unit: cubic meters (m³)
+    /// - Unit: cubic meters (SI)
     public var tankvolume: Volume?
 
     public init(

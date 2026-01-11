@@ -42,7 +42,7 @@ public struct Lead: Codable, Equatable, Sendable {
 
     /// Quantity of lead
     ///
-    /// - Unit: kilograms (kg)
+    /// - Unit: kilograms (SI)
     public var leadquantity: Double?
 
     public init(

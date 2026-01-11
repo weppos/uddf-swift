@@ -17,7 +17,7 @@ public struct EquipmentUsed: Codable, Equatable, Sendable {
 
     /// Lead weight quantity
     ///
-    /// - Unit: kg (kilograms)
+    /// - Unit: kilograms (SI)
     public var leadquantity: Double?
 
     public init(
@@ -44,22 +44,22 @@ public struct TankData: Codable, Equatable, Sendable {
 
     /// Tank volume (water capacity)
     ///
-    /// - Unit: m³ (cubic meters)
+    /// - Unit: cubic meters (SI)
     public var tankvolume: Volume?
 
     /// Tank pressure at the beginning of the dive
     ///
-    /// - Unit: Pa (pascals)
+    /// - Unit: pascals (SI)
     public var tankpressurebegin: Pressure?
 
     /// Tank pressure at the end of the dive
     ///
-    /// - Unit: Pa (pascals)
+    /// - Unit: pascals (SI)
     public var tankpressureend: Pressure?
 
     /// Breathing gas consumption rate
     ///
-    /// - Unit: m³/s (cubic meters per second)
+    /// - Unit: cubic meters per second (SI)
     public var breathingconsumptionvolume: Double?
 
     public init(

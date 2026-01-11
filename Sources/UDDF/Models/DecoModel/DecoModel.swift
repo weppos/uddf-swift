@@ -213,7 +213,7 @@ public struct Tissue: Codable, Equatable, Sendable {
 
     /// Tissue half-life
     ///
-    /// - Unit: seconds
+    /// - Unit: seconds (SI)
     public var halflife: Double
 
     /// Bühlmann 'a' coefficient

@@ -93,7 +93,7 @@ public struct InformationBeforeDive: Codable, Equatable, Sendable {
 
     /// Air temperature at surface
     ///
-    /// - Unit: Kelvin (SI)
+    /// - Unit: kelvin (SI)
     public var airtemperature: Temperature?
 
     /// Alcohol consumed before the dive
@@ -292,7 +292,7 @@ public struct InformationAfterDive: Codable, Equatable, Sendable {
 
     /// Lowest temperature during the dive
     ///
-    /// - Unit: Kelvin (SI)
+    /// - Unit: kelvin (SI)
     public var lowesttemperature: Temperature?
 
     /// No-fly time after the dive
