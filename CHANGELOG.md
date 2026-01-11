@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.5.0 - 2026-01-11
+
 ### Added
 
 - Add full `<dive>` element support with all `<informationbeforedive>` and `<informationafterdive>` child elements
