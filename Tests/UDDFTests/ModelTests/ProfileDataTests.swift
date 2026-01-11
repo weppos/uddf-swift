@@ -243,9 +243,9 @@ final class ProfileDataTests: XCTestCase {
         XCTAssertEqual(kind2.isStandard, false)
     }
 
-    // MARK: - EquipmentUsed Tests
+    // MARK: - EquipmentUsed and TankData Tests
 
-    func testParseEquipmentUsed() throws {
+    func testParseEquipmentUsedAndTankData() throws {
         let xml = """
         <?xml version="1.0" encoding="UTF-8"?>
         <uddf version="3.2.1">
@@ -267,22 +267,22 @@ final class ProfileDataTests: XCTestCase {
                     <dive id="dive1">
                         <informationbeforedive>
                             <datetime>2025-01-15T14:00:00Z</datetime>
+                            <equipmentused>
+                                <leadquantity>4.0</leadquantity>
+                            </equipmentused>
                         </informationbeforedive>
-                        <equipmentused>
-                            <leadquantity>4.0</leadquantity>
-                            <tankdata>
-                                <link ref="mix1" />
-                                <tankvolume>0.012</tankvolume>
-                                <tankpressurebegin>20000000.0</tankpressurebegin>
-                                <tankpressureend>5000000.0</tankpressureend>
-                            </tankdata>
-                            <tankdata>
-                                <link ref="mix2" />
-                                <tankvolume>0.007</tankvolume>
-                                <tankpressurebegin>20000000.0</tankpressurebegin>
-                                <tankpressureend>15000000.0</tankpressureend>
-                            </tankdata>
-                        </equipmentused>
+                        <tankdata>
+                            <link ref="mix1" />
+                            <tankvolume>0.012</tankvolume>
+                            <tankpressurebegin>20000000.0</tankpressurebegin>
+                            <tankpressureend>5000000.0</tankpressureend>
+                        </tankdata>
+                        <tankdata>
+                            <link ref="mix2" />
+                            <tankvolume>0.007</tankvolume>
+                            <tankpressurebegin>20000000.0</tankpressurebegin>
+                            <tankpressureend>15000000.0</tankpressureend>
+                        </tankdata>
                         <informationafterdive>
                             <greatestdepth>30.0</greatestdepth>
                         </informationafterdive>
@@ -298,11 +298,13 @@ final class ProfileDataTests: XCTestCase {
         let dive = document.profiledata?.repetitiongroup?.first?.dive?.first
         XCTAssertNotNil(dive)
 
-        let equipmentUsed = dive?.equipmentused
+        // equipmentused is inside informationbeforedive
+        let equipmentUsed = dive?.informationbeforedive?.equipmentused
         XCTAssertNotNil(equipmentUsed)
         XCTAssertEqual(equipmentUsed?.leadquantity, 4.0)
 
-        let tankData = equipmentUsed?.tankdata
+        // tankdata is direct child of dive
+        let tankData = dive?.tankdata
         XCTAssertNotNil(tankData)
         XCTAssertEqual(tankData?.count, 2)
 
@@ -321,36 +323,40 @@ final class ProfileDataTests: XCTestCase {
         XCTAssertEqual(tank2?.tankpressureend?.bar ?? 0, 150.0, accuracy: 0.01)
     }
 
-    func testRoundTripEquipmentUsed() throws {
-        // Create a document with equipment used
+    func testRoundTripEquipmentUsedAndTankData() throws {
+        // Create a document with equipment used and tank data
         let generator = Generator(name: "TestApp")
         let gasDefs = GasDefinitions(mix: [
             Mix(id: "mix1", name: "Air", o2: 0.21),
             Mix(id: "mix2", name: "EAN32", o2: 0.32)
         ])
 
-        let equipmentUsed = EquipmentUsed(
-            leadquantity: 3.5,
-            tankdata: [
-                TankData(
-                    link: Link(ref: "mix1"),
-                    tankpressurebegin: Pressure(bar: 200),
-                    tankpressureend: Pressure(bar: 60),
-                    tankvolume: Volume(liters: 12.0)
-                ),
-                TankData(
-                    link: Link(ref: "mix2"),
-                    tankpressurebegin: Pressure(bar: 200),
-                    tankpressureend: Pressure(bar: 180),
-                    tankvolume: Volume(liters: 11.0)
-                )
-            ]
-        )
+        // equipmentused goes inside informationbeforedive
+        let equipmentUsed = EquipmentUsed(leadquantity: 3.5)
+
+        // tankdata is direct child of dive
+        let tankDataArray = [
+            TankData(
+                link: Link(ref: "mix1"),
+                tankvolume: Volume(liters: 12.0),
+                tankpressurebegin: Pressure(bar: 200),
+                tankpressureend: Pressure(bar: 60)
+            ),
+            TankData(
+                link: Link(ref: "mix2"),
+                tankvolume: Volume(liters: 11.0),
+                tankpressurebegin: Pressure(bar: 200),
+                tankpressureend: Pressure(bar: 180)
+            )
+        ]
 
         let dive = Dive(
             id: "dive1",
-            informationbeforedive: InformationBeforeDive(datetime: Date()),
-            equipmentused: equipmentUsed,
+            informationbeforedive: InformationBeforeDive(
+                datetime: Date(),
+                equipmentused: equipmentUsed
+            ),
+            tankdata: tankDataArray,
             informationafterdive: InformationAfterDive(greatestdepth: Depth(meters: 25))
         )
 
@@ -367,17 +373,17 @@ final class ProfileDataTests: XCTestCase {
 
         // Verify round-trip
         let reparsedDive = reparsed.profiledata?.repetitiongroup?.first?.dive?.first
-        XCTAssertNotNil(reparsedDive?.equipmentused)
-        XCTAssertEqual(reparsedDive?.equipmentused?.leadquantity, 3.5)
-        XCTAssertEqual(reparsedDive?.equipmentused?.tankdata?.count, 2)
+        XCTAssertNotNil(reparsedDive?.informationbeforedive?.equipmentused)
+        XCTAssertEqual(reparsedDive?.informationbeforedive?.equipmentused?.leadquantity, 3.5)
+        XCTAssertEqual(reparsedDive?.tankdata?.count, 2)
 
-        let reparsedTank1 = reparsedDive?.equipmentused?.tankdata?[0]
+        let reparsedTank1 = reparsedDive?.tankdata?[0]
         XCTAssertEqual(reparsedTank1?.link?.ref, "mix1")
         XCTAssertEqual(reparsedTank1?.tankvolume?.liters ?? 0, 12.0, accuracy: 0.01)
         XCTAssertEqual(reparsedTank1?.tankpressurebegin?.bar ?? 0, 200.0, accuracy: 0.01)
         XCTAssertEqual(reparsedTank1?.tankpressureend?.bar ?? 0, 60.0, accuracy: 0.01)
 
-        let reparsedTank2 = reparsedDive?.equipmentused?.tankdata?[1]
+        let reparsedTank2 = reparsedDive?.tankdata?[1]
         XCTAssertEqual(reparsedTank2?.link?.ref, "mix2")
         XCTAssertEqual(reparsedTank2?.tankvolume?.liters ?? 0, 11.0, accuracy: 0.01)
     }
@@ -392,9 +398,11 @@ final class ProfileDataTests: XCTestCase {
             <profiledata>
                 <repetitiongroup>
                     <dive>
-                        <equipmentused>
-                            <leadquantity>2.5</leadquantity>
-                        </equipmentused>
+                        <informationbeforedive>
+                            <equipmentused>
+                                <leadquantity>2.5</leadquantity>
+                            </equipmentused>
+                        </informationbeforedive>
                     </dive>
                 </repetitiongroup>
             </profiledata>
@@ -404,13 +412,12 @@ final class ProfileDataTests: XCTestCase {
         let data = xml.data(using: .utf8)!
         let document = try UDDFSerialization.parse(data)
 
-        let equipmentUsed = document.profiledata?.repetitiongroup?.first?.dive?.first?.equipmentused
+        let equipmentUsed = document.profiledata?.repetitiongroup?.first?.dive?.first?.informationbeforedive?.equipmentused
         XCTAssertNotNil(equipmentUsed)
         XCTAssertEqual(equipmentUsed?.leadquantity, 2.5)
-        XCTAssertNil(equipmentUsed?.tankdata)
     }
 
-    func testEquipmentUsedWithOnlyTankData() throws {
+    func testParseTankDataOnly() throws {
         let xml = """
         <?xml version="1.0" encoding="UTF-8"?>
         <uddf version="3.2.1">
@@ -426,12 +433,10 @@ final class ProfileDataTests: XCTestCase {
             <profiledata>
                 <repetitiongroup>
                     <dive>
-                        <equipmentused>
-                            <tankdata>
-                                <link ref="air" />
-                                <tankvolume>0.015</tankvolume>
-                            </tankdata>
-                        </equipmentused>
+                        <tankdata>
+                            <link ref="air" />
+                            <tankvolume>0.015</tankvolume>
+                        </tankdata>
                     </dive>
                 </repetitiongroup>
             </profiledata>
@@ -441,12 +446,11 @@ final class ProfileDataTests: XCTestCase {
         let data = xml.data(using: .utf8)!
         let document = try UDDFSerialization.parse(data)
 
-        let equipmentUsed = document.profiledata?.repetitiongroup?.first?.dive?.first?.equipmentused
-        XCTAssertNotNil(equipmentUsed)
-        XCTAssertNil(equipmentUsed?.leadquantity)
-        XCTAssertEqual(equipmentUsed?.tankdata?.count, 1)
-        XCTAssertEqual(equipmentUsed?.tankdata?.first?.link?.ref, "air")
-        XCTAssertEqual(equipmentUsed?.tankdata?.first?.tankvolume?.liters ?? 0, 15.0, accuracy: 0.01)
+        let tankData = document.profiledata?.repetitiongroup?.first?.dive?.first?.tankdata
+        XCTAssertNotNil(tankData)
+        XCTAssertEqual(tankData?.count, 1)
+        XCTAssertEqual(tankData?.first?.link?.ref, "air")
+        XCTAssertEqual(tankData?.first?.tankvolume?.liters ?? 0, 15.0, accuracy: 0.01)
     }
 
     // MARK: - InformationBeforeDive Extended Fields
@@ -486,7 +490,7 @@ final class ProfileDataTests: XCTestCase {
                             <surfacepressure>95000</surfacepressure>
                             <platform>charter-boat</platform>
                             <apparatus>open-scuba</apparatus>
-                            <purpose>sightseeing</purpose>
+                            <program>recreation</program>
                             <stateofrestbeforedive>rested</stateofrestbeforedive>
                             <tripmembership>trip-2025-01</tripmembership>
                         </informationbeforedive>
@@ -522,7 +526,7 @@ final class ProfileDataTests: XCTestCase {
         // Enumerations
         XCTAssertEqual(info?.platform, .charterBoat)
         XCTAssertEqual(info?.apparatus, .openScuba)
-        XCTAssertEqual(info?.purpose, .sightseeing)
+        XCTAssertEqual(info?.program, .recreation)
         XCTAssertEqual(info?.stateofrestbeforedive, .rested)
 
         // Other
@@ -600,7 +604,6 @@ final class ProfileDataTests: XCTestCase {
                             <equipmentmalfunction>none</equipmentmalfunction>
                             <pressuredrop>15000000</pressuredrop>
                             <problems>Minor mask leak</problems>
-                            <program>recreation</program>
                             <thermalcomfort>comfortable</thermalcomfort>
                             <workload>light</workload>
                             <desaturationtime>43200</desaturationtime>
@@ -608,7 +611,9 @@ final class ProfileDataTests: XCTestCase {
                             <surfaceintervalafterdive>7200</surfaceintervalafterdive>
                             <highestpo2>130000</highestpo2>
                             <anysymptoms>None</anysymptoms>
-                            <globalalarmsgiven>Low tank warning</globalalarmsgiven>
+                            <globalalarmsgiven>
+                                <globalalarm>ascent-warning-too-long</globalalarm>
+                            </globalalarmsgiven>
                             <observations>Manta rays, sea turtles</observations>
                             <rating>
                                 <ratingvalue>9</ratingvalue>
@@ -651,14 +656,13 @@ final class ProfileDataTests: XCTestCase {
         XCTAssertEqual(info?.current, .mildCurrent)
         XCTAssertEqual(info?.diveplan, .diveComputer)
         XCTAssertEqual(info?.equipmentmalfunction, EquipmentMalfunction.none)
-        XCTAssertEqual(info?.program, .recreation)
         XCTAssertEqual(info?.thermalcomfort, .comfortable)
         XCTAssertEqual(info?.workload, .light)
 
         // Text fields
         XCTAssertEqual(info?.problems, "Minor mask leak")
         XCTAssertEqual(info?.anysymptoms, "None")
-        XCTAssertEqual(info?.globalalarmsgiven, "Low tank warning")
+        XCTAssertEqual(info?.globalalarmsgiven?.globalalarm?.first, "ascent-warning-too-long")
         XCTAssertEqual(info?.observations, "Manta rays, sea turtles")
 
         // Rating
@@ -806,16 +810,16 @@ final class ProfileDataTests: XCTestCase {
 
         let info = InformationBeforeDive(
             link: [Link(ref: "diver1"), Link(ref: "site1")],
-            divenumber: 42,
-            internaldivenumber: 123,
-            divenumberofday: 2,
             airtemperature: Temperature(celsius: 28),
             altitude: Altitude(meters: 500),
-            surfacepressure: Pressure(bar: 0.95),
-            platform: .charterBoat,
             apparatus: .openScuba,
-            purpose: .sightseeing,
+            divenumber: 42,
+            divenumberofday: 2,
+            internaldivenumber: 123,
+            platform: .charterBoat,
+            program: .recreation,
             stateofrestbeforedive: .rested,
+            surfacepressure: Pressure(bar: 0.95),
             tripmembership: "trip-2025"
         )
 
@@ -839,7 +843,7 @@ final class ProfileDataTests: XCTestCase {
         XCTAssertEqual(reparsedInfo?.altitude?.meters, 500)
         XCTAssertEqual(reparsedInfo?.platform, .charterBoat)
         XCTAssertEqual(reparsedInfo?.apparatus, .openScuba)
-        XCTAssertEqual(reparsedInfo?.purpose, .sightseeing)
+        XCTAssertEqual(reparsedInfo?.program, .recreation)
         XCTAssertEqual(reparsedInfo?.stateofrestbeforedive, .rested)
         XCTAssertEqual(reparsedInfo?.tripmembership, "trip-2025")
     }
@@ -848,27 +852,26 @@ final class ProfileDataTests: XCTestCase {
         let generator = Generator(name: "TestApp")
 
         let info = InformationAfterDive(
-            lowesttemperature: Temperature(celsius: 20),
-            greatestdepth: Depth(meters: 30),
+            anysymptoms: "None",
             averagedepth: Depth(meters: 18),
-            diveduration: Duration(minutes: 45),
-            visibility: Depth(meters: 25),
             current: .mildCurrent,
+            desaturationtime: Duration(hours: 12),
+            diveduration: Duration(minutes: 45),
             diveplan: .diveComputer,
             equipmentmalfunction: EquipmentMalfunction.none,
+            globalalarmsgiven: GlobalAlarmsGiven(globalalarm: ["ascent-warning-too-long"]),
+            greatestdepth: Depth(meters: 30),
+            highestpo2: Pressure(bar: 1.3),
+            lowesttemperature: Temperature(celsius: 20),
+            noflighttime: Duration(hours: 20),
+            observations: "Manta rays",
             pressuredrop: Pressure(bar: 150),
             problems: "Minor mask leak",
-            program: .recreation,
-            thermalcomfort: .comfortable,
-            workload: .light,
-            desaturationtime: Duration(hours: 12),
-            noflighttime: Duration(hours: 20),
+            rating: Rating(ratingvalue: 9),
             surfaceintervalafterdive: Duration(hours: 2),
-            highestpo2: Pressure(bar: 1.3),
-            anysymptoms: "None",
-            globalalarmsgiven: "Low tank warning",
-            observations: "Manta rays",
-            rating: Rating(ratingvalue: 9)
+            thermalcomfort: .comfortable,
+            visibility: Depth(meters: 25),
+            workload: .light
         )
 
         let dive = Dive(id: "dive1", informationafterdive: info)
@@ -890,7 +893,6 @@ final class ProfileDataTests: XCTestCase {
         XCTAssertEqual(reparsedInfo?.equipmentmalfunction, EquipmentMalfunction.none)
         XCTAssertEqual(reparsedInfo?.pressuredrop?.bar ?? 0, 150, accuracy: 0.01)
         XCTAssertEqual(reparsedInfo?.problems, "Minor mask leak")
-        XCTAssertEqual(reparsedInfo?.program, .recreation)
         XCTAssertEqual(reparsedInfo?.thermalcomfort, .comfortable)
         XCTAssertEqual(reparsedInfo?.workload, .light)
         XCTAssertEqual(reparsedInfo?.desaturationtime?.hours ?? 0, 12, accuracy: 0.01)
@@ -898,7 +900,7 @@ final class ProfileDataTests: XCTestCase {
         XCTAssertEqual(reparsedInfo?.surfaceintervalafterdive?.hours ?? 0, 2, accuracy: 0.01)
         XCTAssertEqual(reparsedInfo?.highestpo2?.bar ?? 0, 1.3, accuracy: 0.01)
         XCTAssertEqual(reparsedInfo?.anysymptoms, "None")
-        XCTAssertEqual(reparsedInfo?.globalalarmsgiven, "Low tank warning")
+        XCTAssertEqual(reparsedInfo?.globalalarmsgiven?.globalalarm?.first, "ascent-warning-too-long")
         XCTAssertEqual(reparsedInfo?.observations, "Manta rays")
         XCTAssertEqual(reparsedInfo?.rating?.ratingvalue, 9)
     }
@@ -917,6 +919,7 @@ final class ProfileDataTests: XCTestCase {
                             <platform>submarine</platform>
                             <apparatus>jetpack</apparatus>
                             <purpose>exploration</purpose>
+                            <program>expedition</program>
                         </informationbeforedive>
                         <informationafterdive>
                             <current>extreme-current</current>
@@ -938,6 +941,7 @@ final class ProfileDataTests: XCTestCase {
         XCTAssertEqual(beforeInfo?.platform?.isStandard, false)
         XCTAssertEqual(beforeInfo?.apparatus?.rawValue, "jetpack")
         XCTAssertEqual(beforeInfo?.purpose?.rawValue, "exploration")
+        XCTAssertEqual(beforeInfo?.program?.rawValue, "expedition")
 
         let afterInfo = document.profiledata?.repetitiongroup?.first?.dive?.first?.informationafterdive
         XCTAssertEqual(afterInfo?.current?.rawValue, "extreme-current")
@@ -953,10 +957,328 @@ final class ProfileDataTests: XCTestCase {
         XCTAssertEqual(reparsedBefore?.platform?.rawValue, "submarine")
         XCTAssertEqual(reparsedBefore?.apparatus?.rawValue, "jetpack")
         XCTAssertEqual(reparsedBefore?.purpose?.rawValue, "exploration")
+        XCTAssertEqual(reparsedBefore?.program?.rawValue, "expedition")
 
         let reparsedAfter = reparsed.profiledata?.repetitiongroup?.first?.dive?.first?.informationafterdive
         XCTAssertEqual(reparsedAfter?.current?.rawValue, "extreme-current")
         XCTAssertEqual(reparsedAfter?.thermalcomfort?.rawValue, "freezing")
         XCTAssertEqual(reparsedAfter?.workload?.rawValue, "extreme")
+    }
+
+    // MARK: - New Elements Tests
+
+    func testParseAlcoholBeforeDive() throws {
+        let xml = """
+        <?xml version="1.0" encoding="UTF-8"?>
+        <uddf version="3.2.1">
+            <generator>
+                <name>TestApp</name>
+            </generator>
+            <profiledata>
+                <repetitiongroup>
+                    <dive>
+                        <informationbeforedive>
+                            <alcoholbeforedive>
+                                <drink>
+                                    <name>Beer</name>
+                                    <periodicallytaken>no</periodicallytaken>
+                                    <timespanbeforedive>7200</timespanbeforedive>
+                                </drink>
+                            </alcoholbeforedive>
+                        </informationbeforedive>
+                    </dive>
+                </repetitiongroup>
+            </profiledata>
+        </uddf>
+        """
+
+        let data = xml.data(using: .utf8)!
+        let document = try UDDFSerialization.parse(data)
+
+        let alcohol = document.profiledata?.repetitiongroup?.first?.dive?.first?.informationbeforedive?.alcoholbeforedive
+        XCTAssertNotNil(alcohol)
+        XCTAssertEqual(alcohol?.drink.count, 1)
+        XCTAssertEqual(alcohol?.drink.first?.name, "Beer")
+        XCTAssertEqual(alcohol?.drink.first?.periodicallytaken, "no")
+        XCTAssertEqual(alcohol?.drink.first?.timespanbeforedive?.hours ?? 0, 2, accuracy: 0.01)
+    }
+
+    func testParseMedicationBeforeDive() throws {
+        let xml = """
+        <?xml version="1.0" encoding="UTF-8"?>
+        <uddf version="3.2.1">
+            <generator>
+                <name>TestApp</name>
+            </generator>
+            <profiledata>
+                <repetitiongroup>
+                    <dive>
+                        <informationbeforedive>
+                            <medicationbeforedive>
+                                <medicine id="med1">
+                                    <name>Aspirin</name>
+                                    <periodicallytaken>yes</periodicallytaken>
+                                    <timespanbeforedive>3600</timespanbeforedive>
+                                </medicine>
+                            </medicationbeforedive>
+                        </informationbeforedive>
+                    </dive>
+                </repetitiongroup>
+            </profiledata>
+        </uddf>
+        """
+
+        let data = xml.data(using: .utf8)!
+        let document = try UDDFSerialization.parse(data)
+
+        let medication = document.profiledata?.repetitiongroup?.first?.dive?.first?.informationbeforedive?.medicationbeforedive
+        XCTAssertNotNil(medication)
+        XCTAssertEqual(medication?.medicine.count, 1)
+        XCTAssertEqual(medication?.medicine.first?.id, "med1")
+        XCTAssertEqual(medication?.medicine.first?.name, "Aspirin")
+        XCTAssertEqual(medication?.medicine.first?.periodicallytaken, "yes")
+        XCTAssertEqual(medication?.medicine.first?.timespanbeforedive?.hours ?? 0, 1, accuracy: 0.01)
+    }
+
+    func testParseExerciseBeforeDive() throws {
+        let xml = """
+        <?xml version="1.0" encoding="UTF-8"?>
+        <uddf version="3.2.1">
+            <generator>
+                <name>TestApp</name>
+            </generator>
+            <profiledata>
+                <repetitiongroup>
+                    <dive>
+                        <informationbeforedive>
+                            <exercisebeforedive>moderate</exercisebeforedive>
+                        </informationbeforedive>
+                    </dive>
+                </repetitiongroup>
+            </profiledata>
+        </uddf>
+        """
+
+        let data = xml.data(using: .utf8)!
+        let document = try UDDFSerialization.parse(data)
+
+        let exercise = document.profiledata?.repetitiongroup?.first?.dive?.first?.informationbeforedive?.exercisebeforedive
+        XCTAssertNotNil(exercise)
+        XCTAssertEqual(exercise, .moderate)
+        XCTAssertEqual(exercise?.isStandard, true)
+    }
+
+    func testExerciseBeforeDiveEnumValues() {
+        XCTAssertEqual(ExerciseBeforeDive(rawValue: "none"), ExerciseBeforeDive.none)
+        XCTAssertEqual(ExerciseBeforeDive(rawValue: "light"), .light)
+        XCTAssertEqual(ExerciseBeforeDive(rawValue: "moderate"), .moderate)
+        XCTAssertEqual(ExerciseBeforeDive(rawValue: "heavy"), .heavy)
+
+        let unknown = ExerciseBeforeDive(rawValue: "extreme")
+        XCTAssertEqual(unknown.rawValue, "extreme")
+        XCTAssertEqual(unknown.isStandard, false)
+    }
+
+    func testParseNoSuit() throws {
+        let xml = """
+        <?xml version="1.0" encoding="UTF-8"?>
+        <uddf version="3.2.1">
+            <generator>
+                <name>TestApp</name>
+            </generator>
+            <profiledata>
+                <repetitiongroup>
+                    <dive>
+                        <informationbeforedive>
+                            <nosuit />
+                        </informationbeforedive>
+                    </dive>
+                </repetitiongroup>
+            </profiledata>
+        </uddf>
+        """
+
+        let data = xml.data(using: .utf8)!
+        let document = try UDDFSerialization.parse(data)
+
+        let nosuit = document.profiledata?.repetitiongroup?.first?.dive?.first?.informationbeforedive?.nosuit
+        XCTAssertNotNil(nosuit)
+    }
+
+    func testParsePlannedProfile() throws {
+        let xml = """
+        <?xml version="1.0" encoding="UTF-8"?>
+        <uddf version="3.2.1">
+            <generator>
+                <name>TestApp</name>
+            </generator>
+            <gasdefinitions>
+                <mix id="air">
+                    <name>Air</name>
+                    <o2>0.21</o2>
+                </mix>
+            </gasdefinitions>
+            <profiledata>
+                <repetitiongroup>
+                    <dive>
+                        <informationbeforedive>
+                            <plannedprofile startdivemode="opencircuit" startmix="air">
+                                <waypoint>
+                                    <divetime>0</divetime>
+                                    <depth>0</depth>
+                                </waypoint>
+                                <waypoint>
+                                    <divetime>300</divetime>
+                                    <depth>20</depth>
+                                </waypoint>
+                            </plannedprofile>
+                        </informationbeforedive>
+                    </dive>
+                </repetitiongroup>
+            </profiledata>
+        </uddf>
+        """
+
+        let data = xml.data(using: .utf8)!
+        let document = try UDDFSerialization.parse(data)
+
+        let profile = document.profiledata?.repetitiongroup?.first?.dive?.first?.informationbeforedive?.plannedprofile
+        XCTAssertNotNil(profile)
+        XCTAssertEqual(profile?.startdivemode, "opencircuit")
+        XCTAssertEqual(profile?.startmix, "air")
+        XCTAssertEqual(profile?.waypoint?.count, 2)
+        XCTAssertEqual(profile?.waypoint?[1].depth?.meters, 20)
+    }
+
+    func testParseDiveTable() throws {
+        let xml = """
+        <?xml version="1.0" encoding="UTF-8"?>
+        <uddf version="3.2.1">
+            <generator>
+                <name>TestApp</name>
+            </generator>
+            <profiledata>
+                <repetitiongroup>
+                    <dive>
+                        <informationafterdive>
+                            <diveplan>table</diveplan>
+                            <divetable>Buehlmann</divetable>
+                        </informationafterdive>
+                    </dive>
+                </repetitiongroup>
+            </profiledata>
+        </uddf>
+        """
+
+        let data = xml.data(using: .utf8)!
+        let document = try UDDFSerialization.parse(data)
+
+        let afterInfo = document.profiledata?.repetitiongroup?.first?.dive?.first?.informationafterdive
+        XCTAssertEqual(afterInfo?.diveplan, .table)
+        XCTAssertEqual(afterInfo?.divetable, .buehlmann)
+        XCTAssertEqual(afterInfo?.divetable?.isStandard, true)
+    }
+
+    func testDiveTableEnumValues() {
+        XCTAssertEqual(DiveTable(rawValue: "PADI"), .padi)
+        XCTAssertEqual(DiveTable(rawValue: "NAUI"), .naui)
+        XCTAssertEqual(DiveTable(rawValue: "BSAC"), .bsac)
+        XCTAssertEqual(DiveTable(rawValue: "Buehlmann"), .buehlmann)
+        XCTAssertEqual(DiveTable(rawValue: "DCIEM"), .dciem)
+        XCTAssertEqual(DiveTable(rawValue: "US-Navy"), .usNavy)
+        XCTAssertEqual(DiveTable(rawValue: "CSMD"), .csmd)
+        XCTAssertEqual(DiveTable(rawValue: "COMEX"), .comex)
+        XCTAssertEqual(DiveTable(rawValue: "other"), .other)
+
+        let unknown = DiveTable(rawValue: "custom")
+        XCTAssertEqual(unknown.rawValue, "custom")
+        XCTAssertEqual(unknown.isStandard, false)
+    }
+
+    func testParseHyperbaricFacilityTreatment() throws {
+        let xml = """
+        <?xml version="1.0" encoding="UTF-8"?>
+        <uddf version="3.2.1">
+            <generator>
+                <name>TestApp</name>
+            </generator>
+            <profiledata>
+                <repetitiongroup>
+                    <dive>
+                        <informationafterdive>
+                            <hyperbaricfacilitytreatment>
+                                <dateofrecompressiontreatment>
+                                    <datetime>2025-01-15T14:00:00Z</datetime>
+                                </dateofrecompressiontreatment>
+                                <numberofrecompressiontreatments>2</numberofrecompressiontreatments>
+                            </hyperbaricfacilitytreatment>
+                        </informationafterdive>
+                    </dive>
+                </repetitiongroup>
+            </profiledata>
+        </uddf>
+        """
+
+        let data = xml.data(using: .utf8)!
+        let document = try UDDFSerialization.parse(data)
+
+        let treatment = document.profiledata?.repetitiongroup?.first?.dive?.first?.informationafterdive?.hyperbaricfacilitytreatment
+        XCTAssertNotNil(treatment)
+        XCTAssertNotNil(treatment?.dateofrecompressiontreatment?.datetime)
+        XCTAssertEqual(treatment?.numberofrecompressiontreatments, 2)
+    }
+
+    func testRoundTripNewElements() throws {
+        let generator = Generator(name: "TestApp")
+
+        let alcohol = AlcoholBeforeDive(drink: [
+            Drink(name: "Wine", periodicallytaken: "no", timespanbeforedive: Duration(hours: 3))
+        ])
+
+        let medication = MedicationBeforeDive(medicine: [
+            Medicine(id: "med1", name: "Vitamin C", periodicallytaken: "yes")
+        ])
+
+        let info = InformationBeforeDive(
+            alcoholbeforedive: alcohol,
+            exercisebeforedive: .light,
+            medicationbeforedive: medication,
+            nosuit: NoSuit()
+        )
+
+        let afterInfo = InformationAfterDive(
+            divetable: .padi,
+            hyperbaricfacilitytreatment: HyperbaricFacilityTreatment(
+                numberofrecompressiontreatments: 1
+            )
+        )
+
+        let dive = Dive(
+            id: "dive1",
+            informationbeforedive: info,
+            informationafterdive: afterInfo
+        )
+
+        let repetitionGroup = RepetitionGroup(dive: [dive])
+        let profileData = ProfileData(repetitiongroup: [repetitionGroup])
+
+        var document = UDDFDocument(version: "3.2.1", generator: generator)
+        document.profiledata = profileData
+
+        let xmlData = try UDDFSerialization.write(document, prettyPrinted: true)
+        let reparsed = try UDDFSerialization.parse(xmlData)
+
+        let reparsedBefore = reparsed.profiledata?.repetitiongroup?.first?.dive?.first?.informationbeforedive
+        XCTAssertNotNil(reparsedBefore?.alcoholbeforedive)
+        XCTAssertEqual(reparsedBefore?.alcoholbeforedive?.drink.first?.name, "Wine")
+        XCTAssertEqual(reparsedBefore?.exercisebeforedive, .light)
+        XCTAssertNotNil(reparsedBefore?.medicationbeforedive)
+        XCTAssertEqual(reparsedBefore?.medicationbeforedive?.medicine.first?.name, "Vitamin C")
+        XCTAssertNotNil(reparsedBefore?.nosuit)
+
+        let reparsedAfter = reparsed.profiledata?.repetitiongroup?.first?.dive?.first?.informationafterdive
+        XCTAssertEqual(reparsedAfter?.divetable, .padi)
+        XCTAssertNotNil(reparsedAfter?.hyperbaricfacilitytreatment)
+        XCTAssertEqual(reparsedAfter?.hyperbaricfacilitytreatment?.numberofrecompressiontreatments, 1)
     }
 }

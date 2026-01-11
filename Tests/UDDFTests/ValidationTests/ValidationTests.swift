@@ -87,8 +87,8 @@ final class ValidationTests: XCTestCase {
         let dive = Dive(
             id: "dive1",
             informationafterdive: InformationAfterDive(
-                greatestdepth: Depth(meters: 30),
-                averagedepth: Depth(meters: 15)
+                averagedepth: Depth(meters: 15),
+                greatestdepth: Depth(meters: 30)
             )
         )
 

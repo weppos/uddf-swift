@@ -3,45 +3,49 @@ import XMLCoder
 
 /// Equipment used during a specific dive
 ///
-/// Contains information about the equipment used during a dive, including
-/// tanks with gas mix references and lead weight quantity.
+/// Contains cross-references to equipment pieces declared in the equipment section
+/// and the amount of lead weight used.
 ///
-/// - SeeAlso: https://www.streit.cc/extern/uddf_v321/en/equipmentused.html
+/// This element appears inside `<informationbeforedive>`.
+///
+/// Reference: https://www.streit.cc/extern/uddf_v321/en/equipmentused.html
 public struct EquipmentUsed: Codable, Equatable, Sendable {
+    /// Cross-references to equipment pieces (tanks, suits, etc.)
+    ///
+    /// Each link references an equipment item declared in the `<equipment>` section.
+    public var link: [Link]?
+
     /// Lead weight quantity
     ///
     /// - Unit: kg (kilograms)
     public var leadquantity: Double?
 
-    /// Tank data for each cylinder used during the dive
-    public var tankdata: [TankData]?
-
     public init(
-        leadquantity: Double? = nil,
-        tankdata: [TankData]? = nil
+        link: [Link]? = nil,
+        leadquantity: Double? = nil
     ) {
+        self.link = link
         self.leadquantity = leadquantity
-        self.tankdata = tankdata
     }
 }
 
-/// Tank (cylinder) data for a dive
+/// Tank (cylinder) data for breathing gas consumption
 ///
-/// Contains information about a single tank used during a dive, including
-/// a reference to the gas mix, pressure readings, and consumption data.
+/// Contains information about gas consumption for a single tank during a dive.
+/// This is a direct child of `<dive>`, not inside `<equipmentused>`.
 ///
-/// - SeeAlso: https://www.streit.cc/extern/uddf_v321/en/tankdata.html
+/// Reference: https://www.streit.cc/extern/uddf_v321/en/tankdata.html
 public struct TankData: Codable, Equatable, Sendable {
     /// Unique identifier for this tank data
     public var id: String?
 
-    /// Breathing gas consumption rate
-    ///
-    /// - Unit: m³/s (cubic meters per second)
-    public var breathingconsumptionvolume: Double?
-
     /// Reference to a gas mix from gasdefinitions
     public var link: Link?
+
+    /// Tank volume (water capacity)
+    ///
+    /// - Unit: m³ (cubic meters)
+    public var tankvolume: Volume?
 
     /// Tank pressure at the beginning of the dive
     ///
@@ -53,34 +57,34 @@ public struct TankData: Codable, Equatable, Sendable {
     /// - Unit: Pa (pascals)
     public var tankpressureend: Pressure?
 
-    /// Tank volume (water capacity)
+    /// Breathing gas consumption rate
     ///
-    /// - Unit: m³ (cubic meters)
-    public var tankvolume: Volume?
+    /// - Unit: m³/s (cubic meters per second)
+    public var breathingconsumptionvolume: Double?
 
     public init(
         id: String? = nil,
-        breathingconsumptionvolume: Double? = nil,
         link: Link? = nil,
+        tankvolume: Volume? = nil,
         tankpressurebegin: Pressure? = nil,
         tankpressureend: Pressure? = nil,
-        tankvolume: Volume? = nil
+        breathingconsumptionvolume: Double? = nil
     ) {
         self.id = id
-        self.breathingconsumptionvolume = breathingconsumptionvolume
         self.link = link
+        self.tankvolume = tankvolume
         self.tankpressurebegin = tankpressurebegin
         self.tankpressureend = tankpressureend
-        self.tankvolume = tankvolume
+        self.breathingconsumptionvolume = breathingconsumptionvolume
     }
 
     enum CodingKeys: String, CodingKey {
         case id
-        case breathingconsumptionvolume
         case link
+        case tankvolume
         case tankpressurebegin
         case tankpressureend
-        case tankvolume
+        case breathingconsumptionvolume
     }
 }
 

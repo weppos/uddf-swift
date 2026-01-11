@@ -211,11 +211,11 @@ final class ReferenceResolutionTests: XCTestCase {
             <profiledata>
                 <repetitiongroup>
                     <dive>
-                        <informationbeforedive>
+                        <informationafterdive>
                             <notes>
                                 <link ref="nonexistent"/>
                             </notes>
-                        </informationbeforedive>
+                        </informationafterdive>
                     </dive>
                 </repetitiongroup>
             </profiledata>

@@ -2,6 +2,23 @@
 
 ## Unreleased
 
+### Added
+
+- Add `AlcoholBeforeDive`, `Drink` structs for pre-dive alcohol consumption tracking
+- Add `MedicationBeforeDive`, `Medicine` structs for pre-dive medication tracking
+- Add `ExerciseBeforeDive` type with standard values (none, light, moderate, heavy)
+- Add `NoSuit` marker element for dives without protective suit
+- Add `PlannedProfile` struct for planned dive profiles with waypoints
+- Add `DiveTable` type with standard decompression table values (PADI, NAUI, Buehlmann, etc.)
+- Add `HyperbaricFacilityTreatment` struct for recompression treatment records
+- Add `GlobalAlarmsGiven` container with `globalalarm` string array
+
+### Changed
+
+- **BREAKING**: Move `purpose` from `InformationAfterDive` to `InformationBeforeDive`
+- **BREAKING**: Remove `notes` from `InformationBeforeDive` (not in UDDF spec)
+- Reorder `internaldivenumber` after `divenumberofday` in `InformationBeforeDive`
+
 ## 0.5.0 - 2026-01-11
 
 ### Added

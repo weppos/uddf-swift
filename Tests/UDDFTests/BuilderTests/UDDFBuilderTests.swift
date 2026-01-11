@@ -125,8 +125,8 @@ final class UDDFBuilderTests: XCTestCase {
         let dive = Dive(
             id: "dive1",
             informationafterdive: InformationAfterDive(
-                greatestdepth: Depth(meters: 18.5),
-                diveduration: Duration(minutes: 45)
+                diveduration: Duration(minutes: 45),
+                greatestdepth: Depth(meters: 18.5)
             )
         )
 

@@ -185,11 +185,6 @@ public class ReferenceResolver {
             for group in groups {
                 if let dives = group.dive {
                     for dive in dives {
-                        // Check information before dive
-                        if let notes = dive.informationbeforedive?.notes {
-                            errors.append(contentsOf: validateLinkReferences(in: notes))
-                        }
-
                         // Check information after dive
                         if let notes = dive.informationafterdive?.notes {
                             errors.append(contentsOf: validateLinkReferences(in: notes))
