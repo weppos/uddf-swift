@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uddf xmlns="http://www.streit.cc/uddf/3.2/" version="3.2.1">
+    <generator>
+        <name>UDDF Swift Test</name>
+        <manufacturer id="uddf-swift">
+            <name>UDDF Swift</name>
+        </manufacturer>
+    </generator>
+    <diver>
+        <owner id="owner1">
+            <personal>
+                <firstname>John</firstname>
+                <lastname>Diver</lastname>
+            </personal>
+            <equipment>
+                <divecomputer id="dc1">
+                    <name>Perdix AI</name>
+                    <manufacturer id="shearwater">
+                        <name>Shearwater Research</name>
+                    </manufacturer>
+                    <model>Perdix AI</model>
+                    <serialnumber>SN12345</serialnumber>
+                    <serviceinterval>365</serviceinterval>
+                </divecomputer>
+                <tank id="tank1">
+                    <name>Steel HP100</name>
+                    <manufacturer id="faber">
+                        <name>Faber</name>
+                    </manufacturer>
+                    <tankmaterial>steel</tankmaterial>
+                    <tankvolume>0.012</tankvolume>
+                </tank>
+                <tank id="tank2">
+                    <name>Aluminum S80</name>
+                    <tankmaterial>aluminium</tankmaterial>
+                    <tankvolume>0.0113</tankvolume>
+                </tank>
+                <suit id="suit1">
+                    <name>Fusion Bullet</name>
+                    <manufacturer id="dui">
+                        <name>DUI</name>
+                    </manufacturer>
+                    <suittype>dry-suit</suittype>
+                </suit>
+                <regulator id="reg1">
+                    <name>MK25 EVO/S620Ti</name>
+                    <manufacturer id="scubapro">
+                        <name>Scubapro</name>
+                    </manufacturer>
+                    <model>MK25 EVO/S620Ti</model>
+                    <purchase>
+                        <datetime>2024-01-15T10:30:00Z</datetime>
+                        <price currency="EUR">899.00</price>
+                        <shop id="shop1">
+                            <name>Dive Shop Munich</name>
+                            <address>
+                                <city>Munich</city>
+                                <country>Germany</country>
+                            </address>
+                        </shop>
+                    </purchase>
+                    <serviceinterval>365</serviceinterval>
+                </regulator>
+                <buoyancycontroldevice id="bcd1">
+                    <name>Donut Wing</name>
+                    <manufacturer id="halcyon">
+                        <name>Halcyon</name>
+                    </manufacturer>
+                </buoyancycontroldevice>
+                <fins id="fins1">
+                    <name>Jet Fins</name>
+                </fins>
+                <mask id="mask1">
+                    <name>Dive Mask Pro</name>
+                </mask>
+                <light id="light1">
+                    <name>Primary Light</name>
+                    <manufacturer id="lightmonkey">
+                        <name>Light Monkey</name>
+                    </manufacturer>
+                </light>
+                <lead id="lead1">
+                    <name>Weight Belt</name>
+                    <leadquantity>6.0</leadquantity>
+                </lead>
+            </equipment>
+        </owner>
+    </diver>
+</uddf>

@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+### Added
+
+- Add full equipment support for all 21 UDDF equipment types
+- Add `Shop` struct for vendor/shop information
+- Add `Price` struct with currency attribute
+- Add `Purchase` struct for equipment purchase information
+
+### Changed
+
+- Move `Notes` to `Models/Common/` for reuse by equipment types
+
 ## 0.4.0 - 2026-01-11
 
 ### Added

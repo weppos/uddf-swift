@@ -131,35 +131,3 @@ public struct Personal: Codable, Equatable, Sendable {
         self.contact = contact
     }
 }
-
-/// Equipment used by a diver
-public struct Equipment: Codable, Equatable, Sendable {
-    /// Buoyancy control device
-    public var bc: String?
-
-    /// Fins
-    public var fins: String?
-
-    /// Mask
-    public var mask: String?
-
-    /// Wetsuit or drysuit
-    public var suit: String?
-
-    /// Weights
-    public var weight: String?
-
-    public init(
-        bc: String? = nil,
-        fins: String? = nil,
-        mask: String? = nil,
-        suit: String? = nil,
-        weight: String? = nil
-    ) {
-        self.bc = bc
-        self.fins = fins
-        self.mask = mask
-        self.suit = suit
-        self.weight = weight
-    }
-}
