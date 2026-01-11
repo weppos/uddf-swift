@@ -45,4 +45,31 @@ final class UDDFWriterTests: XCTestCase {
             "XML output should include UDDF namespace: \(xmlString)"
         )
     }
+
+    // MARK: - Date Format Tests
+
+    func testWriteDateWithLocalFormat() throws {
+        var document = try UDDFBuilder()
+            .generator(name: "TestApp", version: "1.0.0")
+            .build()
+        document.generator.datetime = Date()
+
+        let data = try UDDFSerialization.write(document, dateFormat: .local)
+        let xmlString = String(data: data, encoding: .utf8)!
+
+        XCTAssertTrue(xmlString.contains("</datetime>"), "Should contain datetime element")
+        XCTAssertFalse(xmlString.contains("Z</datetime>"), "Local format should not have Z suffix")
+    }
+
+    func testWriteDateWithUTCFormat() throws {
+        var document = try UDDFBuilder()
+            .generator(name: "TestApp", version: "1.0.0")
+            .build()
+        document.generator.datetime = Date()
+
+        let data = try UDDFSerialization.write(document, dateFormat: .utc)
+        let xmlString = String(data: data, encoding: .utf8)!
+
+        XCTAssertTrue(xmlString.contains("Z</datetime>"), "UTC format should have Z suffix")
+    }
 }

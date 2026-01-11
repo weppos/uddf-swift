@@ -131,6 +131,44 @@ final class UDDFParserTests: XCTestCase {
         }
     }
 
+    // MARK: - Date Format Tests
+
+    func testParseDateWithUTCFormat() throws {
+        let xml = """
+        <?xml version="1.0" encoding="UTF-8"?>
+        <uddf version="3.2.1">
+            <generator>
+                <name>TestApp</name>
+                <datetime>2024-09-30T10:49:17Z</datetime>
+            </generator>
+        </uddf>
+        """
+
+        let data = xml.data(using: .utf8)!
+        let document = try UDDFSerialization.parse(data)
+
+        XCTAssertNotNil(document.generator.datetime)
+        XCTAssertEqual(document.generator.name, "TestApp")
+    }
+
+    func testParseDateWithLocalFormat() throws {
+        let xml = """
+        <?xml version="1.0" encoding="UTF-8"?>
+        <uddf version="3.2.1">
+            <generator>
+                <name>TestApp</name>
+                <datetime>2024-09-30T12:49:17</datetime>
+            </generator>
+        </uddf>
+        """
+
+        let data = xml.data(using: .utf8)!
+        let document = try UDDFSerialization.parse(data)
+
+        XCTAssertNotNil(document.generator.datetime)
+        XCTAssertEqual(document.generator.name, "TestApp")
+    }
+
     // MARK: - File I/O Tests
 
     func testWriteAndReadFile() throws {

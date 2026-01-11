@@ -8,14 +8,47 @@ import XMLCoder
 class UDDFParser {
     private let decoder: XMLDecoder
 
+    /// ISO 8601 formatter for UTC dates (with Z suffix)
+    private static let iso8601Formatter: ISO8601DateFormatter = {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime]
+        return formatter
+    }()
+
+    /// Formatter for local dates (without timezone)
+    private static let localFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        return formatter
+    }()
+
     init() {
         decoder = XMLDecoder()
 
         // Configure decoder for UDDF format
         decoder.shouldProcessNamespaces = false
 
-        // UDDF uses ISO 8601 date format
-        decoder.dateDecodingStrategy = .iso8601
+        // Custom date decoding that handles both UTC (Z suffix) and local (no timezone)
+        decoder.dateDecodingStrategy = .custom { decoder in
+            let container = try decoder.singleValueContainer()
+            let dateString = try container.decode(String.self)
+
+            // Try ISO 8601 with Z suffix first
+            if let date = UDDFParser.iso8601Formatter.date(from: dateString) {
+                return date
+            }
+
+            // Try local format (no timezone)
+            if let date = UDDFParser.localFormatter.date(from: dateString) {
+                return date
+            }
+
+            throw DecodingError.dataCorruptedError(
+                in: container,
+                debugDescription: "Expected date in ISO 8601 format (with or without timezone)"
+            )
+        }
 
         // Decode data as base64 if present
         decoder.dataDecodingStrategy = .base64

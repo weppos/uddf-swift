@@ -1,6 +1,15 @@
 import Foundation
 import XMLCoder
 
+/// Date format options for UDDF export
+public enum UDDFDateFormat {
+    /// UTC time with Z suffix (e.g., 2025-09-30T10:49:17Z)
+    case utc
+
+    /// Local time without timezone (e.g., 2025-09-30T12:49:17)
+    case local
+}
+
 /// Writer for UDDF XML files
 ///
 /// Uses XMLCoder to encode Swift types into UDDF XML format. Configured to
@@ -9,12 +18,20 @@ class UDDFWriter {
     private let encoder: XMLEncoder
     private let prettyPrinted: Bool
 
-    init(prettyPrinted: Bool = true) {
+    init(prettyPrinted: Bool = true, dateFormat: UDDFDateFormat = .local) {
         self.prettyPrinted = prettyPrinted
         encoder = XMLEncoder()
 
-        // UDDF uses ISO 8601 date format
-        encoder.dateEncodingStrategy = .iso8601
+        // Configure date encoding based on format option
+        switch dateFormat {
+        case .utc:
+            encoder.dateEncodingStrategy = .iso8601
+        case .local:
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+            dateFormatter.locale = Locale(identifier: "en_US_POSIX")
+            encoder.dateEncodingStrategy = .formatted(dateFormatter)
+        }
 
         // Encode data as base64
         encoder.dataEncodingStrategy = .base64

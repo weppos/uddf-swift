@@ -129,10 +129,15 @@ public struct UDDFSerialization {
     /// - Parameters:
     ///   - document: UDDF document to write
     ///   - prettyPrinted: Whether to format XML with indentation (default: true)
+    ///   - dateFormat: Date format for export (default: .utc)
     /// - Returns: XML data
     /// - Throws: UDDFError if writing fails
-    public static func write(_ document: UDDFDocument, prettyPrinted: Bool = true) throws -> Data {
-        let writer = UDDFWriter(prettyPrinted: prettyPrinted)
+    public static func write(
+        _ document: UDDFDocument,
+        prettyPrinted: Bool = true,
+        dateFormat: UDDFDateFormat = .local
+    ) throws -> Data {
+        let writer = UDDFWriter(prettyPrinted: prettyPrinted, dateFormat: dateFormat)
         return try writer.write(document)
     }
 
@@ -142,9 +147,15 @@ public struct UDDFSerialization {
     ///   - document: UDDF document to write
     ///   - url: File URL to write to
     ///   - prettyPrinted: Whether to format XML with indentation (default: true)
+    ///   - dateFormat: Date format for export (default: .utc)
     /// - Throws: UDDFError if writing fails
-    public static func write(_ document: UDDFDocument, to url: URL, prettyPrinted: Bool = true) throws {
-        let writer = UDDFWriter(prettyPrinted: prettyPrinted)
+    public static func write(
+        _ document: UDDFDocument,
+        to url: URL,
+        prettyPrinted: Bool = true,
+        dateFormat: UDDFDateFormat = .local
+    ) throws {
+        let writer = UDDFWriter(prettyPrinted: prettyPrinted, dateFormat: dateFormat)
         try writer.write(document, to: url)
     }
 }

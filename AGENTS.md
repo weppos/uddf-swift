@@ -46,11 +46,11 @@ Sources/UDDF/
 └── Validation/     # Document validation
 
 Tests/UDDFTests/
+├── BuilderTests/         # Builder API tests
+├── IntegrationTests/     # High-level serialization and fixture round-trip tests
+├── ModelTests/           # Model unit tests (units, gas definitions, etc.)
+├── ParserTests/          # XML parsing tests
 ├── ValidationTests/      # Validation tests
-├── UDDFParserTests/     # Parser/Writer tests
-├── UDDFBuilderTests/    # Builder API tests
-├── ProfileDataTests/    # Profile data tests
-├── ReferenceResolutionTests/ # Reference validation tests
-└── Fixtures/            # Test fixtures
+├── WriterTests/          # XML writing tests
+└── Fixtures/             # Test fixtures organized by UDDF section
 ```
-

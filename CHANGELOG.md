@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.6.0 - 2026-01-11
+
 ### Added
 
 - Add `AlcoholBeforeDive`, `Drink` structs for pre-dive alcohol consumption tracking
@@ -18,6 +20,7 @@
 - **BREAKING**: Move `purpose` from `InformationAfterDive` to `InformationBeforeDive`
 - **BREAKING**: Remove `notes` from `InformationBeforeDive` (not in UDDF spec)
 - Reorder `internaldivenumber` after `divenumberofday` in `InformationBeforeDive`
+- Add `UDDFDateFormat` option (`.utc`, `.local`) for configuring date serialization format
 
 ## 0.5.0 - 2026-01-11
 
