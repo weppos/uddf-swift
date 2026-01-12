@@ -15,6 +15,7 @@
   - nodecotime (no-decompression time remaining)
   - otu (oxygen toxicity units)
   - remainingbottomtime (RBT - time before ascent required)
+  - remainingo2time (remaining time until oxygen toxicity)
   - setpo2 (rebreather setpoint)
   - switchmix (gas mix changes)
   - tankpressure (cylinder pressure)
@@ -67,6 +68,7 @@
             <nodecotime>5940</nodecotime>
             <otu>15.5</otu>
             <remainingbottomtime>1800</remainingbottomtime>
+            <remainingo2time>3300</remainingo2time>
             <setpo2>1.2e5</setpo2>
             <tankpressure>1.95e7</tankpressure>
             <temperature>293.15</temperature>
@@ -83,6 +85,7 @@
             <heading>180.5</heading>
             <heartrate>80</heartrate>
             <otu>42.0</otu>
+            <remainingo2time>2400</remainingo2time>
             <setpo2>1.3e5</setpo2>
             <tankpressure>1.8e7</tankpressure>
             <temperature>285.15</temperature>

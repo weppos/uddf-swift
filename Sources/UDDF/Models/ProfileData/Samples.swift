@@ -71,6 +71,11 @@ public struct Waypoint: Codable, Equatable, Sendable {
     /// Remaining bottom time at this waypoint (time before ascent required)
     public var remainingbottomtime: Duration?
 
+    /// Remaining time in seconds until oxygen becomes toxic at this waypoint
+    ///
+    /// Reference: https://www.streit.cc/extern/uddf_v321/en/remainingo2time.html
+    public var remainingo2time: Duration?
+
     /// Rebreather setpoint (PPO2) at this waypoint
     ///
     /// - Unit: pascals (SI)
@@ -111,6 +116,7 @@ public struct Waypoint: Codable, Equatable, Sendable {
         nodecotime: Duration? = nil,
         otu: Double? = nil,
         remainingbottomtime: Duration? = nil,
+        remainingo2time: Duration? = nil,
         setpo2: Pressure? = nil,
         switchmix: SwitchMix? = nil,
         tankpressure: Pressure? = nil,
@@ -132,6 +138,7 @@ public struct Waypoint: Codable, Equatable, Sendable {
         self.nodecotime = nodecotime
         self.otu = otu
         self.remainingbottomtime = remainingbottomtime
+        self.remainingo2time = remainingo2time
         self.setpo2 = setpo2
         self.switchmix = switchmix
         self.tankpressure = tankpressure

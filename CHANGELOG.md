@@ -6,6 +6,7 @@
 
 - Add `heading` field to `Waypoint` for compass heading in degrees
 - Add `otu` field to `Waypoint` for Oxygen Toxicity Units
+- Add `remainingo2time` field to `Waypoint` for remaining time until oxygen toxicity
 
 ## 0.7.0 - 2026-01-12
 
