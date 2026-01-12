@@ -25,6 +25,7 @@ UDDF Swift supports a small number of non-standard tags that appear in real-worl
 `profiledata`:
 
 - `informationbeforedive` -> **`salinity`**: A libdivecomputer de-facto standard used by some dive computers.
+- `samples` -> `waypoint` -> **`heartrate`**: Heart rate in beats per minute. Used by dive computers with heart rate monitoring (e.g., Garmin Descent series).
 
 `gasdefinitions`:
 

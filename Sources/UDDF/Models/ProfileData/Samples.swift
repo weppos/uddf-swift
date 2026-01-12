@@ -48,9 +48,6 @@ public struct Waypoint: Codable, Equatable, Sendable {
     /// Gradient factor at this waypoint (decompression calculation)
     public var gradientfactor: Double?
 
-    /// Heart rate at this waypoint (beats per minute)
-    public var heartrate: UInt?
-
     /// Measured partial pressure of oxygen (PPO2) from sensors
     ///
     /// - Unit: pascals (SI)
@@ -79,6 +76,14 @@ public struct Waypoint: Codable, Equatable, Sendable {
     /// Time-to-surface at this waypoint (decompression time required)
     public var tts: Duration?
 
+    // MARK: - Extensions
+
+    /// Heart rate at this waypoint (beats per minute)
+    ///
+    /// - Note: EXTENSION - Not part of UDDF 3.2.1 specification.
+    ///   Used by dive computers with heart rate monitoring (e.g., Garmin Descent series).
+    public var heartrate: UInt?
+
     public init(
         alarm: String? = nil,
         batterychargecondition: Double? = nil,
@@ -89,7 +94,6 @@ public struct Waypoint: Codable, Equatable, Sendable {
         divemode: DiveMode? = nil,
         divetime: Duration? = nil,
         gradientfactor: Double? = nil,
-        heartrate: UInt? = nil,
         measuredpo2: Pressure? = nil,
         nodecotime: Duration? = nil,
         remainingbottomtime: Duration? = nil,
@@ -97,7 +101,8 @@ public struct Waypoint: Codable, Equatable, Sendable {
         switchmix: SwitchMix? = nil,
         tankpressure: Pressure? = nil,
         temperature: Temperature? = nil,
-        tts: Duration? = nil
+        tts: Duration? = nil,
+        heartrate: UInt? = nil
     ) {
         self.alarm = alarm
         self.batterychargecondition = batterychargecondition
@@ -108,7 +113,6 @@ public struct Waypoint: Codable, Equatable, Sendable {
         self.divemode = divemode
         self.divetime = divetime
         self.gradientfactor = gradientfactor
-        self.heartrate = heartrate
         self.measuredpo2 = measuredpo2
         self.nodecotime = nodecotime
         self.remainingbottomtime = remainingbottomtime
@@ -117,6 +121,7 @@ public struct Waypoint: Codable, Equatable, Sendable {
         self.tankpressure = tankpressure
         self.temperature = temperature
         self.tts = tts
+        self.heartrate = heartrate
     }
 }
 

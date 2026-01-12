@@ -9,6 +9,7 @@
 ### Changed
 
 - **BREAKING**: Change `Waypoint.calculatedpo2` from `Double` to `Pressure` (pascals SI)
+- Document `Waypoint.heartrate` as non-standard extension (not in UDDF 3.2.1 spec)
 
 ### Removed
 
