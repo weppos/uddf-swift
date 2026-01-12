@@ -95,46 +95,49 @@ final class ProfileDataTests: XCTestCase {
 
         // Waypoint 0: Surface with setpoint, battery, PPO2
         let waypoint0 = waypoints?[0]
-        XCTAssertEqual(waypoint0?.divetime?.seconds, 0)
-        XCTAssertEqual(waypoint0?.depth?.meters, 0)
-        XCTAssertEqual(waypoint0?.temperature?.celsius ?? 0, 20, accuracy: 0.01)
         XCTAssertEqual(waypoint0?.batterychargecondition, 3.5)
         XCTAssertEqual(waypoint0?.calculatedpo2?.pascals ?? 0, 1.2e5)
+        XCTAssertEqual(waypoint0?.depth?.meters, 0)
+        XCTAssertEqual(waypoint0?.divemode?.type, .closedCircuit)
+        XCTAssertEqual(waypoint0?.divetime?.seconds, 0)
+        XCTAssertEqual(waypoint0?.gradientfactor, 0)
+        XCTAssertNil(waypoint0?.heading)
+        XCTAssertNil(waypoint0?.nodecotime)
+        XCTAssertNil(waypoint0?.remainingbottomtime)
         XCTAssertEqual(waypoint0?.setpo2?.pascals ?? 0, 1.2e5)
         XCTAssertEqual(waypoint0?.switchmix?.ref, "mix1")
         XCTAssertEqual(waypoint0?.tankpressure?.pascals ?? 0, 2.0e7)
-        XCTAssertEqual(waypoint0?.divemode?.type, .closedCircuit)
-        XCTAssertEqual(waypoint0?.gradientfactor, 0)
-        XCTAssertNil(waypoint0?.nodecotime)
-        XCTAssertNil(waypoint0?.remainingbottomtime)
+        XCTAssertEqual(waypoint0?.temperature?.celsius ?? 0, 20, accuracy: 0.01)
 
-        // Waypoint 1: Shallow with NDL, RBT, setpoint, heart rate
+        // Waypoint 1: Shallow with NDL, RBT, setpoint, heart rate, heading
         let waypoint1 = waypoints?[1]
-        XCTAssertEqual(waypoint1?.divetime?.seconds, 60)
-        XCTAssertEqual(waypoint1?.depth?.meters, 5.0)
         XCTAssertEqual(waypoint1?.batterychargecondition, 3.48)
-        XCTAssertEqual(waypoint1?.heartrate, 75)
+        XCTAssertEqual(waypoint1?.depth?.meters, 5.0)
+        XCTAssertEqual(waypoint1?.divemode?.type, .closedCircuit)
+        XCTAssertEqual(waypoint1?.divetime?.seconds, 60)
+        XCTAssertEqual(waypoint1?.gradientfactor, 5)
+        XCTAssertEqual(waypoint1?.heading, 90.0)
         XCTAssertEqual(waypoint1?.nodecotime?.seconds, 5940)
         XCTAssertEqual(waypoint1?.remainingbottomtime?.seconds, 1800)
         XCTAssertEqual(waypoint1?.setpo2?.pascals ?? 0, 1.2e5)
         XCTAssertEqual(waypoint1?.tankpressure?.pascals ?? 0, 1.95e7)
-        XCTAssertEqual(waypoint1?.divemode?.type, .closedCircuit)
-        XCTAssertEqual(waypoint1?.gradientfactor, 5)
+        XCTAssertEqual(waypoint1?.heartrate, 75)
 
-        // Waypoint 2: Depth with deco stop, CNS, TTS
+        // Waypoint 2: Depth with deco stop, CNS, TTS, heading
         let waypoint2 = waypoints?[2]
-        XCTAssertEqual(waypoint2?.divetime?.seconds, 1200)
-        XCTAssertEqual(waypoint2?.depth?.meters, 40.0)
         XCTAssertEqual(waypoint2?.cns, 8)
         XCTAssertEqual(waypoint2?.decostop?.kind, .mandatory)
         XCTAssertEqual(waypoint2?.decostop?.decodepth, 6)
         XCTAssertEqual(waypoint2?.decostop?.duration, 300)
-        XCTAssertEqual(waypoint2?.heartrate, 80)
+        XCTAssertEqual(waypoint2?.depth?.meters, 40.0)
+        XCTAssertEqual(waypoint2?.divemode?.type, .closedCircuit)
+        XCTAssertEqual(waypoint2?.divetime?.seconds, 1200)
+        XCTAssertEqual(waypoint2?.gradientfactor, 65)
+        XCTAssertEqual(waypoint2?.heading, 180.5)
         XCTAssertEqual(waypoint2?.setpo2?.pascals ?? 0, 1.3e5)
         XCTAssertEqual(waypoint2?.tankpressure?.pascals ?? 0, 1.8e7)
         XCTAssertEqual(waypoint2?.tts?.seconds, 600)
-        XCTAssertEqual(waypoint2?.divemode?.type, .closedCircuit)
-        XCTAssertEqual(waypoint2?.gradientfactor, 65)
+        XCTAssertEqual(waypoint2?.heartrate, 80)
     }
 
     func testParseExtensionSalinity() throws {

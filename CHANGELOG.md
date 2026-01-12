@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Added
+
+- Add `heading` field to `Waypoint` for compass heading in degrees
+
 ## 0.7.0 - 2026-01-12
 
 ### Added

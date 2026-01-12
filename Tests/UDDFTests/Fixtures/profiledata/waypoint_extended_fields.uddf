@@ -10,6 +10,7 @@
   - decostop (decompression stop requirements with decreasing duration)
   - divemode (closed circuit rebreather)
   - gradientfactor (decompression gradient factor)
+  - heading (compass heading in degrees)
   - heartrate (heart rate in BPM)
   - nodecotime (no-decompression time remaining)
   - remainingbottomtime (RBT - time before ascent required)
@@ -60,6 +61,7 @@
             <batterychargecondition>3.48</batterychargecondition>
             <depth>5.0</depth>
             <divetime>60</divetime>
+            <heading>90.0</heading>
             <heartrate>75</heartrate>
             <nodecotime>5940</nodecotime>
             <remainingbottomtime>1800</remainingbottomtime>
@@ -76,6 +78,7 @@
             <decostop kind="mandatory" decodepth="6" duration="300" />
             <depth>40.0</depth>
             <divetime>1200</divetime>
+            <heading>180.5</heading>
             <heartrate>80</heartrate>
             <setpo2>1.3e5</setpo2>
             <tankpressure>1.8e7</tankpressure>

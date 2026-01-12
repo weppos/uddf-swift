@@ -48,6 +48,13 @@ public struct Waypoint: Codable, Equatable, Sendable {
     /// Gradient factor at this waypoint (decompression calculation)
     public var gradientfactor: Double?
 
+    /// Compass heading at this waypoint
+    ///
+    /// - Unit: degrees (0-360)
+    ///
+    /// Reference: https://www.streit.cc/extern/uddf_v321/en/heading.html
+    public var heading: Double?
+
     /// Measured partial pressure of oxygen (PPO2) from sensors
     ///
     /// - Unit: pascals (SI)
@@ -94,6 +101,7 @@ public struct Waypoint: Codable, Equatable, Sendable {
         divemode: DiveMode? = nil,
         divetime: Duration? = nil,
         gradientfactor: Double? = nil,
+        heading: Double? = nil,
         measuredpo2: Pressure? = nil,
         nodecotime: Duration? = nil,
         remainingbottomtime: Duration? = nil,
@@ -113,6 +121,7 @@ public struct Waypoint: Codable, Equatable, Sendable {
         self.divemode = divemode
         self.divetime = divetime
         self.gradientfactor = gradientfactor
+        self.heading = heading
         self.measuredpo2 = measuredpo2
         self.nodecotime = nodecotime
         self.remainingbottomtime = remainingbottomtime
