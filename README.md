@@ -22,8 +22,13 @@ UDDF is an XML-based format for dive data exchange between applications and dive
 
 UDDF Swift supports a small number of non-standard tags that appear in real-world exports. These are treated as optional extensions and clearly labeled as such.
 
-- **`<salinity>`**: A libdivecomputer de-facto standard used by some dive computers.
-- **`<usage>`**: A libdivecomputer extension for gas mix usage type (`oxygen`, `diluent`, `sidemount`).
+`profiledata`:
+
+- `informationbeforedive` -> **`salinity`**: A libdivecomputer de-facto standard used by some dive computers.
+
+`gasdefinitions`:
+
+- `mix` -> **`usage`**: A libdivecomputer extension for gas mix usage type (`oxygen`, `diluent`, `sidemount`).
 
 ## Installation
 

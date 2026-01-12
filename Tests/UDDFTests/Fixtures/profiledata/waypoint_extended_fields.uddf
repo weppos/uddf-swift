@@ -6,7 +6,6 @@
 
   - batterychargecondition (battery voltage)
   - calculatedpo2 (PPO2 for CCR diving)
-  - ceiling (decompression ceiling)
   - cns (CNS oxygen toxicity percentage)
   - decostop (decompression stop requirements with decreasing duration)
   - divemode (closed circuit rebreather)

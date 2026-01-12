@@ -10,6 +10,10 @@
 
 - **BREAKING**: Change `Waypoint.calculatedpo2` from `Double` to `Pressure` (pascals SI)
 
+### Removed
+
+- **BREAKING**: Remove `Waypoint.ceiling` (not in UDDF spec, was Shearwater-specific)
+
 ## 0.6.0 - 2026-01-11
 
 ### Added

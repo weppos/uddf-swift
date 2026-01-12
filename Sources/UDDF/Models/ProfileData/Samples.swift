@@ -30,9 +30,6 @@ public struct Waypoint: Codable, Equatable, Sendable {
     /// - Unit: pascals (SI)
     public var calculatedpo2: Pressure?
 
-    /// Decompression ceiling depth at this waypoint
-    public var ceiling: Depth?
-
     /// Central Nervous System (CNS) oxygen toxicity percentage at this waypoint
     public var cns: Double?
 
@@ -86,7 +83,6 @@ public struct Waypoint: Codable, Equatable, Sendable {
         alarm: String? = nil,
         batterychargecondition: Double? = nil,
         calculatedpo2: Pressure? = nil,
-        ceiling: Depth? = nil,
         cns: Double? = nil,
         decostop: DecoStop? = nil,
         depth: Depth? = nil,
@@ -106,7 +102,6 @@ public struct Waypoint: Codable, Equatable, Sendable {
         self.alarm = alarm
         self.batterychargecondition = batterychargecondition
         self.calculatedpo2 = calculatedpo2
-        self.ceiling = ceiling
         self.cns = cns
         self.decostop = decostop
         self.depth = depth
