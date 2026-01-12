@@ -5,6 +5,7 @@
 ### Added
 
 - Add `heading` field to `Waypoint` for compass heading in degrees
+- Add `otu` field to `Waypoint` for Oxygen Toxicity Units
 
 ## 0.7.0 - 2026-01-12
 

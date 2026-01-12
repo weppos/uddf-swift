@@ -63,6 +63,11 @@ public struct Waypoint: Codable, Equatable, Sendable {
     /// No-decompression time remaining at this waypoint
     public var nodecotime: Duration?
 
+    /// Oxygen Toxicity Units at this waypoint
+    ///
+    /// Reference: https://www.streit.cc/extern/uddf_v321/en/otu.html
+    public var otu: Double?
+
     /// Remaining bottom time at this waypoint (time before ascent required)
     public var remainingbottomtime: Duration?
 
@@ -104,6 +109,7 @@ public struct Waypoint: Codable, Equatable, Sendable {
         heading: Double? = nil,
         measuredpo2: Pressure? = nil,
         nodecotime: Duration? = nil,
+        otu: Double? = nil,
         remainingbottomtime: Duration? = nil,
         setpo2: Pressure? = nil,
         switchmix: SwitchMix? = nil,
@@ -124,6 +130,7 @@ public struct Waypoint: Codable, Equatable, Sendable {
         self.heading = heading
         self.measuredpo2 = measuredpo2
         self.nodecotime = nodecotime
+        self.otu = otu
         self.remainingbottomtime = remainingbottomtime
         self.setpo2 = setpo2
         self.switchmix = switchmix

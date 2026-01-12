@@ -13,6 +13,7 @@
   - heading (compass heading in degrees)
   - heartrate (heart rate in BPM)
   - nodecotime (no-decompression time remaining)
+  - otu (oxygen toxicity units)
   - remainingbottomtime (RBT - time before ascent required)
   - setpo2 (rebreather setpoint)
   - switchmix (gas mix changes)
@@ -64,6 +65,7 @@
             <heading>90.0</heading>
             <heartrate>75</heartrate>
             <nodecotime>5940</nodecotime>
+            <otu>15.5</otu>
             <remainingbottomtime>1800</remainingbottomtime>
             <setpo2>1.2e5</setpo2>
             <tankpressure>1.95e7</tankpressure>
@@ -80,6 +82,7 @@
             <divetime>1200</divetime>
             <heading>180.5</heading>
             <heartrate>80</heartrate>
+            <otu>42.0</otu>
             <setpo2>1.3e5</setpo2>
             <tankpressure>1.8e7</tankpressure>
             <temperature>285.15</temperature>
