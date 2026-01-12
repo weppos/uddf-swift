@@ -265,75 +265,7 @@ final class DecoModelParserTests: XCTestCase {
 
     // MARK: - Round Trip Tests
 
-    func testRoundTripBuehlmann() throws {
-        let tissue = Tissue(gas: .n2, number: 1, halflife: 300, a: 1.1696, b: 0.5578)
-        let buehlmann = Buehlmann(
-            id: "test-zhl16",
-            tissue: [tissue],
-            gradientfactorlow: 0.3,
-            gradientfactorhigh: 0.85
-        )
-
-        var document = UDDFDocument(generator: Generator(name: "Test", manufacturer: Manufacturer(id: "test", name: "Test")))
-        document.decomodel = DecoModel(buehlmann: [buehlmann])
-
-        let data = try UDDFSerialization.write(document)
-        let parsed = try UDDFSerialization.parse(data)
-
-        XCTAssertNotNil(parsed.decomodel)
-        let parsedBuehlmann = parsed.decomodel?.buehlmann?.first
-        XCTAssertEqual(parsedBuehlmann?.id, "test-zhl16")
-        XCTAssertEqual(parsedBuehlmann?.gradientfactorlow, 0.3)
-        XCTAssertEqual(parsedBuehlmann?.gradientfactorhigh, 0.85)
-
-        let parsedTissue = parsedBuehlmann?.tissue?.first
-        XCTAssertEqual(parsedTissue?.gas, .n2)
-        XCTAssertEqual(parsedTissue?.number, 1)
-        XCTAssertEqual(parsedTissue?.halflife, 300)
-        XCTAssertEqual(parsedTissue?.a, 1.1696)
-        XCTAssertEqual(parsedTissue?.b, 0.5578)
-    }
-
-    func testRoundTripVPM() throws {
-        let tissue = Tissue(gas: .he, number: 1, halflife: 113.4, a: 1.7424, b: 0.4245)
-        let vpm = VPM(
-            id: "test-vpm",
-            conservatism: 1.0,
-            gamma: 0.0179,
-            gc: 0.0114,
-            lambda: 7500.0,
-            r0: 0.8,
-            tissue: [tissue]
-        )
-
-        var document = UDDFDocument(generator: Generator(name: "Test", manufacturer: Manufacturer(id: "test", name: "Test")))
-        document.decomodel = DecoModel(vpm: [vpm])
-
-        let data = try UDDFSerialization.write(document)
-        let parsed = try UDDFSerialization.parse(data)
-
-        let parsedVPM = parsed.decomodel?.vpm?.first
-        XCTAssertEqual(parsedVPM?.id, "test-vpm")
-        XCTAssertEqual(parsedVPM?.conservatism, 1.0)
-        XCTAssertEqual(parsedVPM?.gamma, 0.0179)
-        XCTAssertEqual(parsedVPM?.gc, 0.0114)
-        XCTAssertEqual(parsedVPM?.lambda, 7500.0)
-        XCTAssertEqual(parsedVPM?.r0, 0.8)
-
-        let parsedTissue = parsedVPM?.tissue?.first
-        XCTAssertEqual(parsedTissue?.gas, .he)
-    }
-
-    // MARK: - Multiple Parameter Sets Example
-
-    /// Demonstrates parsing and writing multiple decompression model parameter sets.
-    ///
-    /// Per UDDF spec: "Inside the <decomodel> section information concerning the
-    /// decompression models used, and their parameter sets are given. [...] The child
-    /// elements may appear several times (for each respective parameter set)."
-    ///
-    /// Reference: https://www.streit.cc/extern/uddf_v321/en/decomodel.html
-    func testRoundTripMultipleParameterSets() throws {
+    func testRoundTrip() throws {
         // Generate unique IDs for each parameter set
         let buehlmannId1 = UUID().uuidString
         let buehlmannId2 = UUID().uuidString

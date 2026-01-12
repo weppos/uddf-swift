@@ -1,7 +1,7 @@
 import XCTest
 @testable import UDDF
 
-final class EquipmentParserTests: XCTestCase {
+final class DiverTests: XCTestCase {
 
     // MARK: - Basic Equipment Parsing
 
@@ -190,7 +190,7 @@ final class EquipmentParserTests: XCTestCase {
 
     // MARK: - Round Trip Tests
 
-    func testRoundTripEquipment() throws {
+    func testRoundTrip() throws {
         let diveComputer = DiveComputer(
             id: "dc1",
             name: "Perdix AI",

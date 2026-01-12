@@ -159,7 +159,9 @@ final class GasDefinitionsTests: XCTestCase {
         XCTAssertNil(bailoutMix?.usage)
     }
 
-    func testRoundTripGasUsage() throws {
+    // MARK: - Round Trip Tests
+
+    func testRoundTrip() throws {
         let generator = Generator(name: "TestApp")
         let gasDefs = GasDefinitions(mix: [
             Mix(id: "back", name: "Air", o2: 0.21, usage: .bottom),

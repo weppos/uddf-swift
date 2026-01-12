@@ -325,18 +325,15 @@ final class ProfileDataTests: XCTestCase {
         XCTAssertEqual(tank2?.tankpressureend?.pascals ?? 0, 1.5e7)
     }
 
-    func testRoundTripEquipmentUsedAndTankData() throws {
-        // Create a document with equipment used and tank data
+    // MARK: - Round-trip Tests
+
+    func testRoundTrip() throws {
         let generator = Generator(name: "TestApp")
         let gasDefs = GasDefinitions(mix: [
             Mix(id: "mix1", name: "Air", o2: 0.21),
             Mix(id: "mix2", name: "EAN32", o2: 0.32)
         ])
 
-        // equipmentused goes inside informationbeforedive
-        let equipmentUsed = EquipmentUsed(leadquantity: 3.5)
-
-        // tankdata is direct child of dive
         let tankDataArray = [
             TankData(
                 link: Link(ref: "mix1"),
@@ -352,14 +349,62 @@ final class ProfileDataTests: XCTestCase {
             )
         ]
 
+        let informationBeforeDive = InformationBeforeDive(
+            link: [Link(ref: "diver1"), Link(ref: "site1")],
+            airtemperature: Temperature(celsius: 28),
+            alcoholbeforedive: AlcoholBeforeDive(drink: [
+                Drink(name: "Wine", periodicallytaken: "no", timespanbeforedive: Duration(hours: 3))
+            ]),
+            altitude: Altitude(meters: 500),
+            apparatus: .openScuba,
+            divenumber: 42,
+            divenumberofday: 2,
+            internaldivenumber: 123,
+            equipmentused: EquipmentUsed(leadquantity: 3.5),
+            exercisebeforedive: .light,
+            medicationbeforedive: MedicationBeforeDive(medicine: [
+                Medicine(id: "med1", name: "Vitamin C", periodicallytaken: "yes")
+            ]),
+            nosuit: NoSuit(),
+            platform: .charterBoat,
+            program: .recreation,
+            stateofrestbeforedive: .rested,
+            surfacepressure: Pressure(bar: 0.95),
+            tripmembership: "trip-2025"
+        )
+
+        let informationAfterDive = InformationAfterDive(
+            anysymptoms: "None",
+            averagedepth: Depth(meters: 18),
+            current: .mildCurrent,
+            desaturationtime: Duration(hours: 12),
+            diveduration: Duration(minutes: 45),
+            diveplan: .diveComputer,
+            divetable: .padi,
+            equipmentmalfunction: EquipmentMalfunction.none,
+            globalalarmsgiven: GlobalAlarmsGiven(globalalarm: ["ascent-warning-too-long"]),
+            greatestdepth: Depth(meters: 30),
+            highestpo2: Pressure(bar: 1.3),
+            hyperbaricfacilitytreatment: HyperbaricFacilityTreatment(
+                numberofrecompressiontreatments: 1
+            ),
+            lowesttemperature: Temperature(celsius: 20),
+            noflighttime: Duration(hours: 20),
+            observations: "Manta rays",
+            pressuredrop: Pressure(bar: 150),
+            problems: "Minor mask leak",
+            rating: Rating(ratingvalue: 9),
+            surfaceintervalafterdive: Duration(hours: 2),
+            thermalcomfort: .comfortable,
+            visibility: Depth(meters: 25),
+            workload: .light
+        )
+
         let dive = Dive(
             id: "dive1",
-            informationbeforedive: InformationBeforeDive(
-                datetime: Date(),
-                equipmentused: equipmentUsed
-            ),
+            informationbeforedive: informationBeforeDive,
             tankdata: tankDataArray,
-            informationafterdive: InformationAfterDive(greatestdepth: Depth(meters: 25))
+            informationafterdive: informationAfterDive
         )
 
         let repetitionGroup = RepetitionGroup(dive: [dive])
@@ -369,25 +414,63 @@ final class ProfileDataTests: XCTestCase {
         document.gasdefinitions = gasDefs
         document.profiledata = profileData
 
-        // Write and parse back
         let xmlData = try UDDFSerialization.write(document, prettyPrinted: true)
         let reparsed = try UDDFSerialization.parse(xmlData)
 
-        // Verify round-trip
         let reparsedDive = reparsed.profiledata?.repetitiongroup?.first?.dive?.first
-        XCTAssertNotNil(reparsedDive?.informationbeforedive?.equipmentused)
-        XCTAssertEqual(reparsedDive?.informationbeforedive?.equipmentused?.leadquantity, 3.5)
-        XCTAssertEqual(reparsedDive?.tankdata?.count, 2)
 
+        // TankData
+        XCTAssertEqual(reparsedDive?.tankdata?.count, 2)
         let reparsedTank1 = reparsedDive?.tankdata?[0]
         XCTAssertEqual(reparsedTank1?.link?.ref, "mix1")
         XCTAssertEqual(reparsedTank1?.tankvolume?.liters ?? 0, 12.0, accuracy: 0.01)
         XCTAssertEqual(reparsedTank1?.tankpressurebegin?.pascals ?? 0, 2.0e7)
         XCTAssertEqual(reparsedTank1?.tankpressureend?.pascals ?? 0, 6.0e6)
-
         let reparsedTank2 = reparsedDive?.tankdata?[1]
         XCTAssertEqual(reparsedTank2?.link?.ref, "mix2")
         XCTAssertEqual(reparsedTank2?.tankvolume?.liters ?? 0, 11.0, accuracy: 0.01)
+
+        // InformationBeforeDive
+        let reparsedBefore = reparsedDive?.informationbeforedive
+        XCTAssertEqual(reparsedBefore?.link?.count, 2)
+        XCTAssertEqual(reparsedBefore?.altitude?.meters, 500)
+        XCTAssertNotNil(reparsedBefore?.alcoholbeforedive)
+        XCTAssertEqual(reparsedBefore?.alcoholbeforedive?.drink.first?.name, "Wine")
+        XCTAssertEqual(reparsedBefore?.apparatus, .openScuba)
+        XCTAssertEqual(reparsedBefore?.divenumber, 42)
+        XCTAssertEqual(reparsedBefore?.divenumberofday, 2)
+        XCTAssertEqual(reparsedBefore?.equipmentused?.leadquantity, 3.5)
+        XCTAssertEqual(reparsedBefore?.exercisebeforedive, .light)
+        XCTAssertEqual(reparsedBefore?.internaldivenumber, 123)
+        XCTAssertNotNil(reparsedBefore?.medicationbeforedive)
+        XCTAssertEqual(reparsedBefore?.medicationbeforedive?.medicine.first?.name, "Vitamin C")
+        XCTAssertNotNil(reparsedBefore?.nosuit)
+        XCTAssertEqual(reparsedBefore?.platform, .charterBoat)
+        XCTAssertEqual(reparsedBefore?.program, .recreation)
+        XCTAssertEqual(reparsedBefore?.stateofrestbeforedive, .rested)
+        XCTAssertEqual(reparsedBefore?.tripmembership, "trip-2025")
+
+        // InformationAfterDive
+        let reparsedAfter = reparsedDive?.informationafterdive
+        XCTAssertEqual(reparsedAfter?.anysymptoms, "None")
+        XCTAssertEqual(reparsedAfter?.current, .mildCurrent)
+        XCTAssertEqual(reparsedAfter?.desaturationtime?.hours ?? 0, 12, accuracy: 0.01)
+        XCTAssertEqual(reparsedAfter?.diveplan, .diveComputer)
+        XCTAssertEqual(reparsedAfter?.divetable, .padi)
+        XCTAssertEqual(reparsedAfter?.equipmentmalfunction, EquipmentMalfunction.none)
+        XCTAssertEqual(reparsedAfter?.globalalarmsgiven?.globalalarm?.first, "ascent-warning-too-long")
+        XCTAssertEqual(reparsedAfter?.highestpo2?.pascals ?? 0, 1.3e5)
+        XCTAssertNotNil(reparsedAfter?.hyperbaricfacilitytreatment)
+        XCTAssertEqual(reparsedAfter?.hyperbaricfacilitytreatment?.numberofrecompressiontreatments, 1)
+        XCTAssertEqual(reparsedAfter?.noflighttime?.hours ?? 0, 20, accuracy: 0.01)
+        XCTAssertEqual(reparsedAfter?.observations, "Manta rays")
+        XCTAssertEqual(reparsedAfter?.pressuredrop?.pascals ?? 0, 1.5e7)
+        XCTAssertEqual(reparsedAfter?.problems, "Minor mask leak")
+        XCTAssertEqual(reparsedAfter?.rating?.ratingvalue, 9)
+        XCTAssertEqual(reparsedAfter?.surfaceintervalafterdive?.hours ?? 0, 2, accuracy: 0.01)
+        XCTAssertEqual(reparsedAfter?.thermalcomfort, .comfortable)
+        XCTAssertEqual(reparsedAfter?.visibility?.meters, 25)
+        XCTAssertEqual(reparsedAfter?.workload, .light)
     }
 
     func testEquipmentUsedWithOnlyLeadQuantity() throws {
@@ -802,108 +885,6 @@ final class ProfileDataTests: XCTestCase {
         XCTAssertEqual(unknown.isStandard, false)
     }
 
-    // MARK: - Round-trip Tests
-
-    func testRoundTripInformationBeforeDiveExtended() throws {
-        let generator = Generator(name: "TestApp")
-
-        let info = InformationBeforeDive(
-            link: [Link(ref: "diver1"), Link(ref: "site1")],
-            airtemperature: Temperature(celsius: 28),
-            altitude: Altitude(meters: 500),
-            apparatus: .openScuba,
-            divenumber: 42,
-            divenumberofday: 2,
-            internaldivenumber: 123,
-            platform: .charterBoat,
-            program: .recreation,
-            stateofrestbeforedive: .rested,
-            surfacepressure: Pressure(bar: 0.95),
-            tripmembership: "trip-2025"
-        )
-
-        let dive = Dive(id: "dive1", informationbeforedive: info)
-        let repetitionGroup = RepetitionGroup(dive: [dive])
-        let profileData = ProfileData(repetitiongroup: [repetitionGroup])
-
-        var document = UDDFDocument(version: "3.2.1", generator: generator)
-        document.profiledata = profileData
-
-        let xmlData = try UDDFSerialization.write(document, prettyPrinted: true)
-        let reparsed = try UDDFSerialization.parse(xmlData)
-
-        let reparsedInfo = reparsed.profiledata?.repetitiongroup?.first?.dive?.first?.informationbeforedive
-        XCTAssertNotNil(reparsedInfo)
-
-        XCTAssertEqual(reparsedInfo?.link?.count, 2)
-        XCTAssertEqual(reparsedInfo?.divenumber, 42)
-        XCTAssertEqual(reparsedInfo?.internaldivenumber, 123)
-        XCTAssertEqual(reparsedInfo?.divenumberofday, 2)
-        XCTAssertEqual(reparsedInfo?.altitude?.meters, 500)
-        XCTAssertEqual(reparsedInfo?.platform, .charterBoat)
-        XCTAssertEqual(reparsedInfo?.apparatus, .openScuba)
-        XCTAssertEqual(reparsedInfo?.program, .recreation)
-        XCTAssertEqual(reparsedInfo?.stateofrestbeforedive, .rested)
-        XCTAssertEqual(reparsedInfo?.tripmembership, "trip-2025")
-    }
-
-    func testRoundTripInformationAfterDiveExtended() throws {
-        let generator = Generator(name: "TestApp")
-
-        let info = InformationAfterDive(
-            anysymptoms: "None",
-            averagedepth: Depth(meters: 18),
-            current: .mildCurrent,
-            desaturationtime: Duration(hours: 12),
-            diveduration: Duration(minutes: 45),
-            diveplan: .diveComputer,
-            equipmentmalfunction: EquipmentMalfunction.none,
-            globalalarmsgiven: GlobalAlarmsGiven(globalalarm: ["ascent-warning-too-long"]),
-            greatestdepth: Depth(meters: 30),
-            highestpo2: Pressure(bar: 1.3),
-            lowesttemperature: Temperature(celsius: 20),
-            noflighttime: Duration(hours: 20),
-            observations: "Manta rays",
-            pressuredrop: Pressure(bar: 150),
-            problems: "Minor mask leak",
-            rating: Rating(ratingvalue: 9),
-            surfaceintervalafterdive: Duration(hours: 2),
-            thermalcomfort: .comfortable,
-            visibility: Depth(meters: 25),
-            workload: .light
-        )
-
-        let dive = Dive(id: "dive1", informationafterdive: info)
-        let repetitionGroup = RepetitionGroup(dive: [dive])
-        let profileData = ProfileData(repetitiongroup: [repetitionGroup])
-
-        var document = UDDFDocument(version: "3.2.1", generator: generator)
-        document.profiledata = profileData
-
-        let xmlData = try UDDFSerialization.write(document, prettyPrinted: true)
-        let reparsed = try UDDFSerialization.parse(xmlData)
-
-        let reparsedInfo = reparsed.profiledata?.repetitiongroup?.first?.dive?.first?.informationafterdive
-        XCTAssertNotNil(reparsedInfo)
-
-        XCTAssertEqual(reparsedInfo?.visibility?.meters, 25)
-        XCTAssertEqual(reparsedInfo?.current, .mildCurrent)
-        XCTAssertEqual(reparsedInfo?.diveplan, .diveComputer)
-        XCTAssertEqual(reparsedInfo?.equipmentmalfunction, EquipmentMalfunction.none)
-        XCTAssertEqual(reparsedInfo?.pressuredrop?.pascals ?? 0, 1.5e7)
-        XCTAssertEqual(reparsedInfo?.problems, "Minor mask leak")
-        XCTAssertEqual(reparsedInfo?.thermalcomfort, .comfortable)
-        XCTAssertEqual(reparsedInfo?.workload, .light)
-        XCTAssertEqual(reparsedInfo?.desaturationtime?.hours ?? 0, 12, accuracy: 0.01)
-        XCTAssertEqual(reparsedInfo?.noflighttime?.hours ?? 0, 20, accuracy: 0.01)
-        XCTAssertEqual(reparsedInfo?.surfaceintervalafterdive?.hours ?? 0, 2, accuracy: 0.01)
-        XCTAssertEqual(reparsedInfo?.highestpo2?.pascals ?? 0, 1.3e5)
-        XCTAssertEqual(reparsedInfo?.anysymptoms, "None")
-        XCTAssertEqual(reparsedInfo?.globalalarmsgiven?.globalalarm?.first, "ascent-warning-too-long")
-        XCTAssertEqual(reparsedInfo?.observations, "Manta rays")
-        XCTAssertEqual(reparsedInfo?.rating?.ratingvalue, 9)
-    }
-
     func testUnknownEnumValuesRoundTrip() throws {
         let xml = """
         <?xml version="1.0" encoding="UTF-8"?>
@@ -1225,59 +1206,5 @@ final class ProfileDataTests: XCTestCase {
         XCTAssertNotNil(treatment)
         XCTAssertNotNil(treatment?.dateofrecompressiontreatment?.datetime)
         XCTAssertEqual(treatment?.numberofrecompressiontreatments, 2)
-    }
-
-    func testRoundTripNewElements() throws {
-        let generator = Generator(name: "TestApp")
-
-        let alcohol = AlcoholBeforeDive(drink: [
-            Drink(name: "Wine", periodicallytaken: "no", timespanbeforedive: Duration(hours: 3))
-        ])
-
-        let medication = MedicationBeforeDive(medicine: [
-            Medicine(id: "med1", name: "Vitamin C", periodicallytaken: "yes")
-        ])
-
-        let info = InformationBeforeDive(
-            alcoholbeforedive: alcohol,
-            exercisebeforedive: .light,
-            medicationbeforedive: medication,
-            nosuit: NoSuit()
-        )
-
-        let afterInfo = InformationAfterDive(
-            divetable: .padi,
-            hyperbaricfacilitytreatment: HyperbaricFacilityTreatment(
-                numberofrecompressiontreatments: 1
-            )
-        )
-
-        let dive = Dive(
-            id: "dive1",
-            informationbeforedive: info,
-            informationafterdive: afterInfo
-        )
-
-        let repetitionGroup = RepetitionGroup(dive: [dive])
-        let profileData = ProfileData(repetitiongroup: [repetitionGroup])
-
-        var document = UDDFDocument(version: "3.2.1", generator: generator)
-        document.profiledata = profileData
-
-        let xmlData = try UDDFSerialization.write(document, prettyPrinted: true)
-        let reparsed = try UDDFSerialization.parse(xmlData)
-
-        let reparsedBefore = reparsed.profiledata?.repetitiongroup?.first?.dive?.first?.informationbeforedive
-        XCTAssertNotNil(reparsedBefore?.alcoholbeforedive)
-        XCTAssertEqual(reparsedBefore?.alcoholbeforedive?.drink.first?.name, "Wine")
-        XCTAssertEqual(reparsedBefore?.exercisebeforedive, .light)
-        XCTAssertNotNil(reparsedBefore?.medicationbeforedive)
-        XCTAssertEqual(reparsedBefore?.medicationbeforedive?.medicine.first?.name, "Vitamin C")
-        XCTAssertNotNil(reparsedBefore?.nosuit)
-
-        let reparsedAfter = reparsed.profiledata?.repetitiongroup?.first?.dive?.first?.informationafterdive
-        XCTAssertEqual(reparsedAfter?.divetable, .padi)
-        XCTAssertNotNil(reparsedAfter?.hyperbaricfacilitytreatment)
-        XCTAssertEqual(reparsedAfter?.hyperbaricfacilitytreatment?.numberofrecompressiontreatments, 1)
     }
 }
