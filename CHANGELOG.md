@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.7.0 - 2026-01-12
+
 ### Added
 
 - Add `measuredpo2` field to `Waypoint` for measured PPO2 from sensors
