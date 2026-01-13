@@ -54,8 +54,8 @@ public class UDDFValidator {
         validateGenerator(document.generator)
 
         // Validate optional sections
-        if let diverData = document.diver {
-            validateDiverData(diverData)
+        if let diver = document.diver {
+            validateDiver(diver)
         }
 
         if let profileData = document.profiledata {
@@ -98,16 +98,16 @@ public class UDDFValidator {
 
     // MARK: - Diver Data Validation
 
-    private func validateDiverData(_ diverData: DiverData) {
+    private func validateDiver(_ diver: Diver) {
         // Validate owners
-        if let owners = diverData.owner {
+        if let owners = diver.owner {
             for (index, owner) in owners.enumerated() {
                 validateOwner(owner, index: index)
             }
         }
 
         // Validate buddies
-        if let buddies = diverData.buddy {
+        if let buddies = diver.buddy {
             for (index, buddy) in buddies.enumerated() {
                 validateBuddy(buddy, index: index)
             }

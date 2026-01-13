@@ -227,7 +227,7 @@ final class DiverTests: XCTestCase {
                 manufacturer: Manufacturer(id: "test", name: "Test")
             )
         )
-        document.diver = DiverData(owner: [owner])
+        document.diver = Diver(owner: [owner])
 
         let data = try UDDFSerialization.write(document)
         let parsed = try UDDFSerialization.parse(data)

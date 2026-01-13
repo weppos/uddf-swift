@@ -21,7 +21,7 @@ public class UDDFBuilder {
     private var mediadata: MediaData?
     private var makers: [Maker] = []
     private var businesses: [Business] = []
-    private var diverData: DiverData?
+    private var diver: Diver?
     private var diveSites: [DiveSite] = []
     private var gasDefinitions: GasDefinitions?
     private var decomodel: DecoModel?
@@ -81,13 +81,13 @@ public class UDDFBuilder {
     /// - Returns: Self for method chaining
     @discardableResult
     public func addOwner(_ owner: Owner) -> Self {
-        if diverData == nil {
-            diverData = DiverData()
+        if diver == nil {
+            diver = Diver()
         }
-        if diverData?.owner == nil {
-            diverData?.owner = []
+        if diver?.owner == nil {
+            diver?.owner = []
         }
-        diverData?.owner?.append(owner)
+        diver?.owner?.append(owner)
         return self
     }
 
@@ -97,13 +97,13 @@ public class UDDFBuilder {
     /// - Returns: Self for method chaining
     @discardableResult
     public func addBuddy(_ buddy: Buddy) -> Self {
-        if diverData == nil {
-            diverData = DiverData()
+        if diver == nil {
+            diver = Diver()
         }
-        if diverData?.buddy == nil {
-            diverData?.buddy = []
+        if diver?.buddy == nil {
+            diver?.buddy = []
         }
-        diverData?.buddy?.append(buddy)
+        diver?.buddy?.append(buddy)
         return self
     }
 
@@ -326,7 +326,7 @@ public class UDDFBuilder {
         document.mediadata = mediadata
         document.maker = makers.isEmpty ? nil : makers
         document.business = businesses.isEmpty ? nil : businesses
-        document.diver = diverData
+        document.diver = diver
         document.divesite = diveSites.isEmpty ? nil : diveSites
         document.gasdefinitions = gasDefinitions
         document.decomodel = decomodel

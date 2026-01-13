@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Changed
+
+- **BREAKING**: Rename `DiverData` to `Diver`
+
 ## 0.8.0 - 2026-01-13
 
 ### Added

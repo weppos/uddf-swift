@@ -5,7 +5,9 @@ import XMLCoder
 ///
 /// Contains information about divers, including the owner (primary diver),
 /// buddies, and dive instructors.
-public struct DiverData: Codable, Equatable, Sendable {
+///
+/// Reference: https://www.streit.cc/extern/uddf_v321/en/diver.html
+public struct Diver: Codable, Equatable, Sendable {
     /// The primary diver (owner of the dive log)
     public var owner: [Owner]?
 
@@ -19,6 +21,8 @@ public struct DiverData: Codable, Equatable, Sendable {
 }
 
 /// Primary diver (owner) information
+///
+/// https://www.streit.cc/extern/uddf_v321/en/owner.html
 public struct Owner: Codable, Equatable, Sendable {
     /// Unique identifier
     public var id: String?
@@ -60,6 +64,8 @@ extension Owner: DynamicNodeEncoding {
 }
 
 /// Buddy (dive partner) information
+///
+/// Reference: https://www.streit.cc/extern/uddf_v321/en/buddy.html
 public struct Buddy: Codable, Equatable, Sendable {
     /// Unique identifier
     public var id: String?
@@ -92,42 +98,5 @@ extension Buddy: DynamicNodeEncoding {
         default:
             return .element
         }
-    }
-}
-
-/// Personal information about a diver
-public struct Personal: Codable, Equatable, Sendable {
-    /// First name
-    public var firstname: String?
-
-    /// Last name
-    public var lastname: String?
-
-    /// Middle name
-    public var middlename: String?
-
-    /// Birth date
-    public var birthdate: Date?
-
-    /// Birth name (maiden name)
-    public var birthname: String?
-
-    /// Contact information
-    public var contact: Contact?
-
-    public init(
-        firstname: String? = nil,
-        lastname: String? = nil,
-        middlename: String? = nil,
-        birthdate: Date? = nil,
-        birthname: String? = nil,
-        contact: Contact? = nil
-    ) {
-        self.firstname = firstname
-        self.lastname = lastname
-        self.middlename = middlename
-        self.birthdate = birthdate
-        self.birthname = birthname
-        self.contact = contact
     }
 }

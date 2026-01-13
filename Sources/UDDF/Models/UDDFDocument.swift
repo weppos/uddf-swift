@@ -28,7 +28,7 @@ public struct UDDFDocument: Codable, Equatable, Sendable {
     public var business: [Business]?
 
     /// OPTIONAL: Diver profiles and certifications
-    public var diver: DiverData?
+    public var diver: Diver?
 
     /// OPTIONAL: Dive site descriptions
     public var divesite: [DiveSite]?
@@ -87,7 +87,7 @@ public struct UDDFDocument: Codable, Equatable, Sendable {
         mediadata = try container.decodeIfPresent(MediaData.self, forKey: .mediadata)
         maker = try container.decodeIfPresent([Maker].self, forKey: .maker)
         business = try container.decodeIfPresent([Business].self, forKey: .business)
-        diver = try container.decodeIfPresent(DiverData.self, forKey: .diver)
+        diver = try container.decodeIfPresent(Diver.self, forKey: .diver)
         divesite = try container.decodeIfPresent([DiveSite].self, forKey: .divesite)
         gasdefinitions = try container.decodeIfPresent(GasDefinitions.self, forKey: .gasdefinitions)
         decomodel = try container.decodeIfPresent(DecoModel.self, forKey: .decomodel)
