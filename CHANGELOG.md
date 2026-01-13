@@ -12,6 +12,11 @@
 - Add `Membership` struct for organization memberships
 - Add `NumberOfDives` struct for dive count in time intervals
 - Add `Birthdate` wrapper struct containing datetime
+- Add `education` property to `Owner` and `Buddy` for certification records
+- Add `Education` struct containing certification array
+- Add `Certification` struct with level, organization, instructor, issuedate, validdate, specialty, and link
+- Add `Instructor` struct with personal, address, contact, and notes
+- Add `IssueDate` and `ValidDate` wrapper structs containing datetime
 
 ### Changed
 

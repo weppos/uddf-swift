@@ -217,4 +217,64 @@ final class DiverSerializationTests: XCTestCase {
         XCTAssertEqual(parsedEquipment?.tank?.first?.tankmaterial, .steel)
         XCTAssertEqual(parsedEquipment?.suit?.first?.suittype, .drySuit)
     }
+
+    func testRoundTripEducation() throws {
+        let instructor = Instructor(
+            id: "inst1",
+            personal: Personal(firstname: "Jane", lastname: "Instructor"),
+            address: Address(city: "Sharm El Sheikh", country: "Egypt"),
+            contact: Contact(email: "jane@diveschool.com")
+        )
+
+        let certifications = [
+            Certification(
+                level: "OWD",
+                organization: "PADI",
+                instructor: instructor
+            ),
+            Certification(
+                level: "AOWD",
+                organization: "PADI"
+            ),
+            Certification(
+                organization: "PADI",
+                specialty: "Nitrox"
+            )
+        ]
+
+        let education = Education(certification: certifications)
+        let owner = Owner(id: "owner1", education: education)
+
+        var document = UDDFDocument(
+            version: "3.2.1",
+            generator: Generator(
+                name: "Test",
+                manufacturer: Manufacturer(id: "test", name: "Test")
+            )
+        )
+        document.diver = Diver(owner: owner)
+
+        let data = try UDDFSerialization.write(document)
+        let parsed = try UDDFSerialization.parse(data)
+
+        let parsedEducation = parsed.diver?.owner?.education
+        XCTAssertEqual(parsedEducation?.certification?.count, 3)
+
+        // First certification with instructor
+        let cert1 = parsedEducation?.certification?[0]
+        XCTAssertEqual(cert1?.level, "OWD")
+        XCTAssertEqual(cert1?.organization, "PADI")
+        XCTAssertEqual(cert1?.instructor?.id, "inst1")
+        XCTAssertEqual(cert1?.instructor?.personal?.firstname, "Jane")
+        XCTAssertEqual(cert1?.instructor?.address?.city, "Sharm El Sheikh")
+        XCTAssertEqual(cert1?.instructor?.contact?.email, "jane@diveschool.com")
+
+        // Second certification
+        let cert2 = parsedEducation?.certification?[1]
+        XCTAssertEqual(cert2?.level, "AOWD")
+
+        // Third certification - specialty
+        let cert3 = parsedEducation?.certification?[2]
+        XCTAssertEqual(cert3?.specialty, "Nitrox")
+    }
 }

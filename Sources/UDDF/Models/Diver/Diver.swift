@@ -39,18 +39,23 @@ public struct Owner: Codable, Equatable, Sendable {
     /// Equipment used by this diver
     public var equipment: Equipment?
 
+    /// Education and certifications
+    public var education: Education?
+
     public init(
         id: String? = nil,
         personal: Personal? = nil,
         address: Address? = nil,
         contact: Contact? = nil,
-        equipment: Equipment? = nil
+        equipment: Equipment? = nil,
+        education: Education? = nil
     ) {
         self.id = id
         self.personal = personal
         self.address = address
         self.contact = contact
         self.equipment = equipment
+        self.education = education
     }
 
     enum CodingKeys: String, CodingKey {
@@ -59,6 +64,7 @@ public struct Owner: Codable, Equatable, Sendable {
         case address
         case contact
         case equipment
+        case education
     }
 }
 
@@ -98,18 +104,23 @@ public struct Buddy: Codable, Equatable, Sendable {
     /// Equipment used by this buddy
     public var equipment: Equipment?
 
+    /// Education and certifications
+    public var education: Education?
+
     public init(
         id: String? = nil,
         personal: Personal? = nil,
         address: Address? = nil,
         contact: Contact? = nil,
-        equipment: Equipment? = nil
+        equipment: Equipment? = nil,
+        education: Education? = nil
     ) {
         self.id = id
         self.personal = personal
         self.address = address
         self.contact = contact
         self.equipment = equipment
+        self.education = education
     }
 
     enum CodingKeys: String, CodingKey {
@@ -118,6 +129,7 @@ public struct Buddy: Codable, Equatable, Sendable {
         case address
         case contact
         case equipment
+        case education
     }
 }
 

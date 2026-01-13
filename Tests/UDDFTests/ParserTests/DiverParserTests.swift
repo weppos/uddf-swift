@@ -153,6 +153,123 @@ final class DiverParserTests: XCTestCase {
         XCTAssertEqual(buddy?.personal?.lastname, "Buddy")
     }
 
+    // MARK: - Education and Certification
+
+    func testParseEducationWithCertifications() throws {
+        let xml = """
+        <?xml version="1.0" encoding="UTF-8"?>
+        <uddf xmlns="http://www.streit.cc/uddf/3.2/" version="3.2.1">
+            <generator>
+                <name>Test</name>
+                <manufacturer id="test">
+                    <name>Test Co</name>
+                </manufacturer>
+            </generator>
+            <diver>
+                <owner id="owner1">
+                    <education>
+                        <certification>
+                            <level>OWD</level>
+                            <organization>PADI</organization>
+                            <issuedate>
+                                <datetime>2015-06-20T00:00:00</datetime>
+                            </issuedate>
+                        </certification>
+                        <certification>
+                            <level>AOWD</level>
+                            <organization>PADI</organization>
+                            <issuedate>
+                                <datetime>2016-08-15T00:00:00</datetime>
+                            </issuedate>
+                        </certification>
+                        <certification>
+                            <specialty>Nitrox</specialty>
+                            <organization>PADI</organization>
+                            <validdate>
+                                <datetime>2025-08-15T00:00:00</datetime>
+                            </validdate>
+                        </certification>
+                    </education>
+                </owner>
+            </diver>
+        </uddf>
+        """
+
+        let data = xml.data(using: .utf8)!
+        let document = try UDDFSerialization.parse(data)
+
+        let education = document.diver?.owner?.education
+        XCTAssertNotNil(education)
+        XCTAssertEqual(education?.certification?.count, 3)
+
+        // First certification - OWD
+        let cert1 = education?.certification?[0]
+        XCTAssertEqual(cert1?.level, "OWD")
+        XCTAssertEqual(cert1?.organization, "PADI")
+        XCTAssertNotNil(cert1?.issuedate?.datetime)
+
+        // Second certification - AOWD
+        let cert2 = education?.certification?[1]
+        XCTAssertEqual(cert2?.level, "AOWD")
+        XCTAssertEqual(cert2?.organization, "PADI")
+
+        // Third certification - Specialty
+        let cert3 = education?.certification?[2]
+        XCTAssertEqual(cert3?.specialty, "Nitrox")
+        XCTAssertNotNil(cert3?.validdate?.datetime)
+    }
+
+    func testParseCertificationWithInstructor() throws {
+        let xml = """
+        <?xml version="1.0" encoding="UTF-8"?>
+        <uddf xmlns="http://www.streit.cc/uddf/3.2/" version="3.2.1">
+            <generator>
+                <name>Test</name>
+                <manufacturer id="test">
+                    <name>Test Co</name>
+                </manufacturer>
+            </generator>
+            <diver>
+                <owner id="owner1">
+                    <education>
+                        <certification>
+                            <instructor id="inst1">
+                                <personal>
+                                    <firstname>Jane</firstname>
+                                    <lastname>Instructor</lastname>
+                                </personal>
+                                <address>
+                                    <city>Sharm El Sheikh</city>
+                                    <country>Egypt</country>
+                                </address>
+                                <contact>
+                                    <email>jane@diveschool.com</email>
+                                </contact>
+                            </instructor>
+                            <level>Divemaster</level>
+                            <organization>PADI</organization>
+                        </certification>
+                    </education>
+                </owner>
+            </diver>
+        </uddf>
+        """
+
+        let data = xml.data(using: .utf8)!
+        let document = try UDDFSerialization.parse(data)
+
+        let cert = document.diver?.owner?.education?.certification?.first
+        XCTAssertNotNil(cert?.instructor)
+        XCTAssertEqual(cert?.instructor?.id, "inst1")
+        XCTAssertEqual(cert?.instructor?.personal?.firstname, "Jane")
+        XCTAssertEqual(cert?.instructor?.personal?.lastname, "Instructor")
+        XCTAssertEqual(cert?.instructor?.address?.city, "Sharm El Sheikh")
+        XCTAssertEqual(cert?.instructor?.address?.country, "Egypt")
+        XCTAssertEqual(cert?.instructor?.contact?.email, "jane@diveschool.com")
+        XCTAssertEqual(cert?.level, "Divemaster")
+        XCTAssertEqual(cert?.organization, "PADI")
+    }
+
     // MARK: - Sex and Smoking Enums
 
     func testParseSexValues() throws {
