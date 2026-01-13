@@ -27,20 +27,36 @@ public struct Owner: Codable, Equatable, Sendable {
     /// Unique identifier
     public var id: String?
 
+    /// Postal address
+    public var address: Address?
+
+    /// Contact information
+    public var contact: Contact?
+
     /// Personal information
     public var personal: Personal?
 
     /// Equipment used by this diver
     public var equipment: Equipment?
 
-    public init(id: String? = nil, personal: Personal? = nil, equipment: Equipment? = nil) {
+    public init(
+        id: String? = nil,
+        address: Address? = nil,
+        contact: Contact? = nil,
+        personal: Personal? = nil,
+        equipment: Equipment? = nil
+    ) {
         self.id = id
+        self.address = address
+        self.contact = contact
         self.personal = personal
         self.equipment = equipment
     }
 
     enum CodingKeys: String, CodingKey {
         case id
+        case address
+        case contact
         case personal
         case equipment
     }
@@ -70,20 +86,36 @@ public struct Buddy: Codable, Equatable, Sendable {
     /// Unique identifier
     public var id: String?
 
+    /// Postal address
+    public var address: Address?
+
+    /// Contact information
+    public var contact: Contact?
+
     /// Personal information
     public var personal: Personal?
 
     /// Equipment used by this buddy
     public var equipment: Equipment?
 
-    public init(id: String? = nil, personal: Personal? = nil, equipment: Equipment? = nil) {
+    public init(
+        id: String? = nil,
+        address: Address? = nil,
+        contact: Contact? = nil,
+        personal: Personal? = nil,
+        equipment: Equipment? = nil
+    ) {
         self.id = id
+        self.address = address
+        self.contact = contact
         self.personal = personal
         self.equipment = equipment
     }
 
     enum CodingKeys: String, CodingKey {
         case id
+        case address
+        case contact
         case personal
         case equipment
     }

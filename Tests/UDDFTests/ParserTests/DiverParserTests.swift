@@ -3,6 +3,118 @@ import XCTest
 
 final class DiverParserTests: XCTestCase {
 
+    // MARK: - Owner Address and Contact
+
+    func testParseOwnerWithAddressAndContact() throws {
+        let xml = """
+        <?xml version="1.0" encoding="UTF-8"?>
+        <uddf xmlns="http://www.streit.cc/uddf/3.2/" version="3.2.1">
+            <generator>
+                <name>Test</name>
+                <manufacturer id="test">
+                    <name>Test Co</name>
+                </manufacturer>
+            </generator>
+            <diver>
+                <owner id="owner1">
+                    <address>
+                        <street>123 Dive Street</street>
+                        <city>Munich</city>
+                        <postcode>80331</postcode>
+                        <country>Germany</country>
+                        <province>Bavaria</province>
+                    </address>
+                    <contact>
+                        <phone>+49 89 123456</phone>
+                        <email>diver@example.com</email>
+                        <homepage>https://example.com</homepage>
+                    </contact>
+                    <personal>
+                        <firstname>John</firstname>
+                        <lastname>Diver</lastname>
+                    </personal>
+                </owner>
+            </diver>
+        </uddf>
+        """
+
+        let data = xml.data(using: .utf8)!
+        let document = try UDDFSerialization.parse(data)
+
+        let owner = document.diver?.owner
+        XCTAssertEqual(owner?.id, "owner1")
+
+        // Address
+        XCTAssertEqual(owner?.address?.street, "123 Dive Street")
+        XCTAssertEqual(owner?.address?.city, "Munich")
+        XCTAssertEqual(owner?.address?.postcode, "80331")
+        XCTAssertEqual(owner?.address?.country, "Germany")
+        XCTAssertEqual(owner?.address?.province, "Bavaria")
+
+        // Contact
+        XCTAssertEqual(owner?.contact?.phone, "+49 89 123456")
+        XCTAssertEqual(owner?.contact?.email, "diver@example.com")
+        XCTAssertEqual(owner?.contact?.homepage, "https://example.com")
+
+        // Personal
+        XCTAssertEqual(owner?.personal?.firstname, "John")
+        XCTAssertEqual(owner?.personal?.lastname, "Diver")
+    }
+
+    // MARK: - Buddy Address and Contact
+
+    func testParseBuddyWithAddressAndContact() throws {
+        let xml = """
+        <?xml version="1.0" encoding="UTF-8"?>
+        <uddf xmlns="http://www.streit.cc/uddf/3.2/" version="3.2.1">
+            <generator>
+                <name>Test</name>
+                <manufacturer id="test">
+                    <name>Test Co</name>
+                </manufacturer>
+            </generator>
+            <diver>
+                <buddy id="buddy1">
+                    <address>
+                        <street>456 Ocean Ave</street>
+                        <city>Hamburg</city>
+                        <postcode>20095</postcode>
+                        <country>Germany</country>
+                    </address>
+                    <contact>
+                        <mobilephone>+49 171 9876543</mobilephone>
+                        <email>buddy@example.com</email>
+                    </contact>
+                    <personal>
+                        <firstname>Jane</firstname>
+                        <lastname>Buddy</lastname>
+                    </personal>
+                </buddy>
+            </diver>
+        </uddf>
+        """
+
+        let data = xml.data(using: .utf8)!
+        let document = try UDDFSerialization.parse(data)
+
+        let buddy = document.diver?.buddy?.first
+        XCTAssertEqual(buddy?.id, "buddy1")
+
+        // Address
+        XCTAssertEqual(buddy?.address?.street, "456 Ocean Ave")
+        XCTAssertEqual(buddy?.address?.city, "Hamburg")
+        XCTAssertEqual(buddy?.address?.postcode, "20095")
+        XCTAssertEqual(buddy?.address?.country, "Germany")
+
+        // Contact
+        XCTAssertEqual(buddy?.contact?.mobilephone, "+49 171 9876543")
+        XCTAssertEqual(buddy?.contact?.email, "buddy@example.com")
+
+        // Personal
+        XCTAssertEqual(buddy?.personal?.firstname, "Jane")
+        XCTAssertEqual(buddy?.personal?.lastname, "Buddy")
+    }
+
     // MARK: - Basic Equipment Parsing
 
     func testParseBasicEquipment() throws {

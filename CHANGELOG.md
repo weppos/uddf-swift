@@ -4,6 +4,7 @@
 
 ### Added
 
+- Add `address` and `contact` properties to `Owner` and `Buddy`
 - Add `equipment` property to `Buddy`
 
 ### Changed
