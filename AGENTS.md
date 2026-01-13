@@ -47,10 +47,25 @@ Sources/UDDF/
 
 Tests/UDDFTests/
 ├── BuilderTests/         # Builder API tests
-├── IntegrationTests/     # High-level serialization and fixture round-trip tests
-├── ModelTests/           # Model unit tests (units, gas definitions, etc.)
-├── ParserTests/          # XML parsing tests
+├── IntegrationTests/     # High-level fixture tests
+├── ModelTests/           # Model unit tests (enums, value types, etc.)
+├── ParserTests/          # XML parsing tests (one file per section)
+├── SerializationTests/   # Round-trip serialization tests (one file per section)
 ├── ValidationTests/      # Validation tests
-├── WriterTests/          # XML writing tests
+├── WriterTests/          # XML writing tests (one file per section)
 └── Fixtures/             # Test fixtures organized by UDDF section
 ```
+
+### Test Organization
+
+Tests are organized by UDDF section with consistent naming:
+
+- **ModelTests/<Section>Tests.swift** - Model/enum unit tests (initialization, enum values)
+- **ParserTests/<Section>ParserTests.swift** - XML parsing tests (minimal + complete)
+- **SerializationTests/<Section>SerializationTests.swift** - Round-trip serialization tests
+- **WriterTests/<Section>WriterTests.swift** - XML writing tests
+
+Each parser test file should include:
+
+- `testParseMinimal()` - Minimal valid section with required elements only
+- `testParseComplete()` - Complete section with all optional elements
