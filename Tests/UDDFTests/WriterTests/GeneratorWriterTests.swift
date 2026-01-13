@@ -3,7 +3,9 @@ import XCTest
 
 final class GeneratorWriterTests: XCTestCase {
 
-    func testWriteGeneratorWithMinimalAttributes() throws {
+    // MARK: - Writer Tests
+
+    func testWriteMinimal() throws {
         let generator = Generator(
             name: "TestApp",
             version: "1.0.0"

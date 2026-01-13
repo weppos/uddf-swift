@@ -3,9 +3,35 @@ import XCTest
 
 final class DecoModelParserTests: XCTestCase {
 
-    // MARK: - Buehlmann Parsing Tests
+    // MARK: - Parsing Tests
 
-    func testParseBuehlmannWithAllFields() throws {
+    func testParseMinimalBuehlmann() throws {
+        let xml = """
+        <?xml version="1.0" encoding="UTF-8"?>
+        <uddf version="3.2.1">
+            <generator>
+                <name>TestApp</name>
+                <manufacturer id="test">
+                    <name>Test</name>
+                </manufacturer>
+            </generator>
+            <decomodel>
+                <buehlmann id="minimal" />
+            </decomodel>
+        </uddf>
+        """
+
+        let document = try UDDFSerialization.parse(xml.data(using: .utf8)!)
+
+        XCTAssertNotNil(document.decomodel)
+        let buehlmann = document.decomodel?.buehlmann?.first
+        XCTAssertEqual(buehlmann?.id, "minimal")
+        XCTAssertNil(buehlmann?.tissue)
+        XCTAssertNil(buehlmann?.gradientfactorlow)
+        XCTAssertNil(buehlmann?.gradientfactorhigh)
+    }
+
+    func testParseCompleteBuehlmann() throws {
         let xml = """
         <?xml version="1.0" encoding="UTF-8"?>
         <uddf version="3.2.1">
@@ -52,35 +78,7 @@ final class DecoModelParserTests: XCTestCase {
         XCTAssertEqual(tissue3?.halflife, 113.4)
     }
 
-    func testParseBuehlmannMinimal() throws {
-        let xml = """
-        <?xml version="1.0" encoding="UTF-8"?>
-        <uddf version="3.2.1">
-            <generator>
-                <name>TestApp</name>
-                <manufacturer id="test">
-                    <name>Test</name>
-                </manufacturer>
-            </generator>
-            <decomodel>
-                <buehlmann id="minimal" />
-            </decomodel>
-        </uddf>
-        """
-
-        let document = try UDDFSerialization.parse(xml.data(using: .utf8)!)
-
-        XCTAssertNotNil(document.decomodel)
-        let buehlmann = document.decomodel?.buehlmann?.first
-        XCTAssertEqual(buehlmann?.id, "minimal")
-        XCTAssertNil(buehlmann?.tissue)
-        XCTAssertNil(buehlmann?.gradientfactorlow)
-        XCTAssertNil(buehlmann?.gradientfactorhigh)
-    }
-
-    // MARK: - VPM Parsing Tests
-
-    func testParseVPMWithAllFields() throws {
+    func testParseCompleteVPM() throws {
         let xml = """
         <?xml version="1.0" encoding="UTF-8"?>
         <uddf version="3.2.1">
@@ -117,9 +115,7 @@ final class DecoModelParserTests: XCTestCase {
         XCTAssertEqual(vpm?.tissue?.count, 1)
     }
 
-    // MARK: - RGBM Parsing Tests
-
-    func testParseRGBMWithTissues() throws {
+    func testParseCompleteRGBM() throws {
         let xml = """
         <?xml version="1.0" encoding="UTF-8"?>
         <uddf version="3.2.1">
@@ -147,7 +143,7 @@ final class DecoModelParserTests: XCTestCase {
         XCTAssertEqual(rgbm?.tissue?.count, 2)
     }
 
-    // MARK: - Multiple Models Parsing
+    // MARK: - Special cases
 
     func testParseMultipleDecoModels() throws {
         let xml = """
@@ -184,8 +180,6 @@ final class DecoModelParserTests: XCTestCase {
         XCTAssertEqual(document.decomodel?.vpm?.count, 1)
         XCTAssertEqual(document.decomodel?.rgbm?.count, 1)
     }
-
-    // MARK: - Unknown Gas Type Handling
 
     func testParseUnknownTissueGas() throws {
         let xml = """

@@ -5,7 +5,29 @@ final class GeneratorParserTests: XCTestCase {
 
     // MARK: - Parsing Tests
 
-    func testParseGeneratorWithAllAttributes() throws {
+    func testParseMinimal() throws {
+        let xml = """
+        <?xml version="1.0" encoding="UTF-8"?>
+        <uddf version="3.2.1">
+            <generator>
+                <name>TestApp</name>
+                <version>1.0.0</version>
+            </generator>
+        </uddf>
+        """
+
+        let document = try UDDFSerialization.parse(xml.data(using: .utf8)!)
+
+        XCTAssertEqual(document.generator.name, "TestApp")
+        XCTAssertEqual(document.generator.version, "1.0.0")
+        XCTAssertNil(document.generator.aliasname)
+        XCTAssertNil(document.generator.manufacturer)
+        XCTAssertNil(document.generator.datetime)
+        XCTAssertNil(document.generator.type)
+        XCTAssertNil(document.generator.link)
+    }
+
+    func testParseComplete() throws {
         let xml = """
         <?xml version="1.0" encoding="UTF-8"?>
         <uddf version="3.2.1">
@@ -74,31 +96,9 @@ final class GeneratorParserTests: XCTestCase {
         XCTAssertEqual(contact?.homepage, "https://acmedive.example.com")
     }
 
-    func testParseGeneratorWithMinimalAttributes() throws {
-        let xml = """
-        <?xml version="1.0" encoding="UTF-8"?>
-        <uddf version="3.2.1">
-            <generator>
-                <name>TestApp</name>
-                <version>1.0.0</version>
-            </generator>
-        </uddf>
-        """
-
-        let document = try UDDFSerialization.parse(xml.data(using: .utf8)!)
-
-        XCTAssertEqual(document.generator.name, "TestApp")
-        XCTAssertEqual(document.generator.version, "1.0.0")
-        XCTAssertNil(document.generator.aliasname)
-        XCTAssertNil(document.generator.manufacturer)
-        XCTAssertNil(document.generator.datetime)
-        XCTAssertNil(document.generator.type)
-        XCTAssertNil(document.generator.link)
-    }
-
     // MARK: - Round Trip Tests
 
-    func testRoundTripGeneratorWithMinimalAttributes() throws {
+    func testRoundTrip() throws {
         let generator = Generator(
             name: "TestApp",
             version: "1.0.0"

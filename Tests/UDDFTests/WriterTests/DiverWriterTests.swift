@@ -1,7 +1,7 @@
 import XCTest
 @testable import UDDF
 
-final class EquipmentWriterTests: XCTestCase {
+final class DiverWriterTests: XCTestCase {
 
     func testWriteEquipmentWithDiveComputer() throws {
         let diveComputer = DiveComputer(

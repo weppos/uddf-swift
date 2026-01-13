@@ -1,7 +1,7 @@
 import XCTest
 @testable import UDDF
 
-final class EquipmentTests: XCTestCase {
+final class DiverTests: XCTestCase {
 
     // MARK: - TankMaterial Tests
 

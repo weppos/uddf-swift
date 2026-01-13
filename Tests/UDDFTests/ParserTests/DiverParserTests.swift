@@ -1,7 +1,7 @@
 import XCTest
 @testable import UDDF
 
-final class DiverTests: XCTestCase {
+final class DiverParserTests: XCTestCase {
 
     // MARK: - Basic Equipment Parsing
 

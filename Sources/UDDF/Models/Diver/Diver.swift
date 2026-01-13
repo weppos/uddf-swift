@@ -73,14 +73,19 @@ public struct Buddy: Codable, Equatable, Sendable {
     /// Personal information
     public var personal: Personal?
 
-    public init(id: String? = nil, personal: Personal? = nil) {
+    /// Equipment used by this buddy
+    public var equipment: Equipment?
+
+    public init(id: String? = nil, personal: Personal? = nil, equipment: Equipment? = nil) {
         self.id = id
         self.personal = personal
+        self.equipment = equipment
     }
 
     enum CodingKeys: String, CodingKey {
         case id
         case personal
+        case equipment
     }
 }
 
