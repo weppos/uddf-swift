@@ -209,13 +209,15 @@ public class ReferenceResolver {
     private func validateLinkReferences(in notes: Notes) -> [ReferenceError] {
         var errors: [ReferenceError] = []
 
-        if let link = notes.link {
-            if let ref = link.ref, !registry.keys.contains(ref) {
-                errors.append(ReferenceError(
-                    referenceID: ref,
-                    location: "notes.link",
-                    message: "Unresolved reference to '\(ref)'"
-                ))
+        if let links = notes.link {
+            for link in links {
+                if let ref = link.ref, !registry.keys.contains(ref) {
+                    errors.append(ReferenceError(
+                        referenceID: ref,
+                        location: "notes.link",
+                        message: "Unresolved reference to '\(ref)'"
+                    ))
+                }
             }
         }
 

@@ -25,6 +25,7 @@
 - **BREAKING**: Change `Personal.birthdate` from `Date?` to `Birthdate?` (wrapper with datetime)
 - **BREAKING**: Remove `Personal.contact` (contact is at owner/buddy level per UDDF spec)
 - **BREAKING**: Reorder `Owner` and `Buddy` init parameters: `personal` now precedes `address`
+- **BREAKING**: Change `Notes.link` from `Link?` to `[Link]?` (array per UDDF spec)
 
 ## 0.8.0 - 2026-01-13
 
