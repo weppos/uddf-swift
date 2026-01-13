@@ -9,12 +9,12 @@ import XMLCoder
 /// Reference: https://www.streit.cc/extern/uddf_v321/en/diver.html
 public struct Diver: Codable, Equatable, Sendable {
     /// The primary diver (owner of the dive log)
-    public var owner: [Owner]?
+    public var owner: Owner?
 
     /// Dive buddies
     public var buddy: [Buddy]?
 
-    public init(owner: [Owner]? = nil, buddy: [Buddy]? = nil) {
+    public init(owner: Owner? = nil, buddy: [Buddy]? = nil) {
         self.owner = owner
         self.buddy = buddy
     }

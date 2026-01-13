@@ -199,7 +199,7 @@ final class ValidationTests: XCTestCase {
             .addOwner(Owner(id: "owner1"))
             .build()
 
-        document.diver?.owner?[0].id = ""
+        document.diver?.owner?.id = ""
 
         let result = UDDFSerialization.validate(document)
 

@@ -10,11 +10,6 @@
                 <firstname>Alice</firstname>
             </personal>
         </owner>
-        <owner id="owner2">
-            <personal>
-                <firstname>Bob</firstname>
-            </personal>
-        </owner>
         <buddy id="buddy1">
             <personal>
                 <firstname>Charlie</firstname>

@@ -42,11 +42,9 @@ public class ReferenceResolver {
 
     private func buildRegistry(_ document: UDDFDocument) throws {
         // Register divers
-        if let owners = document.diver?.owner {
-            for owner in owners {
-                if let id = owner.id {
-                    try register(id: id, element: .diver(owner))
-                }
+        if let owner = document.diver?.owner {
+            if let id = owner.id {
+                try register(id: id, element: .diver(owner))
             }
         }
 

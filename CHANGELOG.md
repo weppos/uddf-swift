@@ -2,9 +2,14 @@
 
 ## Unreleased
 
+### Added
+
+- Add `equipment` property to `Buddy`
+
 ### Changed
 
 - **BREAKING**: Rename `DiverData` to `Diver`
+- **BREAKING**: Change `Diver.owner` from `[Owner]?` to `Owner?` (single owner per UDDF spec)
 
 ## 0.8.0 - 2026-01-13
 

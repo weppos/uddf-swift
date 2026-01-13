@@ -35,9 +35,9 @@ final class UDDFBuilderTests: XCTestCase {
             .build()
 
         XCTAssertNotNil(document.diver)
-        XCTAssertEqual(document.diver?.owner?.count, 1)
-        XCTAssertEqual(document.diver?.owner?.first?.id, "owner1")
-        XCTAssertEqual(document.diver?.owner?.first?.personal?.firstname, "John")
+        XCTAssertNotNil(document.diver?.owner)
+        XCTAssertEqual(document.diver?.owner?.id, "owner1")
+        XCTAssertEqual(document.diver?.owner?.personal?.firstname, "John")
     }
 
     func testBuilderWithMultipleBuddies() throws {

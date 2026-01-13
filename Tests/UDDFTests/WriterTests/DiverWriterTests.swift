@@ -21,7 +21,7 @@ final class DiverWriterTests: XCTestCase {
                 manufacturer: Manufacturer(id: "test", name: "Test")
             )
         )
-        document.diver = Diver(owner: [owner])
+        document.diver = Diver(owner: owner)
 
         let data = try UDDFSerialization.write(document)
         let xml = String(data: data, encoding: .utf8)!
@@ -49,7 +49,7 @@ final class DiverWriterTests: XCTestCase {
                 manufacturer: Manufacturer(id: "test", name: "Test")
             )
         )
-        document.diver = Diver(owner: [owner])
+        document.diver = Diver(owner: owner)
 
         let data = try UDDFSerialization.write(document)
         let xml = String(data: data, encoding: .utf8)!
@@ -76,7 +76,7 @@ final class DiverWriterTests: XCTestCase {
                 manufacturer: Manufacturer(id: "test", name: "Test")
             )
         )
-        document.diver = Diver(owner: [owner])
+        document.diver = Diver(owner: owner)
 
         let data = try UDDFSerialization.write(document)
         let xml = String(data: data, encoding: .utf8)!
@@ -107,7 +107,7 @@ final class DiverWriterTests: XCTestCase {
                 manufacturer: Manufacturer(id: "test", name: "Test")
             )
         )
-        document.diver = Diver(owner: [owner])
+        document.diver = Diver(owner: owner)
 
         let data = try UDDFSerialization.write(document)
         let xml = String(data: data, encoding: .utf8)!
@@ -137,7 +137,7 @@ final class DiverWriterTests: XCTestCase {
                 manufacturer: Manufacturer(id: "test", name: "Test")
             )
         )
-        document.diver = Diver(owner: [owner])
+        document.diver = Diver(owner: owner)
 
         let data = try UDDFSerialization.write(document)
         let xml = String(data: data, encoding: .utf8)!

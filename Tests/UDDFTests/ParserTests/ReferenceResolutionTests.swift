@@ -32,8 +32,8 @@ final class ReferenceResolutionTests: XCTestCase {
 
         // Verify the owner was parsed correctly
         XCTAssertNotNil(document.diver?.owner)
-        XCTAssertEqual(document.diver?.owner?.first?.id, "owner1")
-        XCTAssertEqual(document.diver?.owner?.first?.personal?.firstname, "John")
+        XCTAssertEqual(document.diver?.owner?.id, "owner1")
+        XCTAssertEqual(document.diver?.owner?.personal?.firstname, "John")
     }
 
     func testResolveMultipleDivers() throws {

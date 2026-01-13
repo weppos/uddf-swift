@@ -35,7 +35,7 @@ final class DiverParserTests: XCTestCase {
         let data = xml.data(using: .utf8)!
         let document = try UDDFSerialization.parse(data)
 
-        let owner = document.diver?.owner?.first
+        let owner = document.diver?.owner
         XCTAssertNotNil(owner?.equipment)
         XCTAssertEqual(owner?.equipment?.divecomputer?.count, 1)
 
@@ -74,7 +74,7 @@ final class DiverParserTests: XCTestCase {
         let data = xml.data(using: .utf8)!
         let document = try UDDFSerialization.parse(data)
 
-        let tank = document.diver?.owner?.first?.equipment?.tank?.first
+        let tank = document.diver?.owner?.equipment?.tank?.first
         XCTAssertEqual(tank?.id, "tank1")
         XCTAssertEqual(tank?.name, "Main Tank")
         XCTAssertEqual(tank?.tankmaterial, .steel)
@@ -111,7 +111,7 @@ final class DiverParserTests: XCTestCase {
         let data = xml.data(using: .utf8)!
         let document = try UDDFSerialization.parse(data)
 
-        let suit = document.diver?.owner?.first?.equipment?.suit?.first
+        let suit = document.diver?.owner?.equipment?.suit?.first
         XCTAssertEqual(suit?.id, "suit1")
         XCTAssertEqual(suit?.name, "Drysuit")
         XCTAssertEqual(suit?.suittype, .drySuit)
@@ -142,7 +142,7 @@ final class DiverParserTests: XCTestCase {
         let data = xml.data(using: .utf8)!
         let document = try UDDFSerialization.parse(data)
 
-        let tank = document.diver?.owner?.first?.equipment?.tank?.first
+        let tank = document.diver?.owner?.equipment?.tank?.first
         XCTAssertEqual(tank?.tankmaterial, .unknown("titanium"))
         XCTAssertFalse(tank?.tankmaterial?.isStandard ?? true)
     }
@@ -179,7 +179,7 @@ final class DiverParserTests: XCTestCase {
         let data = xml.data(using: .utf8)!
         let document = try UDDFSerialization.parse(data)
 
-        let regulator = document.diver?.owner?.first?.equipment?.regulator?.first
+        let regulator = document.diver?.owner?.equipment?.regulator?.first
         XCTAssertEqual(regulator?.id, "reg1")
         XCTAssertEqual(regulator?.name, "MK25/S620Ti")
         XCTAssertNotNil(regulator?.purchase)

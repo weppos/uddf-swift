@@ -84,10 +84,7 @@ public class UDDFBuilder {
         if diver == nil {
             diver = Diver()
         }
-        if diver?.owner == nil {
-            diver?.owner = []
-        }
-        diver?.owner?.append(owner)
+        diver?.owner = owner
         return self
     }
 

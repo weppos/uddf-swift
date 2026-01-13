@@ -36,9 +36,9 @@ final class FixtureTests: XCTestCase {
         XCTAssertEqual(document.generator.manufacturer?.name, "DiveSoft Inc")
 
         // Verify divers
-        XCTAssertEqual(document.diver?.owner?.count, 1)
-        XCTAssertEqual(document.diver?.owner?.first?.id, "owner1")
-        XCTAssertEqual(document.diver?.owner?.first?.personal?.firstname, "John")
+        XCTAssertNotNil(document.diver?.owner)
+        XCTAssertEqual(document.diver?.owner?.id, "owner1")
+        XCTAssertEqual(document.diver?.owner?.personal?.firstname, "John")
         XCTAssertEqual(document.diver?.buddy?.count, 1)
         XCTAssertEqual(document.diver?.buddy?.first?.id, "buddy1")
 
@@ -87,8 +87,8 @@ final class FixtureTests: XCTestCase {
         XCTAssertTrue(resolution.isValid, "All references should resolve")
         XCTAssertEqual(resolution.errors.count, 0)
 
-        // Verify multiple owners
-        XCTAssertEqual(document.diver?.owner?.count, 2)
+        // Verify owner and buddies
+        XCTAssertNotNil(document.diver?.owner)
         XCTAssertEqual(document.diver?.buddy?.count, 1)
 
         // Verify multiple sites
@@ -168,7 +168,7 @@ final class FixtureTests: XCTestCase {
         XCTAssertEqual(document.mediadata?.image?.count, 1)
         XCTAssertEqual(document.maker?.count, 1)
         XCTAssertEqual(document.business?.count, 1)
-        XCTAssertEqual(document.diver?.owner?.count, 1)
+        XCTAssertNotNil(document.diver?.owner)
         XCTAssertEqual(document.divesite?.count, 1)
         XCTAssertEqual(document.gasdefinitions?.mix?.count, 1)
         XCTAssertEqual(document.decomodel?.buehlmann?.count, 1)
@@ -212,7 +212,7 @@ final class FixtureTests: XCTestCase {
         XCTAssertNotNil(document)
 
         // Document structure is valid
-        XCTAssertEqual(document.diver?.owner?.count, 1)
+        XCTAssertNotNil(document.diver?.owner)
         XCTAssertEqual(document.profiledata?.repetitiongroup?.count, 2)
 
         // Validation should pass (basic structure is fine)
@@ -246,7 +246,7 @@ final class FixtureTests: XCTestCase {
 
         // Verify key data preserved
         XCTAssertEqual(reparsed.generator.name, original.generator.name)
-        XCTAssertEqual(reparsed.diver?.owner?.count, original.diver?.owner?.count)
+        XCTAssertEqual(reparsed.diver?.owner?.id, original.diver?.owner?.id)
         XCTAssertEqual(reparsed.divesite?.count, original.divesite?.count)
         XCTAssertEqual(reparsed.gasdefinitions?.mix?.count, original.gasdefinitions?.mix?.count)
 

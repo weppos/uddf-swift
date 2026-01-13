@@ -99,11 +99,9 @@ public class UDDFValidator {
     // MARK: - Diver Data Validation
 
     private func validateDiver(_ diver: Diver) {
-        // Validate owners
-        if let owners = diver.owner {
-            for (index, owner) in owners.enumerated() {
-                validateOwner(owner, index: index)
-            }
+        // Validate owner
+        if let owner = diver.owner {
+            validateOwner(owner, index: 0)
         }
 
         // Validate buddies

@@ -40,12 +40,12 @@ final class DiverSerializationTests: XCTestCase {
                 manufacturer: Manufacturer(id: "test", name: "Test")
             )
         )
-        document.diver = Diver(owner: [owner])
+        document.diver = Diver(owner: owner)
 
         let data = try UDDFSerialization.write(document)
         let parsed = try UDDFSerialization.parse(data)
 
-        let parsedEquipment = parsed.diver?.owner?.first?.equipment
+        let parsedEquipment = parsed.diver?.owner?.equipment
         XCTAssertEqual(parsedEquipment?.divecomputer?.first?.id, "dc1")
         XCTAssertEqual(parsedEquipment?.divecomputer?.first?.name, "Perdix AI")
         XCTAssertEqual(parsedEquipment?.tank?.first?.tankmaterial, .steel)
