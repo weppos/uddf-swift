@@ -22,9 +22,9 @@ final class DiverSerializationTests: XCTestCase {
 
         let owner = Owner(
             id: "owner1",
+            personal: personal,
             address: address,
-            contact: contact,
-            personal: personal
+            contact: contact
         )
 
         var document = UDDFDocument(
@@ -76,9 +76,9 @@ final class DiverSerializationTests: XCTestCase {
 
         let buddy = Buddy(
             id: "buddy1",
+            personal: personal,
             address: address,
-            contact: contact,
-            personal: personal
+            contact: contact
         )
 
         var document = UDDFDocument(
@@ -109,6 +109,64 @@ final class DiverSerializationTests: XCTestCase {
         // Personal
         XCTAssertEqual(parsedBuddy?.personal?.firstname, "Jane")
         XCTAssertEqual(parsedBuddy?.personal?.lastname, "Buddy")
+    }
+
+    func testRoundTripPersonalComplete() throws {
+        let personal = Personal(
+            firstname: "John",
+            middlename: "Michael",
+            lastname: "Diver",
+            birthname: "Smith",
+            honorific: "Dr.",
+            sex: .male,
+            height: 1.82,
+            weight: 78.6,
+            smoking: .nonSmoker,
+            passport: "AB123456",
+            bloodgroup: "A+",
+            membership: [
+                Membership(organisation: "DAN", memberid: "123456"),
+                Membership(organisation: "PADI", memberid: "789012")
+            ],
+            numberofdives: NumberOfDives(startdate: "2010-01-01", enddate: "2024-01-01", dives: 500)
+        )
+
+        let owner = Owner(id: "owner1", personal: personal)
+
+        var document = UDDFDocument(
+            version: "3.2.1",
+            generator: Generator(
+                name: "Test",
+                manufacturer: Manufacturer(id: "test", name: "Test")
+            )
+        )
+        document.diver = Diver(owner: owner)
+
+        let data = try UDDFSerialization.write(document)
+        let parsed = try UDDFSerialization.parse(data)
+
+        let parsedPersonal = parsed.diver?.owner?.personal
+        XCTAssertEqual(parsedPersonal?.firstname, "John")
+        XCTAssertEqual(parsedPersonal?.middlename, "Michael")
+        XCTAssertEqual(parsedPersonal?.lastname, "Diver")
+        XCTAssertEqual(parsedPersonal?.birthname, "Smith")
+        XCTAssertEqual(parsedPersonal?.honorific, "Dr.")
+        XCTAssertEqual(parsedPersonal?.sex, .male)
+        XCTAssertEqual(parsedPersonal?.height, 1.82)
+        XCTAssertEqual(parsedPersonal?.weight, 78.6)
+        XCTAssertEqual(parsedPersonal?.smoking, .nonSmoker)
+        XCTAssertEqual(parsedPersonal?.passport, "AB123456")
+        XCTAssertEqual(parsedPersonal?.bloodgroup, "A+")
+
+        // Memberships
+        XCTAssertEqual(parsedPersonal?.membership?.count, 2)
+        XCTAssertEqual(parsedPersonal?.membership?[0].organisation, "DAN")
+        XCTAssertEqual(parsedPersonal?.membership?[0].memberid, "123456")
+
+        // Number of dives
+        XCTAssertEqual(parsedPersonal?.numberofdives?.startdate, "2010-01-01")
+        XCTAssertEqual(parsedPersonal?.numberofdives?.enddate, "2024-01-01")
+        XCTAssertEqual(parsedPersonal?.numberofdives?.dives, 500)
     }
 
     func testRoundTripEquipment() throws {

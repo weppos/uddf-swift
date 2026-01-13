@@ -24,9 +24,9 @@ final class DiverWriterTests: XCTestCase {
 
         let owner = Owner(
             id: "owner1",
+            personal: personal,
             address: address,
-            contact: contact,
-            personal: personal
+            contact: contact
         )
 
         var document = UDDFDocument(
@@ -82,9 +82,9 @@ final class DiverWriterTests: XCTestCase {
 
         let buddy = Buddy(
             id: "buddy1",
+            personal: personal,
             address: address,
-            contact: contact,
-            personal: personal
+            contact: contact
         )
 
         var document = UDDFDocument(

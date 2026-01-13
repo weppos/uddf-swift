@@ -6,11 +6,20 @@
 
 - Add `address` and `contact` properties to `Owner` and `Buddy`
 - Add `equipment` property to `Buddy`
+- Add complete `Personal` properties: `honorific`, `sex`, `height`, `weight`, `smoking`, `passport`, `bloodgroup`, `membership`, `numberofdives`
+- Add `Sex` enum with hybrid pattern for biological sex values
+- Add `Smoking` enum with hybrid pattern for smoking habit values
+- Add `Membership` struct for organization memberships
+- Add `NumberOfDives` struct for dive count in time intervals
+- Add `Birthdate` wrapper struct containing datetime
 
 ### Changed
 
 - **BREAKING**: Rename `DiverData` to `Diver`
 - **BREAKING**: Change `Diver.owner` from `[Owner]?` to `Owner?` (single owner per UDDF spec)
+- **BREAKING**: Change `Personal.birthdate` from `Date?` to `Birthdate?` (wrapper with datetime)
+- **BREAKING**: Remove `Personal.contact` (contact is at owner/buddy level per UDDF spec)
+- **BREAKING**: Reorder `Owner` and `Buddy` init parameters: `personal` now precedes `address`
 
 ## 0.8.0 - 2026-01-13
 

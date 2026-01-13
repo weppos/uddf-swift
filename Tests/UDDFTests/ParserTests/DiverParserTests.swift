@@ -3,9 +3,9 @@ import XCTest
 
 final class DiverParserTests: XCTestCase {
 
-    // MARK: - Owner Address and Contact
+    // MARK: - Owner Complete
 
-    func testParseOwnerWithAddressAndContact() throws {
+    func testParseOwnerComplete() throws {
         let xml = """
         <?xml version="1.0" encoding="UTF-8"?>
         <uddf xmlns="http://www.streit.cc/uddf/3.2/" version="3.2.1">
@@ -17,6 +17,25 @@ final class DiverParserTests: XCTestCase {
             </generator>
             <diver>
                 <owner id="owner1">
+                    <personal>
+                        <firstname>John</firstname>
+                        <middlename>Michael</middlename>
+                        <lastname>Diver</lastname>
+                        <birthname>Smith</birthname>
+                        <honorific>Dr.</honorific>
+                        <sex>male</sex>
+                        <height>1.82</height>
+                        <weight>78.6</weight>
+                        <smoking>0</smoking>
+                        <birthdate>
+                            <datetime>1985-06-15T00:00:00</datetime>
+                        </birthdate>
+                        <passport>AB123456</passport>
+                        <bloodgroup>A+</bloodgroup>
+                        <membership organisation="DAN" memberid="123456"/>
+                        <membership organisation="PADI" memberid="789012"/>
+                        <numberofdives startdate="2010-01-01" enddate="2024-01-01" dives="500"/>
+                    </personal>
                     <address>
                         <street>123 Dive Street</street>
                         <city>Munich</city>
@@ -29,10 +48,6 @@ final class DiverParserTests: XCTestCase {
                         <email>diver@example.com</email>
                         <homepage>https://example.com</homepage>
                     </contact>
-                    <personal>
-                        <firstname>John</firstname>
-                        <lastname>Diver</lastname>
-                    </personal>
                 </owner>
             </diver>
         </uddf>
@@ -43,6 +58,33 @@ final class DiverParserTests: XCTestCase {
 
         let owner = document.diver?.owner
         XCTAssertEqual(owner?.id, "owner1")
+
+        // Personal
+        let personal = owner?.personal
+        XCTAssertEqual(personal?.firstname, "John")
+        XCTAssertEqual(personal?.middlename, "Michael")
+        XCTAssertEqual(personal?.lastname, "Diver")
+        XCTAssertEqual(personal?.birthname, "Smith")
+        XCTAssertEqual(personal?.honorific, "Dr.")
+        XCTAssertEqual(personal?.sex, .male)
+        XCTAssertEqual(personal?.height, 1.82)
+        XCTAssertEqual(personal?.weight, 78.6)
+        XCTAssertEqual(personal?.smoking, .nonSmoker)
+        XCTAssertNotNil(personal?.birthdate?.datetime)
+        XCTAssertEqual(personal?.passport, "AB123456")
+        XCTAssertEqual(personal?.bloodgroup, "A+")
+
+        // Memberships
+        XCTAssertEqual(personal?.membership?.count, 2)
+        XCTAssertEqual(personal?.membership?[0].organisation, "DAN")
+        XCTAssertEqual(personal?.membership?[0].memberid, "123456")
+        XCTAssertEqual(personal?.membership?[1].organisation, "PADI")
+        XCTAssertEqual(personal?.membership?[1].memberid, "789012")
+
+        // Number of dives
+        XCTAssertEqual(personal?.numberofdives?.startdate, "2010-01-01")
+        XCTAssertEqual(personal?.numberofdives?.enddate, "2024-01-01")
+        XCTAssertEqual(personal?.numberofdives?.dives, 500)
 
         // Address
         XCTAssertEqual(owner?.address?.street, "123 Dive Street")
@@ -55,13 +97,9 @@ final class DiverParserTests: XCTestCase {
         XCTAssertEqual(owner?.contact?.phone, "+49 89 123456")
         XCTAssertEqual(owner?.contact?.email, "diver@example.com")
         XCTAssertEqual(owner?.contact?.homepage, "https://example.com")
-
-        // Personal
-        XCTAssertEqual(owner?.personal?.firstname, "John")
-        XCTAssertEqual(owner?.personal?.lastname, "Diver")
     }
 
-    // MARK: - Buddy Address and Contact
+    // MARK: - Buddy Complete
 
     func testParseBuddyWithAddressAndContact() throws {
         let xml = """
@@ -113,6 +151,108 @@ final class DiverParserTests: XCTestCase {
         // Personal
         XCTAssertEqual(buddy?.personal?.firstname, "Jane")
         XCTAssertEqual(buddy?.personal?.lastname, "Buddy")
+    }
+
+    // MARK: - Sex and Smoking Enums
+
+    func testParseSexValues() throws {
+        let sexValues = ["undetermined", "male", "female", "hermaphrodite"]
+
+        for sexValue in sexValues {
+            let xml = """
+            <?xml version="1.0" encoding="UTF-8"?>
+            <uddf xmlns="http://www.streit.cc/uddf/3.2/" version="3.2.1">
+                <generator>
+                    <name>Test</name>
+                    <manufacturer id="test">
+                        <name>Test Co</name>
+                    </manufacturer>
+                </generator>
+                <diver>
+                    <owner id="owner1">
+                        <personal>
+                            <sex>\(sexValue)</sex>
+                        </personal>
+                    </owner>
+                </diver>
+            </uddf>
+            """
+
+            let data = xml.data(using: .utf8)!
+            let document = try UDDFSerialization.parse(data)
+
+            let sex = document.diver?.owner?.personal?.sex
+            XCTAssertNotNil(sex)
+            XCTAssertEqual(sex?.rawValue, sexValue)
+            XCTAssertTrue(sex?.isStandard ?? false, "Sex '\(sexValue)' should be standard")
+        }
+    }
+
+    func testParseUnknownSex() throws {
+        let xml = """
+        <?xml version="1.0" encoding="UTF-8"?>
+        <uddf xmlns="http://www.streit.cc/uddf/3.2/" version="3.2.1">
+            <generator>
+                <name>Test</name>
+                <manufacturer id="test">
+                    <name>Test Co</name>
+                </manufacturer>
+            </generator>
+            <diver>
+                <owner id="owner1">
+                    <personal>
+                        <sex>other</sex>
+                    </personal>
+                </owner>
+            </diver>
+        </uddf>
+        """
+
+        let data = xml.data(using: .utf8)!
+        let document = try UDDFSerialization.parse(data)
+
+        let sex = document.diver?.owner?.personal?.sex
+        XCTAssertEqual(sex, .unknown("other"))
+        XCTAssertFalse(sex?.isStandard ?? true)
+    }
+
+    func testParseSmokingValues() throws {
+        let smokingTests: [(String, Smoking)] = [
+            ("0", .nonSmoker),
+            ("0-3", .zeroToThree),
+            ("4-10", .fourToTen),
+            ("11-20", .elevenToTwenty),
+            ("21-40", .twentyOneToForty),
+            ("40+", .fortyPlus)
+        ]
+
+        for (xmlValue, expected) in smokingTests {
+            let xml = """
+            <?xml version="1.0" encoding="UTF-8"?>
+            <uddf xmlns="http://www.streit.cc/uddf/3.2/" version="3.2.1">
+                <generator>
+                    <name>Test</name>
+                    <manufacturer id="test">
+                        <name>Test Co</name>
+                    </manufacturer>
+                </generator>
+                <diver>
+                    <owner id="owner1">
+                        <personal>
+                            <smoking>\(xmlValue)</smoking>
+                        </personal>
+                    </owner>
+                </diver>
+            </uddf>
+            """
+
+            let data = xml.data(using: .utf8)!
+            let document = try UDDFSerialization.parse(data)
+
+            let smoking = document.diver?.owner?.personal?.smoking
+            XCTAssertEqual(smoking, expected, "Smoking '\(xmlValue)' should parse correctly")
+            XCTAssertTrue(smoking?.isStandard ?? false, "Smoking '\(xmlValue)' should be standard")
+        }
     }
 
     // MARK: - Basic Equipment Parsing
