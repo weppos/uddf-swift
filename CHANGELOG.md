@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.9.0 - 2026-01-14
+
 ### Added
 
 - Add `address` and `contact` properties to `Owner` and `Buddy`
