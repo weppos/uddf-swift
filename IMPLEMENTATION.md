@@ -288,7 +288,7 @@ func validateDive(_ dive: Dive) {
 
 #### Implemented with Option 2
 
-- **`DiveMode.ModeType`** - Dive breathing apparatus modes in [UDDF divemode element](https://www.streit.cc/extern/uddf_v321/en/divemode.html
+- **`DiveMode.ModeType`** - Dive breathing apparatus modes in [UDDF divemode element](https://www.streit.cc/extern/uddf_v321/en/divemode.html)
   - Standard: `.apnoe`, `.closedCircuit`, `.openCircuit`, `.semiClosedCircuit`
   - Unknown: `.unknown(String)`
 
