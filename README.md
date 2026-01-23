@@ -289,7 +289,7 @@ Contributions are welcome! Please feel free to submit issues and pull requests. 
 
 ## Changelog
 
-See [CHANGELOG.md](CHANGELOG.md) for details.
+See [CHANGELOG.md](CHANGELOG.md) for release history.
 
 ## License
 
