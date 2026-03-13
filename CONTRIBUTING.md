@@ -15,7 +15,7 @@ Thank you for your interest in contributing to UDDF Swift!
 
 ## Commit Message Guidelines
 
-We follow the [Conventional Commits](https://www.conventionalcommits.org/) specification for commit messages, with a capitalized description. Use the project-specific conventions below.
+This project uses Conventional Commits](https://www.conventionalcommits.org/) specification for commit messages, with a capitalized description. Use the project-specific conventions below.
 
 ### Format
 
@@ -56,7 +56,7 @@ feat(parser): Add support for UDDF 3.3.0 format
 
 fix(validation): Allow missing generator names in real-world files
 
-docs: update API examples in README
+docs: Update API examples in README
 
 refactor(core): Simplify depth unit conversions
 ```
