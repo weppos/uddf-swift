@@ -448,7 +448,7 @@ final class DiverParserTests: XCTestCase {
         XCTAssertEqual(tank?.name, "Main Tank")
         XCTAssertEqual(tank?.tankmaterial, .steel)
         if let cubicMeters = tank?.tankvolume?.cubicMeters {
-            XCTAssertEqual(cubicMeters, 0.012, accuracy: 0.0001)
+            XCTAssertEqual(cubicMeters, 0.012)
         } else {
             XCTFail("Tank volume should not be nil")
         }

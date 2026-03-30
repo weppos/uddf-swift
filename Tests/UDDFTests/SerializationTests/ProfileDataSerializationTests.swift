@@ -119,7 +119,7 @@ final class ProfileDataSerializationTests: XCTestCase {
         XCTAssertEqual(reparsedDive?.tankdata?.count, 2)
         let reparsedTank1 = reparsedDive?.tankdata?[0]
         XCTAssertEqual(reparsedTank1?.link?.ref, "mix1")
-        XCTAssertEqual(reparsedTank1?.tankvolume?.liters ?? 0, 12.0, accuracy: 0.01)
+        XCTAssertEqual(reparsedTank1?.tankvolume?.cubicMeters ?? 0, 0.012)
 
         // InformationBeforeDive
         let reparsedBefore = reparsedDive?.informationbeforedive

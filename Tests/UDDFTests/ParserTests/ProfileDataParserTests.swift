@@ -156,7 +156,7 @@ final class ProfileDataParserTests: XCTestCase {
         let tankData = dive?.tankdata
         XCTAssertEqual(tankData?.count, 1)
         XCTAssertEqual(tankData?.first?.link?.ref, "air")
-        XCTAssertEqual(tankData?.first?.tankvolume?.liters ?? 0, 12.0, accuracy: 0.01)
+        XCTAssertEqual(tankData?.first?.tankvolume?.cubicMeters ?? 0, 0.012)
 
         // Samples
         let waypoints = dive?.samples?.waypoint
@@ -219,7 +219,7 @@ final class ProfileDataParserTests: XCTestCase {
         XCTAssertEqual(waypoint2?.divetime?.seconds, 60)
         XCTAssertEqual(waypoint2?.depth?.meters, 10.5)
         XCTAssertNotNil(waypoint2?.temperature)
-        XCTAssertEqual(waypoint2?.temperature?.celsius ?? 0, 20, accuracy: 0.01)
+        XCTAssertEqual(waypoint2?.temperature?.kelvin ?? 0, 293.15)
     }
 
     func testParseExtendedWaypointFields() throws {
@@ -256,7 +256,7 @@ final class ProfileDataParserTests: XCTestCase {
         XCTAssertEqual(waypoint0?.tankpressure.count, 1)
         XCTAssertNil(waypoint0?.tankpressure.first?.ref)
         XCTAssertEqual(waypoint0?.tankpressure.first?.pascals ?? 0, 2.0e7)
-        XCTAssertEqual(waypoint0?.temperature?.celsius ?? 0, 20, accuracy: 0.01)
+        XCTAssertEqual(waypoint0?.temperature?.kelvin ?? 0, 293.15)
 
         // Waypoint 1: Shallow with NDL, RBT, setpoint, heart rate, heading
         let waypoint1 = waypoints?[1]
@@ -531,14 +531,14 @@ final class ProfileDataParserTests: XCTestCase {
         // First tank (Air)
         let tank1 = tankData?[0]
         XCTAssertEqual(tank1?.link?.ref, "mix1")
-        XCTAssertEqual(tank1?.tankvolume?.liters ?? 0, 12.0, accuracy: 0.01)
+        XCTAssertEqual(tank1?.tankvolume?.cubicMeters ?? 0, 0.012)
         XCTAssertEqual(tank1?.tankpressurebegin?.pascals ?? 0, 2.0e7)
         XCTAssertEqual(tank1?.tankpressureend?.pascals ?? 0, 5.0e6)
 
         // Second tank (EAN32)
         let tank2 = tankData?[1]
         XCTAssertEqual(tank2?.link?.ref, "mix2")
-        XCTAssertEqual(tank2?.tankvolume?.liters ?? 0, 7.0, accuracy: 0.01)
+        XCTAssertEqual(tank2?.tankvolume?.cubicMeters ?? 0, 0.007)
         XCTAssertEqual(tank2?.tankpressurebegin?.pascals ?? 0, 2.0e7)
         XCTAssertEqual(tank2?.tankpressureend?.pascals ?? 0, 1.5e7)
     }
@@ -583,7 +583,7 @@ final class ProfileDataParserTests: XCTestCase {
         let interval1 = dives?[0].informationbeforedive?.surfaceintervalbeforedive
         XCTAssertNotNil(interval1)
         XCTAssertEqual(interval1?.passedtime?.seconds, 5400)
-        XCTAssertEqual(interval1?.passedtime?.minutes ?? 0, 90, accuracy: 0.01)
+        XCTAssertEqual(interval1?.passedtime?.minutes ?? 0, 90)
         XCTAssertNil(interval1?.infinity)
 
         // Second dive with infinity
@@ -628,7 +628,7 @@ final class ProfileDataParserTests: XCTestCase {
         XCTAssertEqual(alcohol?.drink.count, 1)
         XCTAssertEqual(alcohol?.drink.first?.name, "Beer")
         XCTAssertEqual(alcohol?.drink.first?.periodicallytaken, "no")
-        XCTAssertEqual(alcohol?.drink.first?.timespanbeforedive?.hours ?? 0, 2, accuracy: 0.01)
+        XCTAssertEqual(alcohol?.drink.first?.timespanbeforedive?.seconds ?? 0, 7200)
     }
 
     func testParseMedicationBeforeDive() throws {
@@ -665,7 +665,7 @@ final class ProfileDataParserTests: XCTestCase {
         XCTAssertEqual(medication?.medicine.first?.id, "med1")
         XCTAssertEqual(medication?.medicine.first?.name, "Aspirin")
         XCTAssertEqual(medication?.medicine.first?.periodicallytaken, "yes")
-        XCTAssertEqual(medication?.medicine.first?.timespanbeforedive?.hours ?? 0, 1, accuracy: 0.01)
+        XCTAssertEqual(medication?.medicine.first?.timespanbeforedive?.seconds ?? 0, 3600)
     }
 
     func testParseNoSuit() throws {

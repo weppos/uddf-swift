@@ -5,23 +5,25 @@ final class PressureTests: XCTestCase {
     func testBarConversion() {
         let pressure = Pressure(bar: 200)
 
+        XCTAssertEqual(pressure.pascals, 20_000_000)
         XCTAssertEqual(pressure.bar, 200.0)
-        XCTAssertEqual(pressure.psi, 2900.76, accuracy: 0.01)
-        XCTAssertEqual(pressure.atmospheres, 197.38, accuracy: 0.01)
+        XCTAssertEqual(pressure.psi, 2900.753615789382)
+        XCTAssertEqual(pressure.atmospheres, 197.38465334320257)
     }
 
     func testPSIInitializer() {
         let pressure = Pressure(psi: 3000)
 
-        XCTAssertEqual(pressure.psi, 3000.0, accuracy: 0.01)
-        XCTAssertEqual(pressure.bar, 206.84, accuracy: 0.01)
+        XCTAssertEqual(pressure.pascals, 20_684_280)
+        XCTAssertEqual(pressure.psi, 3000.0)
+        XCTAssertEqual(pressure.bar, 206.8428)
     }
 
     func testAtmospheresInitializer() {
         let pressure = Pressure(atmospheres: 1)
 
-        XCTAssertEqual(pressure.pascals, 101325, accuracy: 0.001)
-        XCTAssertEqual(pressure.bar, 1.01325, accuracy: 0.00001)
+        XCTAssertEqual(pressure.pascals, 101_325)
+        XCTAssertEqual(pressure.bar, 1.01325)
     }
 
     func testComparable() {

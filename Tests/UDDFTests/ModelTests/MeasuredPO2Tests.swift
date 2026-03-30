@@ -7,6 +7,6 @@ final class MeasuredPO2Tests: XCTestCase {
         let measuredPO2 = MeasuredPO2(bar: 1.2, ref: "sensor-center")
 
         XCTAssertEqual(measuredPO2.ref, "sensor-center")
-        XCTAssertEqual(measuredPO2.pascals, 120000, accuracy: 0.001)
+        XCTAssertEqual(measuredPO2.pascals, 120000)
     }
 }

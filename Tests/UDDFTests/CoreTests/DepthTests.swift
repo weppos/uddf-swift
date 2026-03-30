@@ -6,14 +6,14 @@ final class DepthTests: XCTestCase {
         let depth = Depth(meters: 10)
 
         XCTAssertEqual(depth.meters, 10.0)
-        XCTAssertEqual(depth.feet, 32.8084, accuracy: 0.001)
+        XCTAssertEqual(depth.feet, 32.8084)
     }
 
     func testFeetToMetersConversion() {
         let depth = Depth(feet: 33)
 
-        XCTAssertEqual(depth.feet, 33.0, accuracy: 0.001)
-        XCTAssertEqual(depth.meters, 10.0584, accuracy: 0.001)
+        XCTAssertEqual(depth.feet, 33.0)
+        XCTAssertEqual(depth.meters, 10.05839967813121)
     }
 
     func testComparable() {
