@@ -244,13 +244,18 @@ final class ProfileDataParserTests: XCTestCase {
         XCTAssertEqual(waypoint0?.divetime?.seconds, 0)
         XCTAssertEqual(waypoint0?.gradientfactor, 0)
         XCTAssertNil(waypoint0?.heading)
+        XCTAssertEqual(waypoint0?.measuredpo2.count, 1)
+        XCTAssertNil(waypoint0?.measuredpo2.first?.ref)
+        XCTAssertEqual(waypoint0?.measuredpo2.first?.pascals ?? 0, 1.19e5)
         XCTAssertNil(waypoint0?.nodecotime)
         XCTAssertNil(waypoint0?.otu)
         XCTAssertNil(waypoint0?.remainingbottomtime)
         XCTAssertNil(waypoint0?.remainingo2time)
         XCTAssertEqual(waypoint0?.setpo2?.pascals ?? 0, 1.2e5)
         XCTAssertEqual(waypoint0?.switchmix?.ref, "mix1")
-        XCTAssertEqual(waypoint0?.tankpressure?.pascals ?? 0, 2.0e7)
+        XCTAssertEqual(waypoint0?.tankpressure.count, 1)
+        XCTAssertNil(waypoint0?.tankpressure.first?.ref)
+        XCTAssertEqual(waypoint0?.tankpressure.first?.pascals ?? 0, 2.0e7)
         XCTAssertEqual(waypoint0?.temperature?.celsius ?? 0, 20, accuracy: 0.01)
 
         // Waypoint 1: Shallow with NDL, RBT, setpoint, heart rate, heading
@@ -261,12 +266,14 @@ final class ProfileDataParserTests: XCTestCase {
         XCTAssertEqual(waypoint1?.divetime?.seconds, 60)
         XCTAssertEqual(waypoint1?.gradientfactor, 5)
         XCTAssertEqual(waypoint1?.heading, 90.0)
+        XCTAssertEqual(waypoint1?.measuredpo2, [])
         XCTAssertEqual(waypoint1?.nodecotime?.seconds, 5940)
         XCTAssertEqual(waypoint1?.otu, 15.5)
         XCTAssertEqual(waypoint1?.remainingbottomtime?.seconds, 1800)
         XCTAssertEqual(waypoint1?.remainingo2time?.seconds, 3300)
         XCTAssertEqual(waypoint1?.setpo2?.pascals ?? 0, 1.2e5)
-        XCTAssertEqual(waypoint1?.tankpressure?.pascals ?? 0, 1.95e7)
+        XCTAssertEqual(waypoint1?.tankpressure.count, 1)
+        XCTAssertEqual(waypoint1?.tankpressure.first?.pascals ?? 0, 1.95e7)
         XCTAssertEqual(waypoint1?.heartrate, 75)
 
         // Waypoint 2: Depth with deco stop, CNS, TTS, heading
@@ -280,12 +287,93 @@ final class ProfileDataParserTests: XCTestCase {
         XCTAssertEqual(waypoint2?.divetime?.seconds, 1200)
         XCTAssertEqual(waypoint2?.gradientfactor, 65)
         XCTAssertEqual(waypoint2?.heading, 180.5)
+        XCTAssertEqual(waypoint2?.measuredpo2, [])
         XCTAssertEqual(waypoint2?.otu, 42.0)
         XCTAssertEqual(waypoint2?.remainingo2time?.seconds, 2400)
         XCTAssertEqual(waypoint2?.setpo2?.pascals ?? 0, 1.3e5)
-        XCTAssertEqual(waypoint2?.tankpressure?.pascals ?? 0, 1.8e7)
+        XCTAssertEqual(waypoint2?.tankpressure.count, 1)
+        XCTAssertEqual(waypoint2?.tankpressure.first?.pascals ?? 0, 1.8e7)
         XCTAssertEqual(waypoint2?.tts?.seconds, 600)
         XCTAssertEqual(waypoint2?.heartrate, 80)
+    }
+
+    func testParseWaypointMultiSensorPO2AndMultiTankPressure() throws {
+        let xml = """
+        <?xml version="1.0" encoding="UTF-8"?>
+        <uddf version="3.2.1">
+            <generator>
+                <name>TestApp</name>
+            </generator>
+            <profiledata>
+                <repetitiongroup>
+                    <dive>
+                        <samples>
+                            <waypoint>
+                                <depth>21</depth>
+                                <divetime>900</divetime>
+                                <measuredpo2 ref="sensor-1">120000</measuredpo2>
+                                <measuredpo2 ref="sensor-2">121000</measuredpo2>
+                                <measuredpo2>119500</measuredpo2>
+                                <tankpressure ref="backgas">20000000</tankpressure>
+                                <tankpressure ref="stage">15000000</tankpressure>
+                                <tankpressure>14500000</tankpressure>
+                            </waypoint>
+                        </samples>
+                    </dive>
+                </repetitiongroup>
+            </profiledata>
+        </uddf>
+        """
+
+        let data = xml.data(using: .utf8)!
+        let document = try UDDFSerialization.parse(data)
+
+        let waypoint = document.profiledata?.repetitiongroup?.first?.dive?.first?.samples?.waypoint?.first
+        XCTAssertNotNil(waypoint)
+        XCTAssertEqual(waypoint?.measuredpo2.count, 3)
+        XCTAssertEqual(waypoint?.measuredpo2[0], MeasuredPO2(pascals: 120000, ref: "sensor-1"))
+        XCTAssertEqual(waypoint?.measuredpo2[1], MeasuredPO2(pascals: 121000, ref: "sensor-2"))
+        XCTAssertEqual(waypoint?.measuredpo2[2], MeasuredPO2(pascals: 119500))
+        XCTAssertEqual(waypoint?.tankpressure.count, 3)
+        XCTAssertEqual(waypoint?.tankpressure[0], TankPressure(pascals: 20000000, ref: "backgas"))
+        XCTAssertEqual(waypoint?.tankpressure[1], TankPressure(pascals: 15000000, ref: "stage"))
+        XCTAssertEqual(waypoint?.tankpressure[2], TankPressure(pascals: 14500000))
+    }
+
+    func testParseWaypointSensorValuesWithFormattingWhitespace() throws {
+        let xml = """
+        <?xml version="1.0" encoding="UTF-8"?>
+        <uddf version="3.2.1">
+            <generator>
+                <name>TestApp</name>
+            </generator>
+            <profiledata>
+                <repetitiongroup>
+                    <dive>
+                        <samples>
+                            <waypoint>
+                                <divetime>300</divetime>
+                                <measuredpo2 ref="sensor-1">
+                                    120000
+                                </measuredpo2>
+                                <tankpressure ref="backgas">
+                                    20000000
+                                </tankpressure>
+                            </waypoint>
+                        </samples>
+                    </dive>
+                </repetitiongroup>
+            </profiledata>
+        </uddf>
+        """
+
+        let data = xml.data(using: .utf8)!
+        let document = try UDDFSerialization.parse(data)
+
+        let waypoint = document.profiledata?.repetitiongroup?.first?.dive?.first?.samples?.waypoint?.first
+        XCTAssertNotNil(waypoint)
+        XCTAssertEqual(waypoint?.measuredpo2, [MeasuredPO2(pascals: 120000, ref: "sensor-1")])
+        XCTAssertEqual(waypoint?.tankpressure, [TankPressure(pascals: 20000000, ref: "backgas")])
     }
 
     // MARK: - Extension Tests

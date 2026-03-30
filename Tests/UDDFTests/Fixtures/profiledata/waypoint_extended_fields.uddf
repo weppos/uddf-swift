@@ -12,6 +12,7 @@
   - gradientfactor (decompression gradient factor)
   - heading (compass heading in degrees)
   - heartrate (heart rate in BPM)
+  - measuredpo2 (sensor PPO2 reading)
   - nodecotime (no-decompression time remaining)
   - otu (oxygen toxicity units)
   - remainingbottomtime (RBT - time before ascent required)
@@ -50,6 +51,7 @@
             <calculatedpo2>1.2e5</calculatedpo2>
             <depth>0</depth>
             <divetime>0</divetime>
+            <measuredpo2>1.19e5</measuredpo2>
             <setpo2>1.2e5</setpo2>
             <switchmix ref="mix1" />
             <tankpressure>2.0e7</tankpressure>

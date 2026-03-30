@@ -23,6 +23,12 @@ Some dive computer exporters include fields that are not part of the UDDF 3.2.1 
     <salinity density="1025.0">salt</salinity>
     ```
 
+## Attributed Intrinsic Scalars
+
+Some UDDF elements combine an XML attribute with scalar text content, for example `<price currency="EUR">499.99</price>` or `<measuredpo2 ref="sensor-1">120000</measuredpo2>`.
+
+When XML is pretty-printed, XMLCoder may expose the intrinsic text as multiple whitespace-padded fragments during decode. For machine-valued scalar content such as `Double`, decode through the shared `decodeTrimmedIntrinsicValue(forKey:)` helper so formatting whitespace is ignored while preserving the parser's global `trimValueWhitespaces = false` behavior for free-form text fields.
+
 ## Handling Enumerated Values in UDDF
 
 The UDDF specification defines many attributes with fixed, enumerated values (e.g., `divemode type="closedcircuit"`). This document describes the three approaches for implementing these in Swift and when to use each.

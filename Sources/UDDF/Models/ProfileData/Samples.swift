@@ -58,7 +58,7 @@ public struct Waypoint: Codable, Equatable, Sendable {
     /// Measured partial pressure of oxygen (PPO2) from sensors
     ///
     /// - Unit: pascals (SI)
-    public var measuredpo2: Pressure?
+    public var measuredpo2: [MeasuredPO2]
 
     /// No-decompression time remaining at this waypoint
     public var nodecotime: Duration?
@@ -85,7 +85,7 @@ public struct Waypoint: Codable, Equatable, Sendable {
     public var switchmix: SwitchMix?
 
     /// Tank pressure at this waypoint
-    public var tankpressure: Pressure?
+    public var tankpressure: [TankPressure]
 
     /// Temperature at this waypoint
     public var temperature: Temperature?
@@ -112,14 +112,14 @@ public struct Waypoint: Codable, Equatable, Sendable {
         divetime: Duration? = nil,
         gradientfactor: Double? = nil,
         heading: Double? = nil,
-        measuredpo2: Pressure? = nil,
+        measuredpo2: [MeasuredPO2] = [],
         nodecotime: Duration? = nil,
         otu: Double? = nil,
         remainingbottomtime: Duration? = nil,
         remainingo2time: Duration? = nil,
         setpo2: Pressure? = nil,
         switchmix: SwitchMix? = nil,
-        tankpressure: Pressure? = nil,
+        tankpressure: [TankPressure] = [],
         temperature: Temperature? = nil,
         tts: Duration? = nil,
         heartrate: UInt? = nil
@@ -145,6 +145,86 @@ public struct Waypoint: Codable, Equatable, Sendable {
         self.temperature = temperature
         self.tts = tts
         self.heartrate = heartrate
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case alarm
+        case batterychargecondition
+        case calculatedpo2
+        case cns
+        case decostop
+        case depth
+        case divemode
+        case divetime
+        case gradientfactor
+        case heading
+        case measuredpo2
+        case nodecotime
+        case otu
+        case remainingbottomtime
+        case remainingo2time
+        case setpo2
+        case switchmix
+        case tankpressure
+        case temperature
+        case tts
+        case heartrate
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        alarm = try container.decodeIfPresent(String.self, forKey: .alarm)
+        batterychargecondition = try container.decodeIfPresent(Double.self, forKey: .batterychargecondition)
+        calculatedpo2 = try container.decodeIfPresent(Pressure.self, forKey: .calculatedpo2)
+        cns = try container.decodeIfPresent(Double.self, forKey: .cns)
+        decostop = try container.decodeIfPresent(DecoStop.self, forKey: .decostop)
+        depth = try container.decodeIfPresent(Depth.self, forKey: .depth)
+        divemode = try container.decodeIfPresent(DiveMode.self, forKey: .divemode)
+        divetime = try container.decodeIfPresent(Duration.self, forKey: .divetime)
+        gradientfactor = try container.decodeIfPresent(Double.self, forKey: .gradientfactor)
+        heading = try container.decodeIfPresent(Double.self, forKey: .heading)
+        measuredpo2 = try container.decodeIfPresent([MeasuredPO2].self, forKey: .measuredpo2) ?? []
+        nodecotime = try container.decodeIfPresent(Duration.self, forKey: .nodecotime)
+        otu = try container.decodeIfPresent(Double.self, forKey: .otu)
+        remainingbottomtime = try container.decodeIfPresent(Duration.self, forKey: .remainingbottomtime)
+        remainingo2time = try container.decodeIfPresent(Duration.self, forKey: .remainingo2time)
+        setpo2 = try container.decodeIfPresent(Pressure.self, forKey: .setpo2)
+        switchmix = try container.decodeIfPresent(SwitchMix.self, forKey: .switchmix)
+        tankpressure = try container.decodeIfPresent([TankPressure].self, forKey: .tankpressure) ?? []
+        temperature = try container.decodeIfPresent(Temperature.self, forKey: .temperature)
+        tts = try container.decodeIfPresent(Duration.self, forKey: .tts)
+        heartrate = try container.decodeIfPresent(UInt.self, forKey: .heartrate)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encodeIfPresent(alarm, forKey: .alarm)
+        try container.encodeIfPresent(batterychargecondition, forKey: .batterychargecondition)
+        try container.encodeIfPresent(calculatedpo2, forKey: .calculatedpo2)
+        try container.encodeIfPresent(cns, forKey: .cns)
+        try container.encodeIfPresent(decostop, forKey: .decostop)
+        try container.encodeIfPresent(depth, forKey: .depth)
+        try container.encodeIfPresent(divemode, forKey: .divemode)
+        try container.encodeIfPresent(divetime, forKey: .divetime)
+        try container.encodeIfPresent(gradientfactor, forKey: .gradientfactor)
+        try container.encodeIfPresent(heading, forKey: .heading)
+        for reading in measuredpo2 {
+            let encoder = container.superEncoder(forKey: .measuredpo2)
+            try reading.encode(to: encoder)
+        }
+        try container.encodeIfPresent(nodecotime, forKey: .nodecotime)
+        try container.encodeIfPresent(otu, forKey: .otu)
+        try container.encodeIfPresent(remainingbottomtime, forKey: .remainingbottomtime)
+        try container.encodeIfPresent(remainingo2time, forKey: .remainingo2time)
+        try container.encodeIfPresent(setpo2, forKey: .setpo2)
+        try container.encodeIfPresent(switchmix, forKey: .switchmix)
+        for pressure in tankpressure {
+            let encoder = container.superEncoder(forKey: .tankpressure)
+            try pressure.encode(to: encoder)
+        }
+        try container.encodeIfPresent(temperature, forKey: .temperature)
+        try container.encodeIfPresent(tts, forKey: .tts)
+        try container.encodeIfPresent(heartrate, forKey: .heartrate)
     }
 }
 

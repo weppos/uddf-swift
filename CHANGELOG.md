@@ -2,6 +2,19 @@
 
 ## Unreleased
 
+### Added
+
+- Add `MeasuredPO2` and `TankPressure` model types for waypoint readings with optional `ref` attributes
+
+### Changed
+
+- **BREAKING**: Change `Waypoint.measuredpo2` from `Pressure?` to `[MeasuredPO2]`
+- **BREAKING**: Change `Waypoint.tankpressure` from `Pressure?` to `[TankPressure]`
+
+### Fixed
+
+- Tolerate formatting whitespace when decoding pretty-printed attributed intrinsic numeric values such as `measuredpo2`, `tankpressure`, and `price`
+
 ## 0.9.0 - 2026-01-14
 
 ### Added

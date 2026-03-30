@@ -238,6 +238,38 @@ final class DiverWriterTests: XCTestCase {
         XCTAssertTrue(xml.contains("<shop id=\"shop1\">"))
     }
 
+    func testWriteEquipmentWithPurchaseRoundTripsPrice() throws {
+        let purchase = Purchase(
+            price: Price(value: 499.99, currency: "EUR"),
+            shop: Shop(id: "shop1", name: "Dive Shop")
+        )
+
+        let regulator = Regulator(
+            id: "reg1",
+            name: "MK25/S620Ti",
+            purchase: purchase
+        )
+
+        let equipment = Equipment(regulator: [regulator])
+        let owner = Owner(id: "owner1", equipment: equipment)
+
+        var document = UDDFDocument(
+            version: "3.2.1",
+            generator: Generator(
+                name: "Test",
+                manufacturer: Manufacturer(id: "test", name: "Test")
+            )
+        )
+        document.diver = Diver(owner: owner)
+
+        let data = try UDDFSerialization.write(document)
+        let reparsed = try UDDFSerialization.parse(data)
+
+        let reparsedRegulator = reparsed.diver?.owner?.equipment?.regulator?.first
+        XCTAssertEqual(reparsedRegulator?.purchase?.price?.value, 499.99)
+        XCTAssertEqual(reparsedRegulator?.purchase?.price?.currency, "EUR")
+    }
+
     func testWriteMultipleEquipmentTypes() throws {
         let equipment = Equipment(
             boots: [Boots(id: "boots1", name: "Dive Boots")],

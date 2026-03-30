@@ -79,6 +79,26 @@ final class ProfileDataSerializationTests: XCTestCase {
         let dive = Dive(
             id: "dive1",
             informationbeforedive: informationBeforeDive,
+            samples: Samples(waypoint: [
+                Waypoint(
+                    depth: Depth(meters: 6),
+                    divetime: Duration(minutes: 5),
+                    measuredpo2: [MeasuredPO2(bar: 1.18)],
+                    tankpressure: [TankPressure(bar: 200)]
+                ),
+                Waypoint(
+                    depth: Depth(meters: 30),
+                    divetime: Duration(minutes: 25),
+                    measuredpo2: [
+                        MeasuredPO2(bar: 1.2, ref: "sensor-1"),
+                        MeasuredPO2(bar: 1.22, ref: "sensor-2")
+                    ],
+                    tankpressure: [
+                        TankPressure(bar: 170, ref: "backgas"),
+                        TankPressure(bar: 110, ref: "stage")
+                    ]
+                )
+            ]),
             tankdata: tankDataArray,
             informationafterdive: informationAfterDive
         )
@@ -108,6 +128,20 @@ final class ProfileDataSerializationTests: XCTestCase {
         XCTAssertNotNil(reparsedBefore?.alcoholbeforedive)
         XCTAssertEqual(reparsedBefore?.apparatus, .openScuba)
         XCTAssertEqual(reparsedBefore?.divenumber, 42)
+
+        // Samples
+        let reparsedWaypoints = reparsedDive?.samples?.waypoint
+        XCTAssertEqual(reparsedWaypoints?.count, 2)
+        XCTAssertEqual(reparsedWaypoints?[0].measuredpo2, [MeasuredPO2(bar: 1.18)])
+        XCTAssertEqual(reparsedWaypoints?[0].tankpressure, [TankPressure(bar: 200)])
+        XCTAssertEqual(reparsedWaypoints?[1].measuredpo2, [
+            MeasuredPO2(bar: 1.2, ref: "sensor-1"),
+            MeasuredPO2(bar: 1.22, ref: "sensor-2")
+        ])
+        XCTAssertEqual(reparsedWaypoints?[1].tankpressure, [
+            TankPressure(bar: 170, ref: "backgas"),
+            TankPressure(bar: 110, ref: "stage")
+        ])
 
         // InformationAfterDive
         let reparsedAfter = reparsedDive?.informationafterdive

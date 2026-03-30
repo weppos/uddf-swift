@@ -3,7 +3,7 @@ import XCTest
 
 final class ProfileDataTests: XCTestCase {
 
-    // MARK: - DiveMode Enum Tests
+    // MARK: - Samples -> DiveMode
 
     func testDiveModeStringConversion() {
         // Test standard values
@@ -26,7 +26,7 @@ final class ProfileDataTests: XCTestCase {
         XCTAssertEqual(unknown.isStandard, false)
     }
 
-    // MARK: - DecoStop Enum Tests
+    // MARK: - Samples -> DecoStop
 
     func testDecoStopKindValues() {
         let kind1 = DecoStop.StopKind(rawValue: "mandatory")
@@ -42,7 +42,7 @@ final class ProfileDataTests: XCTestCase {
         XCTAssertEqual(unknown.isStandard, false)
     }
 
-    // MARK: - Platform Enum Tests
+    // MARK: - DiveEnums -> Platform
 
     func testPlatformEnumValues() {
         XCTAssertEqual(Platform(rawValue: "beach-shore"), .beachShore)
@@ -60,7 +60,7 @@ final class ProfileDataTests: XCTestCase {
         XCTAssertEqual(unknown.isStandard, false)
     }
 
-    // MARK: - Apparatus Enum Tests
+    // MARK: - DiveEnums -> Apparatus
 
     func testApparatusEnumValues() {
         XCTAssertEqual(Apparatus(rawValue: "open-scuba"), .openScuba)
@@ -74,7 +74,7 @@ final class ProfileDataTests: XCTestCase {
         XCTAssertEqual(unknown.isStandard, false)
     }
 
-    // MARK: - Purpose Enum Tests
+    // MARK: - DiveEnums -> Purpose
 
     func testPurposeEnumValues() {
         XCTAssertEqual(Purpose(rawValue: "sightseeing"), .sightseeing)
@@ -91,7 +91,7 @@ final class ProfileDataTests: XCTestCase {
         XCTAssertEqual(unknown.isStandard, false)
     }
 
-    // MARK: - Current Enum Tests
+    // MARK: - DiveEnums -> Current
 
     func testCurrentEnumValues() {
         XCTAssertEqual(Current(rawValue: "no-current"), .noCurrent)
@@ -105,7 +105,7 @@ final class ProfileDataTests: XCTestCase {
         XCTAssertEqual(unknown.isStandard, false)
     }
 
-    // MARK: - DivePlan Enum Tests
+    // MARK: - DiveEnums -> DivePlan
 
     func testDivePlanEnumValues() {
         XCTAssertEqual(DivePlan(rawValue: "none"), DivePlan.none)
@@ -117,7 +117,7 @@ final class ProfileDataTests: XCTestCase {
         XCTAssertEqual(unknown.isStandard, false)
     }
 
-    // MARK: - ThermalComfort Enum Tests
+    // MARK: - DiveEnums -> ThermalComfort
 
     func testThermalComfortEnumValues() {
         XCTAssertEqual(ThermalComfort(rawValue: "not-indicated"), .notIndicated)
@@ -130,7 +130,7 @@ final class ProfileDataTests: XCTestCase {
         XCTAssertEqual(unknown.isStandard, false)
     }
 
-    // MARK: - Workload Enum Tests
+    // MARK: - DiveEnums -> Workload
 
     func testWorkloadEnumValues() {
         XCTAssertEqual(Workload(rawValue: "not-specified"), .notSpecified)
@@ -144,7 +144,7 @@ final class ProfileDataTests: XCTestCase {
         XCTAssertEqual(unknown.isStandard, false)
     }
 
-    // MARK: - EquipmentMalfunction Enum Tests
+    // MARK: - DiveEnums -> EquipmentMalfunction
 
     func testEquipmentMalfunctionEnumValues() {
         XCTAssertEqual(EquipmentMalfunction(rawValue: "none"), EquipmentMalfunction.none)
@@ -164,7 +164,7 @@ final class ProfileDataTests: XCTestCase {
         XCTAssertEqual(unknown.isStandard, false)
     }
 
-    // MARK: - Program Enum Tests
+    // MARK: - DiveEnums -> Program
 
     func testProgramEnumValues() {
         XCTAssertEqual(Program(rawValue: "recreation"), .recreation)
@@ -180,7 +180,7 @@ final class ProfileDataTests: XCTestCase {
         XCTAssertEqual(unknown.isStandard, false)
     }
 
-    // MARK: - StateOfRestBeforeDive Enum Tests
+    // MARK: - DiveEnums -> StateOfRestBeforeDive
 
     func testStateOfRestBeforeDiveEnumValues() {
         XCTAssertEqual(StateOfRestBeforeDive(rawValue: "not-specified"), .notSpecified)
@@ -192,7 +192,7 @@ final class ProfileDataTests: XCTestCase {
         XCTAssertEqual(unknown.isStandard, false)
     }
 
-    // MARK: - ExerciseBeforeDive Enum Tests
+    // MARK: - PreDiveSubstances -> ExerciseBeforeDive
 
     func testExerciseBeforeDiveEnumValues() {
         XCTAssertEqual(ExerciseBeforeDive(rawValue: "none"), ExerciseBeforeDive.none)
@@ -205,7 +205,7 @@ final class ProfileDataTests: XCTestCase {
         XCTAssertEqual(unknown.isStandard, false)
     }
 
-    // MARK: - DiveTable Enum Tests
+    // MARK: - PostDiveElements -> DiveTable
 
     func testDiveTableEnumValues() {
         XCTAssertEqual(DiveTable(rawValue: "PADI"), .padi)
