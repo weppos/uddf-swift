@@ -46,6 +46,7 @@ Sources/UDDF/
 └── Validation/     # Document validation
 Tests/UDDFTests/
 ├── BuilderTests/         # Builder API tests
+├── CoreTests/            # Core unit tests (units, identifiers, datetime, references)
 ├── IntegrationTests/     # High-level fixture tests
 ├── ModelTests/           # Model unit tests (enums, value types, etc.)
 ├── ParserTests/          # XML parsing tests (one file per section)
@@ -59,6 +60,7 @@ Tests/UDDFTests/
 
 Tests are organized by UDDF section with consistent naming:
 
+- **CoreTests/<Type>Tests.swift** - Core type unit tests (units, datetime, identifiers, references)
 - **ModelTests/<Section>Tests.swift** - Model/enum unit tests (initialization, enum values)
 - **ParserTests/<Section>ParserTests.swift** - XML parsing tests (minimal + complete)
 - **SerializationTests/<Section>SerializationTests.swift** - Round-trip serialization tests

@@ -88,7 +88,8 @@ swift test --parallel              # Run tests in parallel
 
 ### Writing Tests
 
-- **Unit tests**: `Tests/UDDFTests/` organized by feature
+- **Core tests**: `Tests/UDDFTests/CoreTests/` with one file per core implementation
+- **Model tests**: `Tests/UDDFTests/ModelTests/` organized by UDDF section or focused model type
 - **Integration tests**: Use fixtures in test bundles
 - **Test fixtures**: Real-world UDDF files for testing
 
