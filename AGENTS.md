@@ -38,14 +38,12 @@ UDDF Swift is a Swift library for parsing, validating, and writing Universal Div
 
 ```
 Sources/UDDF/
-├── Builder/        # Fluent builder API
 ├── Core/           # Units (Depth, Temperature, etc.), DateTime, Identifiers
 ├── Errors/         # Error types
 ├── Models/         # Swift structs/types for UDDF sections
 ├── Parser/         # XML parsing and writing (XMLCoder-based)
 └── Validation/     # Document validation
 Tests/UDDFTests/
-├── BuilderTests/         # Builder API tests
 ├── CoreTests/            # Core unit tests (units, identifiers, datetime, references)
 ├── IntegrationTests/     # High-level fixture tests
 ├── ModelTests/           # Model unit tests (enums, value types, etc.)

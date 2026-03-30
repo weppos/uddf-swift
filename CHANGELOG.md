@@ -15,6 +15,10 @@
 
 - Tolerate formatting whitespace when decoding pretty-printed attributed intrinsic numeric values such as `measuredpo2`, `tankpressure`, and `price`
 
+### Removed
+
+- **BREAKING**: Remove the experimental `UDDFBuilder` API
+
 ## 0.9.0 - 2026-01-14
 
 ### Added

@@ -3,9 +3,7 @@ import XCTest
 
 final class UDDFWriterTests: XCTestCase {
     func testWriteIncludesXMLDeclaration() throws {
-        let document = try UDDFBuilder()
-            .generator(name: "TestApp", version: "1.0.0")
-            .build()
+        let document = makeDocument()
 
         let data = try UDDFSerialization.write(document)
         let xmlString = String(data: data, encoding: .utf8)
@@ -18,9 +16,7 @@ final class UDDFWriterTests: XCTestCase {
     }
 
     func testWriteNonPrettyPrintedIncludesXMLDeclaration() throws {
-        let document = try UDDFBuilder()
-            .generator(name: "TestApp", version: "1.0.0")
-            .build()
+        let document = makeDocument()
 
         let data = try UDDFSerialization.write(document, prettyPrinted: false)
         let xmlString = String(data: data, encoding: .utf8)
@@ -33,9 +29,7 @@ final class UDDFWriterTests: XCTestCase {
     }
 
     func testWriteIncludesXmlns() throws {
-        let document = try UDDFBuilder()
-            .generator(name: "TestApp", version: "1.0.0")
-            .build()
+        let document = makeDocument()
 
         let data = try UDDFSerialization.write(document)
         let xmlString = String(data: data, encoding: .utf8)!
@@ -49,9 +43,7 @@ final class UDDFWriterTests: XCTestCase {
     // MARK: - Date Format Tests
 
     func testWriteDateWithLocalFormat() throws {
-        var document = try UDDFBuilder()
-            .generator(name: "TestApp", version: "1.0.0")
-            .build()
+        var document = makeDocument()
         document.generator.datetime = Date()
 
         let data = try UDDFSerialization.write(document, dateFormat: .local)
@@ -62,14 +54,19 @@ final class UDDFWriterTests: XCTestCase {
     }
 
     func testWriteDateWithUTCFormat() throws {
-        var document = try UDDFBuilder()
-            .generator(name: "TestApp", version: "1.0.0")
-            .build()
+        var document = makeDocument()
         document.generator.datetime = Date()
 
         let data = try UDDFSerialization.write(document, dateFormat: .utc)
         let xmlString = String(data: data, encoding: .utf8)!
 
         XCTAssertTrue(xmlString.contains("Z</datetime>"), "UTC format should have Z suffix")
+    }
+
+    private func makeDocument() -> UDDFDocument {
+        UDDFDocument(
+            version: "3.2.1",
+            generator: Generator(name: "TestApp", version: "1.0.0")
+        )
     }
 }

@@ -3,7 +3,7 @@
 A comprehensive Swift library for parsing and writing UDDF (Universal Dive Data Format) v3.2.1 files.
 
 > [!WARNING]
-> This library is a development preview and the API can still change. The builder API is experimental.
+> This library is a development preview and the API can still change.
 
 ## Overview
 
@@ -118,54 +118,6 @@ do {
 } catch {
     print("Unexpected error: \(error)")
 }
-```
-
-### Builder API
-
-Create UDDF documents with a fluent, type-safe builder:
-
-```swift
-import UDDF
-
-// Create a complete dive log
-let owner = Owner(
-    id: "diver1",
-    personal: Personal(firstname: "John", lastname: "Diver")
-)
-
-let site = DiveSite(
-    id: "reef1",
-    name: "Coral Reef",
-    geography: Geography(
-        location: "Red Sea, Egypt",
-        gps: GPS(latitude: 28.0, longitude: 34.0)
-    )
-)
-
-let dive = Dive(
-    id: "dive1",
-    informationbeforedive: InformationBeforeDive(
-        datetime: Date(),
-        divenumber: 42
-    ),
-    informationafterdive: InformationAfterDive(
-        greatestdepth: Depth(meters: 18.5),
-        averagedepth: Depth(meters: 12.3),
-        diveduration: Duration(minutes: 25)
-    )
-)
-
-let document = try UDDFBuilder()
-    .generator(name: "MyDiveApp", version: "1.0")
-    .addOwner(owner)
-    .addDiveSite(site)
-    .addAir()                           // Convenience method for air
-    .addNitrox(id: "ean32", oxygenPercent: 32)  // Convenience for nitrox
-    .addDive(dive)
-    .build()
-
-// Write to file
-try UDDFSerialization.write(document, to: outputURL)
 ```
 
 ### Validation

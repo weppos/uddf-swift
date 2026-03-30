@@ -45,7 +45,6 @@ This project uses Conventional Commits](https://www.conventionalcommits.org/) sp
 - **parser**: XML parsing
 - **writer**: XML writing
 - **validation**: Validation logic
-- **builder**: Fluent builder API
 - **models**: Swift types/models
 - **core**: Core utilities (units, etc.)
 
