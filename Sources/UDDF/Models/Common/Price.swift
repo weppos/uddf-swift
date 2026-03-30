@@ -21,9 +21,4 @@ public struct Price: Codable, Equatable, Sendable {
         case value = ""
     }
 
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        _currency = try container.decodeIfPresent(Attribute<String?>.self, forKey: .currency) ?? Attribute(nil)
-        value = try container.decodeTrimmedIntrinsicValue(forKey: .value)
-    }
 }
