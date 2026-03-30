@@ -2,6 +2,11 @@ import Foundation
 import XMLCoder
 
 /// Tank pressure reading for a single tank.
+///
+/// - Note: The spec page defines the attribute as `ref`, but the XML example uses `tankref`.
+///   We use `ref` for consistency with `measuredpo2`.
+///
+/// Reference: https://www.streit.cc/extern/uddf_v321/en/tankpressure.html
 public struct TankPressure: Codable, Equatable, Sendable {
     /// Optional reference to a tank definition.
     @Attribute public var ref: String?

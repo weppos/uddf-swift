@@ -29,6 +29,36 @@ Some UDDF elements combine an XML attribute with scalar text content, for exampl
 
 When XML is pretty-printed, XMLCoder may expose the intrinsic text as multiple whitespace-padded fragments during decode. For machine-valued scalar content such as `Double`, decode through the shared `decodeTrimmedIntrinsicValue(forKey:)` helper so formatting whitespace is ignored while preserving the parser's global `trimValueWhitespaces = false` behavior for free-form text fields.
 
+## UDDF Specification Inconsistencies
+
+The UDDF 3.2.1 specification contains internal inconsistencies where the prose/schema and the examples disagree. This section documents the cases we've encountered and the decisions we've made.
+
+### `tankpressure`: `ref` vs `tankref`
+
+The [`tankpressure` spec page](https://www.streit.cc/extern/uddf_v321/en/tankpressure.html) defines the attribute as `ref`, but the XML example on the same page uses `tankref`:
+
+```xml
+<!-- From the spec example -->
+<tankpressure tankref="tank_air">20000000.0</tankpressure>
+<tankpressure tankref="tank_o2">18000000.0</tankpressure>
+```
+
+**Decision:** We use `ref` to stay consistent with `measuredpo2`, which also uses `ref` as a cross-reference attribute on an intrinsic scalar element. Real-world exporters should be tested to determine which attribute name they actually use; if `tankref` appears in practice, we may need to support both during parsing.
+
+### Parent Element Disagreements
+
+Several elements have contradictory parent placement across different spec pages. The [`profiledata` section](https://www.streit.cc/extern/uddf_v321/en/profiledata.html) shows one parent, while the element's own page shows a different one.
+
+| Element | `profiledata` page says | Element's own page says | Our decision |
+|---------|------------------------|------------------------|--------------|
+| `equipmentused` | `informationbeforedive` | `informationafterdive` | `informationbeforedive` |
+| `exercisebeforedive` | `informationbeforedive` | `dive` | `informationbeforedive` |
+| `purpose` | `informationafterdive` | `informationbeforedive` | `informationbeforedive` |
+| `program` | `informationbeforedive` | `informationafterdive` | `informationbeforedive` |
+| `hyperbaricfacilitytreatment` | `informationafterdive` | `dive` | `informationafterdive` |
+
+**Decision:** We follow the `profiledata` hierarchy page as the authoritative source, since it provides the complete structural overview. The individual element pages appear to have copy-paste errors in their parent declarations.
+
 ## Handling Enumerated Values in UDDF
 
 The UDDF specification defines many attributes with fixed, enumerated values (e.g., `divemode type="closedcircuit"`). This document describes the three approaches for implementing these in Swift and when to use each.
