@@ -6,7 +6,10 @@ final class UDDFSerializationTests: XCTestCase {
     // MARK: - Date Format Round-Trip Tests
 
     func testRoundTripWithLocalDateFormat() throws {
-        var document = makeDocument()
+        var document = UDDFDocument(
+            version: "3.2.1",
+            generator: Generator(name: "TestApp", version: "1.0.0")
+        )
         document.generator.datetime = Date()
 
         let data = try UDDFSerialization.write(document, dateFormat: .local)
@@ -17,7 +20,10 @@ final class UDDFSerializationTests: XCTestCase {
     }
 
     func testRoundTripWithUTCDateFormat() throws {
-        var document = makeDocument()
+        var document = UDDFDocument(
+            version: "3.2.1",
+            generator: Generator(name: "TestApp", version: "1.0.0")
+        )
         document.generator.datetime = Date()
 
         let data = try UDDFSerialization.write(document, dateFormat: .utc)
@@ -25,12 +31,5 @@ final class UDDFSerializationTests: XCTestCase {
 
         XCTAssertEqual(reparsed.generator.name, document.generator.name)
         XCTAssertNotNil(reparsed.generator.datetime)
-    }
-
-    private func makeDocument() -> UDDFDocument {
-        UDDFDocument(
-            version: "3.2.1",
-            generator: Generator(name: "TestApp", version: "1.0.0")
-        )
     }
 }

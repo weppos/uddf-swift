@@ -5,7 +5,10 @@ final class ValidationTests: XCTestCase {
     // MARK: - Basic Validation Tests
 
     func testValidMinimalDocument() throws {
-        let document = makeDocument()
+        let document = UDDFDocument(
+            version: "3.2.1",
+            generator: Generator(name: "TestApp", version: "1.0.0")
+        )
 
         let result = UDDFSerialization.validate(document)
 
@@ -14,7 +17,10 @@ final class ValidationTests: XCTestCase {
     }
 
     func testMissingGeneratorNameProducesWarning() throws {
-        var document = makeDocument(name: "TestApp")
+        var document = UDDFDocument(
+            version: "3.2.1",
+            generator: Generator(name: "TestApp", version: "1.0.0")
+        )
 
         document.generator.name = nil
 
@@ -27,7 +33,10 @@ final class ValidationTests: XCTestCase {
     }
 
     func testEmptyGeneratorNameProducesWarning() throws {
-        var document = makeDocument(name: "TestApp")
+        var document = UDDFDocument(
+            version: "3.2.1",
+            generator: Generator(name: "TestApp", version: "1.0.0")
+        )
 
         document.generator.name = ""
 
@@ -40,7 +49,10 @@ final class ValidationTests: XCTestCase {
     }
 
     func testMissingGeneratorNameBecomesErrorInStrictMode() throws {
-        var document = makeDocument(name: "TestApp")
+        var document = UDDFDocument(
+            version: "3.2.1",
+            generator: Generator(name: "TestApp", version: "1.0.0")
+        )
 
         document.generator.name = nil
 
@@ -64,7 +76,11 @@ final class ValidationTests: XCTestCase {
             )
         )
 
-        let document = makeDocument(dive: dive)
+        var document = UDDFDocument(
+            version: "3.2.1",
+            generator: Generator(name: "TestApp", version: "1.0.0")
+        )
+        document.profiledata = ProfileData(repetitiongroup: [RepetitionGroup(dive: [dive])])
 
         let result = UDDFSerialization.validate(document)
 
@@ -81,7 +97,11 @@ final class ValidationTests: XCTestCase {
             )
         )
 
-        let document = makeDocument(dive: dive)
+        var document = UDDFDocument(
+            version: "3.2.1",
+            generator: Generator(name: "TestApp", version: "1.0.0")
+        )
+        document.profiledata = ProfileData(repetitiongroup: [RepetitionGroup(dive: [dive])])
 
         let result = UDDFSerialization.validate(document)
 
@@ -93,7 +113,11 @@ final class ValidationTests: XCTestCase {
     func testInvalidGasPercentage() throws {
         let invalidMix = Mix(id: "bad", name: "Invalid", o2: 1.5, n2: 0.5)
 
-        let document = makeDocument(gasMixes: [invalidMix])
+        var document = UDDFDocument(
+            version: "3.2.1",
+            generator: Generator(name: "TestApp", version: "1.0.0")
+        )
+        document.gasdefinitions = GasDefinitions(mix: [invalidMix])
 
         let result = UDDFSerialization.validate(document)
 
@@ -104,7 +128,11 @@ final class ValidationTests: XCTestCase {
     func testGasMixPercentageWarning() throws {
         let mix = Mix(id: "test", name: "Test", o2: 0.21, n2: 0.70) // Total = 0.91
 
-        let document = makeDocument(gasMixes: [mix])
+        var document = UDDFDocument(
+            version: "3.2.1",
+            generator: Generator(name: "TestApp", version: "1.0.0")
+        )
+        document.gasdefinitions = GasDefinitions(mix: [mix])
 
         let result = UDDFSerialization.validate(document)
 
@@ -123,7 +151,11 @@ final class ValidationTests: XCTestCase {
             )
         )
 
-        let document = makeDocument(diveSites: [site])
+        var document = UDDFDocument(
+            version: "3.2.1",
+            generator: Generator(name: "TestApp", version: "1.0.0")
+        )
+        document.divesite = [site]
 
         let result = UDDFSerialization.validate(document)
 
@@ -139,7 +171,11 @@ final class ValidationTests: XCTestCase {
             )
         )
 
-        let document = makeDocument(diveSites: [site])
+        var document = UDDFDocument(
+            version: "3.2.1",
+            generator: Generator(name: "TestApp", version: "1.0.0")
+        )
+        document.divesite = [site]
 
         let result = UDDFSerialization.validate(document)
 
@@ -155,7 +191,11 @@ final class ValidationTests: XCTestCase {
             )
         )
 
-        let document = makeDocument(diveSites: [site])
+        var document = UDDFDocument(
+            version: "3.2.1",
+            generator: Generator(name: "TestApp", version: "1.0.0")
+        )
+        document.divesite = [site]
 
         let result = UDDFSerialization.validate(document)
 
@@ -165,7 +205,11 @@ final class ValidationTests: XCTestCase {
     // MARK: - ID Validation Tests
 
     func testEmptyIDError() throws {
-        var document = makeDocument(diver: Diver(owner: Owner(id: "owner1")))
+        var document = UDDFDocument(
+            version: "3.2.1",
+            generator: Generator(name: "TestApp", version: "1.0.0")
+        )
+        document.diver = Diver(owner: Owner(id: "owner1"))
 
         document.diver?.owner?.id = ""
 
@@ -180,7 +224,11 @@ final class ValidationTests: XCTestCase {
     func testValidReferences() throws {
         let owner = Owner(id: "owner1", personal: Personal(firstname: "John"))
 
-        let document = makeDocument(diver: Diver(owner: owner))
+        var document = UDDFDocument(
+            version: "3.2.1",
+            generator: Generator(name: "TestApp", version: "1.0.0")
+        )
+        document.diver = Diver(owner: owner)
 
         let result = UDDFSerialization.validate(document)
 
@@ -192,7 +240,11 @@ final class ValidationTests: XCTestCase {
     func testStrictMode() throws {
         let mix = Mix(id: "test", name: "Test", o2: 0.21, n2: 0.70) // Total = 0.91
 
-        let document = makeDocument(gasMixes: [mix])
+        var document = UDDFDocument(
+            version: "3.2.1",
+            generator: Generator(name: "TestApp", version: "1.0.0")
+        )
+        document.gasdefinitions = GasDefinitions(mix: [mix])
 
         var options = UDDFValidator.Options()
         options.strictMode = true
@@ -212,7 +264,11 @@ final class ValidationTests: XCTestCase {
             )
         )
 
-        let document = makeDocument(dive: dive)
+        var document = UDDFDocument(
+            version: "3.2.1",
+            generator: Generator(name: "TestApp", version: "1.0.0")
+        )
+        document.profiledata = ProfileData(repetitiongroup: [RepetitionGroup(dive: [dive])])
 
         var options = UDDFValidator.Options()
         options.validateRanges = false
@@ -239,24 +295,5 @@ final class ValidationTests: XCTestCase {
 
         XCTAssertEqual(document.generator.name, "TestApp")
         XCTAssertTrue(validation.isValid)
-    }
-
-    private func makeDocument(
-        name: String? = "TestApp",
-        version: String? = "1.0.0",
-        diver: Diver? = nil,
-        diveSites: [DiveSite]? = nil,
-        gasMixes: [Mix]? = nil,
-        dive: Dive? = nil
-    ) -> UDDFDocument {
-        var document = UDDFDocument(
-            version: "3.2.1",
-            generator: Generator(name: name, version: version)
-        )
-        document.diver = diver
-        document.divesite = diveSites
-        document.gasdefinitions = gasMixes.map { GasDefinitions(mix: $0) }
-        document.profiledata = dive.map { ProfileData(repetitiongroup: [RepetitionGroup(dive: [$0])]) }
-        return document
     }
 }
