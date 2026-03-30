@@ -15,10 +15,10 @@ UDDF Swift is a Swift library for parsing, validating, and writing Universal Div
 
 ## Key References
 
-- @README.md - Library overview, features, usage examples, and API reference.
-- @CONTRIBUTING.md - Contribution guidelines, commit format, testing approach.
-- `tests/AGENTS.md` - Test fixtures organization and integration testing guidelines
-- `docs/implementation.md` - Implementation philosophy, design patterns, and technical decisions. **Update this file** when adding significant implementation caveats, design patterns, or architectural notes that future contributors should know.
+- [README.md](README.md) - Library overview, features, usage examples, and API reference.
+- [CONTRIBUTING.md](CONTRIBUTING.md) - Contribution guidelines, commit format, testing approach.
+- [tests/AGENTS.md](tests/AGENTS.md) - Test fixtures organization and integration testing guidelines
+- [docs/implementation.md](docs/implementation.md) - Implementation philosophy, design patterns, and technical decisions. **Update this file** when adding significant implementation caveats, design patterns, or architectural notes that future contributors should know.
 
 ## Key Documentation
 
