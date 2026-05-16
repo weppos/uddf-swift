@@ -280,7 +280,7 @@ final class ProfileDataParserTests: XCTestCase {
         XCTAssertEqual(waypoint1?.setpo2?.pascals ?? 0, 1.2e5)
         XCTAssertEqual(waypoint1?.tankpressure.count, 1)
         XCTAssertEqual(waypoint1?.tankpressure.first?.pascals ?? 0, 1.95e7)
-        XCTAssertEqual(waypoint1?.heartrate, 75)
+        XCTAssertEqual(waypoint1?.heartrate, 1.25)
 
         // Waypoint 2: Depth with deco stop, CNS, TTS, heading, pulserate, multiple setmarkers
         let waypoint2 = waypoints?[2]
@@ -303,7 +303,7 @@ final class ProfileDataParserTests: XCTestCase {
         XCTAssertEqual(waypoint2?.tankpressure.count, 1)
         XCTAssertEqual(waypoint2?.tankpressure.first?.pascals ?? 0, 1.8e7)
         XCTAssertEqual(waypoint2?.tts?.seconds, 600)
-        XCTAssertEqual(waypoint2?.heartrate, 80)
+        XCTAssertEqual(waypoint2?.heartrate, 1.333)
     }
 
     func testParseWaypointMultiSensorPO2AndMultiTankPressure() throws {

@@ -12,7 +12,7 @@
   - divemode (closed circuit rebreather)
   - gradientfactor (decompression gradient factor)
   - heading (compass heading in degrees)
-  - heartrate (heart rate in BPM; non-spec extension as of UDDF 3.2.1)
+  - heartrate (heart rate in 1/s SI; standardized in UDDF 3.2.3)
   - measuredpo2 (sensor PPO2 reading)
   - nodecotime (no-decompression time remaining)
   - otu (oxygen toxicity units)
@@ -71,7 +71,7 @@
             <depth>5.0</depth>
             <divetime>60</divetime>
             <heading>90.0</heading>
-            <heartrate>75</heartrate>
+            <heartrate>1.25</heartrate>
             <nodecotime>5940</nodecotime>
             <otu>15.5</otu>
             <remainingbottomtime>1800</remainingbottomtime>
@@ -90,7 +90,7 @@
             <depth>40.0</depth>
             <divetime>1200</divetime>
             <heading>180.5</heading>
-            <heartrate>80</heartrate>
+            <heartrate>1.333</heartrate>
             <otu>42.0</otu>
             <pulserate>1.333</pulserate>
             <remainingo2time>2400</remainingo2time>

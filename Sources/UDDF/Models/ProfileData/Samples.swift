@@ -63,6 +63,15 @@ public struct Waypoint: Codable, Equatable, Sendable {
     /// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/heading.html
     public var heading: Double?
 
+    /// Diver's heart rate at this waypoint
+    ///
+    /// - Unit: beats per second (SI 1/s); divide BPM by 60 to convert.
+    ///
+    /// Added as a spec element in UDDF 3.2.3. Prior to 3.2.3 this library
+    /// exposed `heartrate` as a `UInt?` BPM extension; consumers using that
+    /// shape must migrate to the SI `Double` form.
+    public var heartrate: Double?
+
     /// Measured partial pressure of oxygen (PPO2) from sensors
     ///
     /// - Unit: pascals (SI)
@@ -112,16 +121,13 @@ public struct Waypoint: Codable, Equatable, Sendable {
     /// Temperature at this waypoint
     public var temperature: Temperature?
 
+    // MARK: - Non-spec extensions
+
     /// Time-to-surface at this waypoint (decompression time required)
-    public var tts: Duration?
-
-    // MARK: - Extensions
-
-    /// Heart rate at this waypoint (beats per minute)
     ///
-    /// - Note: EXTENSION - Not part of UDDF 3.2.1 specification.
-    ///   Used by dive computers with heart rate monitoring (e.g., Garmin Descent series).
-    public var heartrate: UInt?
+    /// - Note: EXTENSION — not part of UDDF 3.2.3 specification.
+    ///   Emitted by Shearwater Cloud Desktop; preserved on round-trip.
+    public var tts: Duration?
 
     public init(
         alarm: String? = nil,
@@ -135,6 +141,7 @@ public struct Waypoint: Codable, Equatable, Sendable {
         divetime: Duration? = nil,
         gradientfactor: Double? = nil,
         heading: Double? = nil,
+        heartrate: Double? = nil,
         measuredpo2: [MeasuredPO2] = [],
         nodecotime: Duration? = nil,
         otu: Double? = nil,
@@ -146,8 +153,7 @@ public struct Waypoint: Codable, Equatable, Sendable {
         switchmix: SwitchMix? = nil,
         tankpressure: [TankPressure] = [],
         temperature: Temperature? = nil,
-        tts: Duration? = nil,
-        heartrate: UInt? = nil
+        tts: Duration? = nil
     ) {
         self.alarm = alarm
         self.batterychargecondition = batterychargecondition
@@ -160,6 +166,7 @@ public struct Waypoint: Codable, Equatable, Sendable {
         self.divetime = divetime
         self.gradientfactor = gradientfactor
         self.heading = heading
+        self.heartrate = heartrate
         self.measuredpo2 = measuredpo2
         self.nodecotime = nodecotime
         self.otu = otu
@@ -172,7 +179,6 @@ public struct Waypoint: Codable, Equatable, Sendable {
         self.tankpressure = tankpressure
         self.temperature = temperature
         self.tts = tts
-        self.heartrate = heartrate
     }
 
     enum CodingKeys: String, CodingKey {
@@ -187,6 +193,7 @@ public struct Waypoint: Codable, Equatable, Sendable {
         case divetime
         case gradientfactor
         case heading
+        case heartrate
         case measuredpo2
         case nodecotime
         case otu
@@ -199,7 +206,6 @@ public struct Waypoint: Codable, Equatable, Sendable {
         case tankpressure
         case temperature
         case tts
-        case heartrate
     }
 
     public init(from decoder: Decoder) throws {
@@ -215,6 +221,7 @@ public struct Waypoint: Codable, Equatable, Sendable {
         divetime = try container.decodeIfPresent(Duration.self, forKey: .divetime)
         gradientfactor = try container.decodeIfPresent(Double.self, forKey: .gradientfactor)
         heading = try container.decodeIfPresent(Double.self, forKey: .heading)
+        heartrate = try container.decodeIfPresent(Double.self, forKey: .heartrate)
         measuredpo2 = try container.decodeIfPresent([MeasuredPO2].self, forKey: .measuredpo2) ?? []
         nodecotime = try container.decodeIfPresent(Duration.self, forKey: .nodecotime)
         otu = try container.decodeIfPresent(Double.self, forKey: .otu)
@@ -227,7 +234,6 @@ public struct Waypoint: Codable, Equatable, Sendable {
         tankpressure = try container.decodeIfPresent([TankPressure].self, forKey: .tankpressure) ?? []
         temperature = try container.decodeIfPresent(Temperature.self, forKey: .temperature)
         tts = try container.decodeIfPresent(Duration.self, forKey: .tts)
-        heartrate = try container.decodeIfPresent(UInt.self, forKey: .heartrate)
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -243,6 +249,7 @@ public struct Waypoint: Codable, Equatable, Sendable {
         try container.encodeIfPresent(divetime, forKey: .divetime)
         try container.encodeIfPresent(gradientfactor, forKey: .gradientfactor)
         try container.encodeIfPresent(heading, forKey: .heading)
+        try container.encodeIfPresent(heartrate, forKey: .heartrate)
         for reading in measuredpo2 {
             let encoder = container.superEncoder(forKey: .measuredpo2)
             try reading.encode(to: encoder)
@@ -264,7 +271,6 @@ public struct Waypoint: Codable, Equatable, Sendable {
         }
         try container.encodeIfPresent(temperature, forKey: .temperature)
         try container.encodeIfPresent(tts, forKey: .tts)
-        try container.encodeIfPresent(heartrate, forKey: .heartrate)
     }
 }
 
