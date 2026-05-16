@@ -2,8 +2,13 @@ import Foundation
 
 /// Dive certification record
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/certification.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/certification.html
 public struct Certification: Codable, Equatable, Sendable {
+    /// Certificate number or identifying marking (alpha-numeric)
+    ///
+    /// Added in UDDF 3.2.2.
+    public var certificatenumber: String?
+
     /// Certification level (e.g., OWD, AOWD, Divemaster)
     public var level: String?
 
@@ -26,6 +31,7 @@ public struct Certification: Codable, Equatable, Sendable {
     public var validdate: ValidDate?
 
     public init(
+        certificatenumber: String? = nil,
         level: String? = nil,
         organization: String? = nil,
         instructor: Instructor? = nil,
@@ -34,6 +40,7 @@ public struct Certification: Codable, Equatable, Sendable {
         specialty: String? = nil,
         validdate: ValidDate? = nil
     ) {
+        self.certificatenumber = certificatenumber
         self.level = level
         self.organization = organization
         self.instructor = instructor

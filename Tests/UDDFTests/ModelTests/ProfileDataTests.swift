@@ -14,8 +14,13 @@ final class ProfileDataTests: XCTestCase {
         let mode2 = DiveMode.ModeType(rawValue: "opencircuit")
         XCTAssertEqual(mode2, .openCircuit)
 
-        let mode3 = DiveMode.ModeType(rawValue: "apnoe")
-        XCTAssertEqual(mode3, .apnoe)
+        let mode3 = DiveMode.ModeType(rawValue: "apnea")
+        XCTAssertEqual(mode3, .apnea)
+
+        // Legacy "apnoe" spelling (pre-UDDF 3.2.2) decodes to .apnea
+        let legacyApnoe = DiveMode.ModeType(rawValue: "apnoe")
+        XCTAssertEqual(legacyApnoe, .apnea)
+        XCTAssertEqual(legacyApnoe.rawValue, "apnea")
 
         let mode4 = DiveMode.ModeType(rawValue: "semiclosedcircuit")
         XCTAssertEqual(mode4, .semiClosedCircuit)

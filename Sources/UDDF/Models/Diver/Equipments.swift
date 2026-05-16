@@ -5,7 +5,7 @@ import XMLCoder
 
 /// Diving boots/footwear
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/boots.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/boots.html
 public struct Boots: Codable, Equatable, Sendable {
     /// Unique identifier
     public var id: String?
@@ -85,7 +85,7 @@ extension Boots: DynamicNodeEncoding {
 
 /// Buoyancy control device (BCD)
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/buoyancycontroldevice.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/buoyancycontroldevice.html
 public struct BuoyancyControlDevice: Codable, Equatable, Sendable {
     /// Unique identifier
     public var id: String?
@@ -165,7 +165,7 @@ extension BuoyancyControlDevice: DynamicNodeEncoding {
 
 /// Diving compass
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/compass.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/compass.html
 public struct Compass: Codable, Equatable, Sendable {
     /// Unique identifier
     public var id: String?
@@ -245,7 +245,7 @@ extension Compass: DynamicNodeEncoding {
 
 /// Air compressor
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/compressor.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/compressor.html
 public struct Compressor: Codable, Equatable, Sendable {
     /// Unique identifier
     public var id: String?
@@ -325,7 +325,7 @@ extension Compressor: DynamicNodeEncoding {
 
 /// Dive computer
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/divecomputer.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/divecomputer.html
 public struct DiveComputer: Codable, Equatable, Sendable {
     /// Unique identifier
     public var id: String?
@@ -405,7 +405,7 @@ extension DiveComputer: DynamicNodeEncoding {
 
 /// Diving fins
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/fins.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/fins.html
 public struct Fins: Codable, Equatable, Sendable {
     /// Unique identifier
     public var id: String?
@@ -485,7 +485,7 @@ extension Fins: DynamicNodeEncoding {
 
 /// Diving gloves
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/gloves.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/gloves.html
 public struct Gloves: Codable, Equatable, Sendable {
     /// Unique identifier
     public var id: String?
@@ -565,7 +565,7 @@ extension Gloves: DynamicNodeEncoding {
 
 /// Diving knife
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/knife.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/knife.html
 public struct Knife: Codable, Equatable, Sendable {
     /// Unique identifier
     public var id: String?
@@ -645,7 +645,7 @@ extension Knife: DynamicNodeEncoding {
 
 /// Underwater light
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/light.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/light.html
 public struct Light: Codable, Equatable, Sendable {
     /// Unique identifier
     public var id: String?
@@ -725,7 +725,7 @@ extension Light: DynamicNodeEncoding {
 
 /// Diving mask
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/mask.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/mask.html
 public struct Mask: Codable, Equatable, Sendable {
     /// Unique identifier
     public var id: String?
@@ -805,7 +805,7 @@ extension Mask: DynamicNodeEncoding {
 
 /// Diving regulator
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/regulator.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/regulator.html
 public struct Regulator: Codable, Equatable, Sendable {
     /// Unique identifier
     public var id: String?
@@ -885,7 +885,7 @@ extension Regulator: DynamicNodeEncoding {
 
 /// Underwater scooter/DPV (diver propulsion vehicle)
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/scooter.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/scooter.html
 public struct Scooter: Codable, Equatable, Sendable {
     /// Unique identifier
     public var id: String?
@@ -967,7 +967,7 @@ extension Scooter: DynamicNodeEncoding {
 ///
 /// Used for equipment that doesn't fit into other categories.
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/variouspieces.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/variouspieces.html
 public struct VariousPieces: Codable, Equatable, Sendable {
     /// Unique identifier (optional for variouspieces)
     public var id: String?
@@ -1047,7 +1047,7 @@ extension VariousPieces: DynamicNodeEncoding {
 
 /// Dive watch
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/watch.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/watch.html
 public struct Watch: Codable, Equatable, Sendable {
     /// Unique identifier
     public var id: String?

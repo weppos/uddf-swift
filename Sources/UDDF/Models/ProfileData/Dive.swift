@@ -6,7 +6,7 @@ import XMLCoder
 /// Contains information before, during, and after the dive, including
 /// samples (waypoints) recorded during the dive.
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/dive.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/dive.html
 public struct Dive: Codable, Equatable, Sendable {
     /// Unique identifier for this dive
     public var id: String?
@@ -50,6 +50,49 @@ public struct Dive: Codable, Equatable, Sendable {
         case tankdata
         case informationafterdive
     }
+
+    /// Legacy-location shim — `<program>` under `<informationbeforedive>`.
+    /// Older uddf-swift releases (and other tools that followed the stale
+    /// pre-3.2.3 HTML hierarchy) placed `<program>` here; the XSD says it
+    /// belongs to `<informationafterdive>`.
+    private struct InformationBeforeDiveLegacyShim: Codable {
+        var program: Program?
+    }
+
+    /// Legacy-location shim — `<equipmentused>` under `<informationafterdive>`.
+    /// The element's HTML page lists `<informationafterdive>` as the parent,
+    /// so tools that consult the HTML rather than the XSD may emit it there.
+    /// The XSD locates `<equipmentused>` under `<informationbeforedive>`.
+    private struct InformationAfterDiveLegacyShim: Codable {
+        var equipmentused: EquipmentUsed?
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decodeIfPresent(String.self, forKey: .id)
+        applicationdata = try container.decodeIfPresent(ApplicationData.self, forKey: .applicationdata)
+        samples = try container.decodeIfPresent(Samples.self, forKey: .samples)
+        tankdata = try container.decodeIfPresent([TankData].self, forKey: .tankdata)
+        var beforeDive = try container.decodeIfPresent(InformationBeforeDive.self, forKey: .informationbeforedive)
+        var afterDive = try container.decodeIfPresent(InformationAfterDive.self, forKey: .informationafterdive)
+
+        if beforeDive != nil, afterDive?.program == nil,
+           let legacy = try container.decodeIfPresent(InformationBeforeDiveLegacyShim.self, forKey: .informationbeforedive),
+           let legacyProgram = legacy.program {
+            if afterDive == nil { afterDive = InformationAfterDive() }
+            afterDive?.program = legacyProgram
+        }
+
+        if afterDive != nil, beforeDive?.equipmentused == nil,
+           let legacy = try container.decodeIfPresent(InformationAfterDiveLegacyShim.self, forKey: .informationafterdive),
+           let legacyEquipmentUsed = legacy.equipmentused {
+            if beforeDive == nil { beforeDive = InformationBeforeDive() }
+            beforeDive?.equipmentused = legacyEquipmentUsed
+        }
+
+        informationbeforedive = beforeDive
+        informationafterdive = afterDive
+    }
 }
 
 // MARK: - DynamicNodeEncoding
@@ -74,7 +117,7 @@ extension Dive: DynamicNodeEncoding {
 /// Contains manufacturer or application-specific dive data that doesn't fit
 /// in the standard UDDF elements.
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/applicationdata.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/applicationdata.html
 public struct ApplicationData: Codable, Equatable, Sendable {
     // Application-specific elements can be added here as needed
     // For now, this is a placeholder for forward compatibility
@@ -84,7 +127,7 @@ public struct ApplicationData: Codable, Equatable, Sendable {
 
 /// Information recorded before the dive
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/informationbeforedive.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/informationbeforedive.html
 public struct InformationBeforeDive: Codable, Equatable, Sendable {
     // Elements in UDDF spec order
 
@@ -121,16 +164,20 @@ public struct InformationBeforeDive: Codable, Equatable, Sendable {
 
     /// Equipment used during this dive
     ///
-    /// - Note: Sections "profiledata" describes parent as "informationbeforedive", "equipmentused" describes parent as "informationafterdive". Using parent "informationbeforedive".
+    /// - Note: The HTML element page lists `<informationafterdive>` as the parent, but
+    ///   the authoritative XSD and Subsurface's emitter both place `<equipmentused>`
+    ///   inside `<informationbeforedive>`. We follow the XSD.
     ///
-    /// Reference: https://www.streit.cc/extern/uddf_v321/en/equipmentused.html
+    /// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/equipmentused.html
     public var equipmentused: EquipmentUsed?
 
     /// Exercise level before the dive
     ///
-    /// - Note: Sections "profiledata" describes parent as "informationbeforedive", "exercisebeforedive" describes parent as "dive". Using parent "informationbeforedive".
+    /// - Note: Still contradictory in UDDF 3.2.3 — the element page says its parent is
+    ///   `<dive>`, but `<dive>`'s child list omits `<exercisebeforedive>`. Current placement
+    ///   under `informationbeforedive` retained for backwards compatibility.
     ///
-    /// Reference: https://www.streit.cc/extern/uddf_v321/en/exercisebeforedive.html
+    /// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/exercisebeforedive.html
     public var exercisebeforedive: ExerciseBeforeDive?
 
     /// Medication taken before the dive
@@ -150,17 +197,8 @@ public struct InformationBeforeDive: Codable, Equatable, Sendable {
 
     /// Purpose of the dive
     ///
-    /// - Note: Sections "profiledata" describes parent as "informationafterdive", "purpose" describes parent as "informationbeforedive". Using parent "informationbeforedive".
-    ///
-    /// Reference: https://www.streit.cc/extern/uddf_v321/en/purpose.html
+    /// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/purpose.html
     public var purpose: Purpose?
-
-    /// Type of diving program
-    ///
-    /// - Note: Sections "profiledata" describes parent as "informationbeforedive", "program" describes parent as "informationafterdive". Using parent "informationbeforedive".
-    ///
-    /// Reference: https://www.streit.cc/extern/uddf_v321/en/program.html
-    public var program: Program?
 
     /// Diver's state of rest before the dive
     public var stateofrestbeforedive: StateOfRestBeforeDive?
@@ -201,7 +239,6 @@ public struct InformationBeforeDive: Codable, Equatable, Sendable {
         platform: Platform? = nil,
         price: Price? = nil,
         purpose: Purpose? = nil,
-        program: Program? = nil,
         stateofrestbeforedive: StateOfRestBeforeDive? = nil,
         surfaceintervalbeforedive: SurfaceIntervalBeforeDive? = nil,
         surfacepressure: Pressure? = nil,
@@ -225,7 +262,6 @@ public struct InformationBeforeDive: Codable, Equatable, Sendable {
         self.platform = platform
         self.price = price
         self.purpose = purpose
-        self.program = program
         self.stateofrestbeforedive = stateofrestbeforedive
         self.surfaceintervalbeforedive = surfaceintervalbeforedive
         self.surfacepressure = surfacepressure
@@ -236,7 +272,7 @@ public struct InformationBeforeDive: Codable, Equatable, Sendable {
 
 /// Information recorded after the dive
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/informationafterdive.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/informationafterdive.html
 public struct InformationAfterDive: Codable, Equatable, Sendable {
     // Elements in UDDF spec order
 
@@ -285,9 +321,11 @@ public struct InformationAfterDive: Codable, Equatable, Sendable {
 
     /// Hyperbaric recompression treatment after the dive
     ///
-    /// - Note: Sections "profiledata" describes parent as "informationafterdive", "hyperbaricfacilitytreatment" describes parent as "dive". Using parent "informationafterdive".
+    /// - Note: Still contradictory in UDDF 3.2.3 — the element page says its parent is
+    ///   `<dive>`, but `<dive>`'s child list omits `<hyperbaricfacilitytreatment>`. Current
+    ///   placement under `informationafterdive` retained for backwards compatibility.
     ///
-    /// Reference: https://www.streit.cc/extern/uddf_v321/en/exercisebeforedive.html
+    /// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/hyperbaricfacilitytreatment.html
     public var hyperbaricfacilitytreatment: HyperbaricFacilityTreatment?
 
     /// Lowest temperature during the dive
@@ -314,8 +352,10 @@ public struct InformationAfterDive: Codable, Equatable, Sendable {
     /// Problems encountered during the dive (free text)
     public var problems: String?
 
-    /// See InformationBeforeDive
-    /// public var program: Program?
+    /// Type of diving program
+    ///
+    /// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/program.html
+    public var program: Program?
 
     /// Diver's rating of the dive
     public var rating: Rating?
@@ -355,6 +395,7 @@ public struct InformationAfterDive: Codable, Equatable, Sendable {
         observations: String? = nil,
         pressuredrop: Pressure? = nil,
         problems: String? = nil,
+        program: Program? = nil,
         rating: Rating? = nil,
         surfaceintervalafterdive: Duration? = nil,
         thermalcomfort: ThermalComfort? = nil,
@@ -379,6 +420,7 @@ public struct InformationAfterDive: Codable, Equatable, Sendable {
         self.observations = observations
         self.pressuredrop = pressuredrop
         self.problems = problems
+        self.program = program
         self.rating = rating
         self.surfaceintervalafterdive = surfaceintervalafterdive
         self.thermalcomfort = thermalcomfort

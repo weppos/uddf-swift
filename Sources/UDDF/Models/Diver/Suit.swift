@@ -3,7 +3,7 @@ import XMLCoder
 
 /// Diving exposure suit (wetsuit, drysuit, etc.)
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/suit.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/suit.html
 public struct Suit: Codable, Equatable, Sendable {
     /// Unique identifier
     public var id: String?
@@ -91,7 +91,7 @@ extension Suit: DynamicNodeEncoding {
 
 /// Type of diving suit
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/suittype.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/suittype.html
 public enum SuitType: Equatable, Sendable {
     case diveSkin
     case wetSuit

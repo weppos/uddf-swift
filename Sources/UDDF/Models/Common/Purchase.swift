@@ -2,7 +2,7 @@ import Foundation
 
 /// Purchase information for equipment
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/purchase.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/purchase.html
 public struct Purchase: Codable, Equatable, Sendable {
     /// Date of purchase
     public var datetime: Date?

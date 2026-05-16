@@ -2,25 +2,28 @@
 <!--
   Synthetic test fixture for extended waypoint fields
 
-  This fixture demonstrates all UDDF 3.2.1 waypoint child elements including:
+  This fixture demonstrates UDDF 3.2.3 waypoint child elements including:
 
   - batterychargecondition (battery voltage)
+  - bodytemperature (diver body temperature in Kelvin; UDDF 3.2.2)
   - calculatedpo2 (PPO2 for CCR diving)
   - cns (CNS oxygen toxicity percentage)
   - decostop (decompression stop requirements with decreasing duration)
   - divemode (closed circuit rebreather)
   - gradientfactor (decompression gradient factor)
   - heading (compass heading in degrees)
-  - heartrate (heart rate in BPM)
+  - heartrate (heart rate in 1/s SI; standardized in UDDF 3.2.3)
   - measuredpo2 (sensor PPO2 reading)
   - nodecotime (no-decompression time remaining)
   - otu (oxygen toxicity units)
+  - pulserate (diver pulse rate in 1/s; UDDF 3.2.2)
   - remainingbottomtime (RBT - time before ascent required)
   - remainingo2time (remaining time until oxygen toxicity)
+  - setmarker (user-recorded markers; UDDF 3.2.2)
   - setpo2 (rebreather setpoint)
   - switchmix (gas mix changes)
   - tankpressure (cylinder pressure)
-  - tts (time-to-surface)
+  - tts (time-to-surface; Shearwater extension, not in UDDF 3.2.3)
 -->
 <uddf xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.2.1" xmlns="http://www.streit.cc/uddf/3.2/">
   <generator>
@@ -45,13 +48,14 @@
           <diveduration>3600</diveduration>
         </informationafterdive>
         <samples>
-          <!-- Waypoint 0: Surface, initial setpoint -->
+          <!-- Waypoint 0: Surface, initial setpoint, single setmarker -->
           <waypoint>
             <batterychargecondition>3.5</batterychargecondition>
             <calculatedpo2>1.2e5</calculatedpo2>
             <depth>0</depth>
             <divetime>0</divetime>
             <measuredpo2>1.19e5</measuredpo2>
+            <setmarker>descent-start</setmarker>
             <setpo2>1.2e5</setpo2>
             <switchmix ref="mix1" />
             <tankpressure>2.0e7</tankpressure>
@@ -60,13 +64,14 @@
             <gradientfactor>0</gradientfactor>
           </waypoint>
 
-          <!-- Waypoint 1: Shallow, with RBT and NDL -->
+          <!-- Waypoint 1: Shallow, with RBT, NDL, body temperature -->
           <waypoint>
             <batterychargecondition>3.48</batterychargecondition>
+            <bodytemperature>309.65</bodytemperature>
             <depth>5.0</depth>
             <divetime>60</divetime>
             <heading>90.0</heading>
-            <heartrate>75</heartrate>
+            <heartrate>1.25</heartrate>
             <nodecotime>5940</nodecotime>
             <otu>15.5</otu>
             <remainingbottomtime>1800</remainingbottomtime>
@@ -78,16 +83,19 @@
             <gradientfactor>5</gradientfactor>
           </waypoint>
 
-          <!-- Waypoint 2: Depth, entering deco -->
+          <!-- Waypoint 2: Depth, entering deco, pulserate, multiple markers -->
           <waypoint>
             <cns>8</cns>
             <decostop kind="mandatory" decodepth="6" duration="300" />
             <depth>40.0</depth>
             <divetime>1200</divetime>
             <heading>180.5</heading>
-            <heartrate>80</heartrate>
+            <heartrate>1.333</heartrate>
             <otu>42.0</otu>
+            <pulserate>1.333</pulserate>
             <remainingo2time>2400</remainingo2time>
+            <setmarker>turn-point</setmarker>
+            <setmarker>2</setmarker>
             <setpo2>1.3e5</setpo2>
             <tankpressure>1.8e7</tankpressure>
             <temperature>285.15</temperature>

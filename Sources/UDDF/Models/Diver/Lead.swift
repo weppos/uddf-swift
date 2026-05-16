@@ -3,7 +3,7 @@ import XMLCoder
 
 /// Diving lead/weights
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/lead.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/lead.html
 public struct Lead: Codable, Equatable, Sendable {
     /// Unique identifier
     public var id: String?

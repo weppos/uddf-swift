@@ -25,6 +25,14 @@ public struct Waypoint: Codable, Equatable, Sendable {
     /// Battery charge/voltage at this waypoint
     public var batterychargecondition: Double?
 
+    /// Diver's body temperature at this waypoint
+    ///
+    /// - Unit: Kelvin (SI)
+    ///
+    /// Added in UDDF 3.2.2. The temperature persists until another
+    /// `<bodytemperature>` is recorded.
+    public var bodytemperature: Temperature?
+
     /// Calculated partial pressure of oxygen (PPO2)
     ///
     /// - Unit: pascals (SI)
@@ -52,8 +60,17 @@ public struct Waypoint: Codable, Equatable, Sendable {
     ///
     /// - Unit: degrees (0-360)
     ///
-    /// Reference: https://www.streit.cc/extern/uddf_v321/en/heading.html
+    /// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/heading.html
     public var heading: Double?
+
+    /// Diver's heart rate at this waypoint
+    ///
+    /// - Unit: beats per second (SI 1/s); divide BPM by 60 to convert.
+    ///
+    /// Added as a spec element in UDDF 3.2.3. Prior to 3.2.3 this library
+    /// exposed `heartrate` as a `UInt?` BPM extension; consumers using that
+    /// shape must migrate to the SI `Double` form.
+    public var heartrate: Double?
 
     /// Measured partial pressure of oxygen (PPO2) from sensors
     ///
@@ -65,16 +82,30 @@ public struct Waypoint: Codable, Equatable, Sendable {
 
     /// Oxygen Toxicity Units at this waypoint
     ///
-    /// Reference: https://www.streit.cc/extern/uddf_v321/en/otu.html
+    /// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/otu.html
     public var otu: Double?
+
+    /// Diver's pulse rate at this waypoint
+    ///
+    /// - Unit: beats per second (SI 1/s); divide BPM by 60 to convert.
+    ///
+    /// Added in UDDF 3.2.2. The pulse rate persists until another
+    /// `<pulserate>` is recorded.
+    public var pulserate: Double?
 
     /// Remaining bottom time at this waypoint (time before ascent required)
     public var remainingbottomtime: Duration?
 
     /// Remaining time in seconds until oxygen becomes toxic at this waypoint
     ///
-    /// Reference: https://www.streit.cc/extern/uddf_v321/en/remainingo2time.html
+    /// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/remainingo2time.html
     public var remainingo2time: Duration?
+
+    /// User-set markers recorded at this waypoint (e.g. dive computer "mark" button presses)
+    ///
+    /// Multiple markers may be recorded per waypoint. Free-form alphanumeric text.
+    /// Added in UDDF 3.2.2.
+    public var setmarker: [String]
 
     /// Rebreather setpoint (PPO2) at this waypoint
     ///
@@ -90,20 +121,18 @@ public struct Waypoint: Codable, Equatable, Sendable {
     /// Temperature at this waypoint
     public var temperature: Temperature?
 
+    // MARK: - Non-spec extensions
+
     /// Time-to-surface at this waypoint (decompression time required)
-    public var tts: Duration?
-
-    // MARK: - Extensions
-
-    /// Heart rate at this waypoint (beats per minute)
     ///
-    /// - Note: EXTENSION - Not part of UDDF 3.2.1 specification.
-    ///   Used by dive computers with heart rate monitoring (e.g., Garmin Descent series).
-    public var heartrate: UInt?
+    /// - Note: EXTENSION — not part of UDDF 3.2.3 specification.
+    ///   Emitted by Shearwater Cloud Desktop; preserved on round-trip.
+    public var tts: Duration?
 
     public init(
         alarm: String? = nil,
         batterychargecondition: Double? = nil,
+        bodytemperature: Temperature? = nil,
         calculatedpo2: Pressure? = nil,
         cns: Double? = nil,
         decostop: DecoStop? = nil,
@@ -112,20 +141,23 @@ public struct Waypoint: Codable, Equatable, Sendable {
         divetime: Duration? = nil,
         gradientfactor: Double? = nil,
         heading: Double? = nil,
+        heartrate: Double? = nil,
         measuredpo2: [MeasuredPO2] = [],
         nodecotime: Duration? = nil,
         otu: Double? = nil,
+        pulserate: Double? = nil,
         remainingbottomtime: Duration? = nil,
         remainingo2time: Duration? = nil,
+        setmarker: [String] = [],
         setpo2: Pressure? = nil,
         switchmix: SwitchMix? = nil,
         tankpressure: [TankPressure] = [],
         temperature: Temperature? = nil,
-        tts: Duration? = nil,
-        heartrate: UInt? = nil
+        tts: Duration? = nil
     ) {
         self.alarm = alarm
         self.batterychargecondition = batterychargecondition
+        self.bodytemperature = bodytemperature
         self.calculatedpo2 = calculatedpo2
         self.cns = cns
         self.decostop = decostop
@@ -134,22 +166,25 @@ public struct Waypoint: Codable, Equatable, Sendable {
         self.divetime = divetime
         self.gradientfactor = gradientfactor
         self.heading = heading
+        self.heartrate = heartrate
         self.measuredpo2 = measuredpo2
         self.nodecotime = nodecotime
         self.otu = otu
+        self.pulserate = pulserate
         self.remainingbottomtime = remainingbottomtime
         self.remainingo2time = remainingo2time
+        self.setmarker = setmarker
         self.setpo2 = setpo2
         self.switchmix = switchmix
         self.tankpressure = tankpressure
         self.temperature = temperature
         self.tts = tts
-        self.heartrate = heartrate
     }
 
     enum CodingKeys: String, CodingKey {
         case alarm
         case batterychargecondition
+        case bodytemperature
         case calculatedpo2
         case cns
         case decostop
@@ -158,23 +193,26 @@ public struct Waypoint: Codable, Equatable, Sendable {
         case divetime
         case gradientfactor
         case heading
+        case heartrate
         case measuredpo2
         case nodecotime
         case otu
+        case pulserate
         case remainingbottomtime
         case remainingo2time
+        case setmarker
         case setpo2
         case switchmix
         case tankpressure
         case temperature
         case tts
-        case heartrate
     }
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         alarm = try container.decodeIfPresent(String.self, forKey: .alarm)
         batterychargecondition = try container.decodeIfPresent(Double.self, forKey: .batterychargecondition)
+        bodytemperature = try container.decodeIfPresent(Temperature.self, forKey: .bodytemperature)
         calculatedpo2 = try container.decodeIfPresent(Pressure.self, forKey: .calculatedpo2)
         cns = try container.decodeIfPresent(Double.self, forKey: .cns)
         decostop = try container.decodeIfPresent(DecoStop.self, forKey: .decostop)
@@ -183,23 +221,26 @@ public struct Waypoint: Codable, Equatable, Sendable {
         divetime = try container.decodeIfPresent(Duration.self, forKey: .divetime)
         gradientfactor = try container.decodeIfPresent(Double.self, forKey: .gradientfactor)
         heading = try container.decodeIfPresent(Double.self, forKey: .heading)
+        heartrate = try container.decodeIfPresent(Double.self, forKey: .heartrate)
         measuredpo2 = try container.decodeIfPresent([MeasuredPO2].self, forKey: .measuredpo2) ?? []
         nodecotime = try container.decodeIfPresent(Duration.self, forKey: .nodecotime)
         otu = try container.decodeIfPresent(Double.self, forKey: .otu)
+        pulserate = try container.decodeIfPresent(Double.self, forKey: .pulserate)
         remainingbottomtime = try container.decodeIfPresent(Duration.self, forKey: .remainingbottomtime)
         remainingo2time = try container.decodeIfPresent(Duration.self, forKey: .remainingo2time)
+        setmarker = try container.decodeIfPresent([String].self, forKey: .setmarker) ?? []
         setpo2 = try container.decodeIfPresent(Pressure.self, forKey: .setpo2)
         switchmix = try container.decodeIfPresent(SwitchMix.self, forKey: .switchmix)
         tankpressure = try container.decodeIfPresent([TankPressure].self, forKey: .tankpressure) ?? []
         temperature = try container.decodeIfPresent(Temperature.self, forKey: .temperature)
         tts = try container.decodeIfPresent(Duration.self, forKey: .tts)
-        heartrate = try container.decodeIfPresent(UInt.self, forKey: .heartrate)
     }
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encodeIfPresent(alarm, forKey: .alarm)
         try container.encodeIfPresent(batterychargecondition, forKey: .batterychargecondition)
+        try container.encodeIfPresent(bodytemperature, forKey: .bodytemperature)
         try container.encodeIfPresent(calculatedpo2, forKey: .calculatedpo2)
         try container.encodeIfPresent(cns, forKey: .cns)
         try container.encodeIfPresent(decostop, forKey: .decostop)
@@ -208,14 +249,20 @@ public struct Waypoint: Codable, Equatable, Sendable {
         try container.encodeIfPresent(divetime, forKey: .divetime)
         try container.encodeIfPresent(gradientfactor, forKey: .gradientfactor)
         try container.encodeIfPresent(heading, forKey: .heading)
+        try container.encodeIfPresent(heartrate, forKey: .heartrate)
         for reading in measuredpo2 {
             let encoder = container.superEncoder(forKey: .measuredpo2)
             try reading.encode(to: encoder)
         }
         try container.encodeIfPresent(nodecotime, forKey: .nodecotime)
         try container.encodeIfPresent(otu, forKey: .otu)
+        try container.encodeIfPresent(pulserate, forKey: .pulserate)
         try container.encodeIfPresent(remainingbottomtime, forKey: .remainingbottomtime)
         try container.encodeIfPresent(remainingo2time, forKey: .remainingo2time)
+        for marker in setmarker {
+            let encoder = container.superEncoder(forKey: .setmarker)
+            try marker.encode(to: encoder)
+        }
         try container.encodeIfPresent(setpo2, forKey: .setpo2)
         try container.encodeIfPresent(switchmix, forKey: .switchmix)
         for pressure in tankpressure {
@@ -224,7 +271,6 @@ public struct Waypoint: Codable, Equatable, Sendable {
         }
         try container.encodeIfPresent(temperature, forKey: .temperature)
         try container.encodeIfPresent(tts, forKey: .tts)
-        try container.encodeIfPresent(heartrate, forKey: .heartrate)
     }
 }
 
@@ -259,7 +305,7 @@ extension SwitchMix: DynamicNodeEncoding {
 
 /// Dive mode at a waypoint (open circuit, closed circuit, etc.)
 ///
-/// See: https://www.streit.cc/extern/uddf_v321/en/divemode.html
+/// See: https://www.streit.cc/resources/UDDF/v3.2.3/en/divemode.html
 public struct DiveMode: Codable, Equatable, Sendable {
     /// Type of dive mode
     ///
@@ -268,7 +314,10 @@ public struct DiveMode: Codable, Equatable, Sendable {
     /// type safety for standard UDDF values.
     public enum ModeType: Equatable, Sendable {
         /// Freediving (breath-hold diving)
-        case apnoe
+        ///
+        /// Encoded as `"apnea"`. UDDF 3.2.2 renamed `"apnoe"` to `"apnea"`;
+        /// the decoder accepts both spellings for backwards compatibility.
+        case apnea
 
         /// Closed-circuit rebreather
         case closedCircuit
@@ -285,7 +334,7 @@ public struct DiveMode: Codable, Equatable, Sendable {
         /// The raw string value for this mode type
         public var rawValue: String {
             switch self {
-            case .apnoe: return "apnoe"
+            case .apnea: return "apnea"
             case .closedCircuit: return "closedcircuit"
             case .openCircuit: return "opencircuit"
             case .semiClosedCircuit: return "semiclosedcircuit"
@@ -295,10 +344,11 @@ public struct DiveMode: Codable, Equatable, Sendable {
 
         /// Initialize from a raw string value
         ///
-        /// Standard UDDF values map to known cases, all others to `.unknown(String)`
+        /// Standard UDDF values map to known cases, all others to `.unknown(String)`.
+        /// The legacy `"apnoe"` spelling (pre-UDDF 3.2.2) decodes to `.apnea`.
         public init(rawValue: String) {
             switch rawValue {
-            case "apnoe": self = .apnoe
+            case "apnea", "apnoe": self = .apnea
             case "closedcircuit": self = .closedCircuit
             case "opencircuit": self = .openCircuit
             case "semiclosedcircuit": self = .semiClosedCircuit

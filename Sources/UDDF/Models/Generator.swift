@@ -8,7 +8,7 @@ import XMLCoder
 /// Every UDDF file must contain a generator section that identifies the
 /// application that created or last modified the file.
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/generator.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/generator.html
 public struct Generator: Codable, Equatable, Sendable {
     /// Name of the generating application
     ///
@@ -60,7 +60,7 @@ public struct Generator: Codable, Equatable, Sendable {
 /// Indicates whether the file was created by a dive computer, logbook software,
 /// or a converter program.
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/type.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/type.html
 public enum GeneratorType: Equatable, Sendable {
     /// A converter program generated the UDDF file from a manufacturer's own format
     case converter

@@ -5,7 +5,7 @@ import Foundation
 /// Used for storing location information for divers, businesses, manufacturers,
 /// and other entities.
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/address.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/address.html
 public struct Address: Codable, Equatable, Sendable {
     /// Street address
     public var street: String?

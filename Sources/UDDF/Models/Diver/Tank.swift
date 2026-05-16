@@ -3,7 +3,7 @@ import XMLCoder
 
 /// Diving tank/cylinder
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/tank.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/tank.html
 public struct Tank: Codable, Equatable, Sendable {
     /// Unique identifier
     public var id: String?
@@ -98,7 +98,7 @@ extension Tank: DynamicNodeEncoding {
 
 /// Tank construction material
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/tankmaterial.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/tankmaterial.html
 public enum TankMaterial: Equatable, Sendable {
     case aluminium
     case carbon

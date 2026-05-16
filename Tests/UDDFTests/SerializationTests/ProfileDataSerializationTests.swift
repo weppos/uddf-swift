@@ -43,7 +43,6 @@ final class ProfileDataSerializationTests: XCTestCase {
             ]),
             nosuit: NoSuit(),
             platform: .charterBoat,
-            program: .recreation,
             stateofrestbeforedive: .rested,
             surfacepressure: Pressure(bar: 0.95),
             tripmembership: "trip-2025"
@@ -69,6 +68,7 @@ final class ProfileDataSerializationTests: XCTestCase {
             observations: "Manta rays",
             pressuredrop: Pressure(bar: 150),
             problems: "Minor mask leak",
+            program: .recreation,
             rating: Rating(ratingvalue: 9),
             surfaceintervalafterdive: Duration(hours: 2),
             thermalcomfort: .comfortable,
@@ -149,5 +149,117 @@ final class ProfileDataSerializationTests: XCTestCase {
         XCTAssertEqual(reparsedAfter?.current, .mildCurrent)
         XCTAssertEqual(reparsedAfter?.diveplan, .diveComputer)
         XCTAssertEqual(reparsedAfter?.rating?.ratingvalue, 9)
+        XCTAssertEqual(reparsedAfter?.program, .recreation)
+
+        // <equipmentused> belongs to <informationbeforedive> per the XSD.
+        XCTAssertEqual(reparsedBefore?.equipmentused?.leadquantity, 3.5)
+
+        // Writer emits <program> under <informationafterdive> (its XSD location),
+        // not under <informationbeforedive> where older uddf-swift releases placed it.
+        let xmlString = String(data: xmlData, encoding: .utf8) ?? ""
+        if let beforeStart = xmlString.range(of: "<informationbeforedive>"),
+           let beforeEnd = xmlString.range(of: "</informationbeforedive>", range: beforeStart.upperBound..<xmlString.endIndex) {
+            let beforeBlock = xmlString[beforeStart.lowerBound..<beforeEnd.upperBound]
+            XCTAssertFalse(beforeBlock.contains("<program>"),
+                           "<program> must not appear inside <informationbeforedive> per the XSD")
+            XCTAssertTrue(beforeBlock.contains("<equipmentused>"),
+                          "<equipmentused> must appear inside <informationbeforedive> per the XSD")
+        } else {
+            XCTFail("Expected <informationbeforedive> in serialized XML")
+        }
+    }
+
+    // MARK: - Legacy-location fallback for older uddf-swift placements
+
+    func testParseLegacyPlacementOfProgramUnderInformationBeforeDive() throws {
+        let xml = """
+        <?xml version="1.0" encoding="UTF-8"?>
+        <uddf version="3.2.3">
+            <generator>
+                <name>LegacyEmitter</name>
+            </generator>
+            <profiledata>
+                <repetitiongroup>
+                    <dive>
+                        <informationbeforedive>
+                            <program>scientific</program>
+                        </informationbeforedive>
+                    </dive>
+                </repetitiongroup>
+            </profiledata>
+        </uddf>
+        """
+
+        let data = xml.data(using: .utf8)!
+        let document = try UDDFSerialization.parse(data)
+
+        let dive = document.profiledata?.repetitiongroup?.first?.dive?.first
+
+        // Parser re-routes the legacy <program> location to its XSD home.
+        XCTAssertEqual(dive?.informationafterdive?.program, .scientific)
+    }
+
+    // The HTML element page lists <equipmentused> under <informationafterdive>; the XSD
+    // and Subsurface place it under <informationbeforedive>. The parser accepts either.
+    func testParseHTMLStylePlacementOfEquipmentUsedUnderInformationAfterDive() throws {
+        let xml = """
+        <?xml version="1.0" encoding="UTF-8"?>
+        <uddf version="3.2.3">
+            <generator>
+                <name>HTMLFollower</name>
+            </generator>
+            <profiledata>
+                <repetitiongroup>
+                    <dive>
+                        <informationafterdive>
+                            <greatestdepth>30.0</greatestdepth>
+                            <equipmentused>
+                                <leadquantity>4.5</leadquantity>
+                            </equipmentused>
+                        </informationafterdive>
+                    </dive>
+                </repetitiongroup>
+            </profiledata>
+        </uddf>
+        """
+
+        let data = xml.data(using: .utf8)!
+        let document = try UDDFSerialization.parse(data)
+
+        let dive = document.profiledata?.repetitiongroup?.first?.dive?.first
+
+        // Parser re-routes the HTML-style placement to its XSD home.
+        XCTAssertEqual(dive?.informationbeforedive?.equipmentused?.leadquantity, 4.5)
+        XCTAssertEqual(dive?.informationafterdive?.greatestdepth?.meters, 30.0)
+    }
+
+    func testLegacyFallbackDoesNotOverwriteExplicitInformationAfterDiveValues() throws {
+        // When a file has both the legacy *and* the new location, the new location wins.
+        let xml = """
+        <?xml version="1.0" encoding="UTF-8"?>
+        <uddf version="3.2.3">
+            <generator>
+                <name>MixedEmitter</name>
+            </generator>
+            <profiledata>
+                <repetitiongroup>
+                    <dive>
+                        <informationbeforedive>
+                            <program>scientific</program>
+                        </informationbeforedive>
+                        <informationafterdive>
+                            <program>recreation</program>
+                        </informationafterdive>
+                    </dive>
+                </repetitiongroup>
+            </profiledata>
+        </uddf>
+        """
+
+        let data = xml.data(using: .utf8)!
+        let document = try UDDFSerialization.parse(data)
+
+        let dive = document.profiledata?.repetitiongroup?.first?.dive?.first
+        XCTAssertEqual(dive?.informationafterdive?.program, .recreation)
     }
 }

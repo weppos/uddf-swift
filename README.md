@@ -1,6 +1,6 @@
 # UDDF Swift
 
-A comprehensive Swift library for parsing and writing UDDF (Universal Dive Data Format) v3.2.1 files.
+A comprehensive Swift library for parsing and writing UDDF (Universal Dive Data Format) v3.2.3 files.
 
 > [!WARNING]
 > This library is a development preview and the API can still change.
@@ -25,7 +25,7 @@ UDDF Swift supports a small number of non-standard tags that appear in real-worl
 `profiledata`:
 
 - `informationbeforedive` -> **`salinity`**: A libdivecomputer de-facto standard used by some dive computers.
-- `samples` -> `waypoint` -> **`heartrate`**: Heart rate in beats per minute. Used by dive computers with heart rate monitoring (e.g., Garmin Descent series).
+- `samples` -> `waypoint` -> **`tts`**: Time-to-surface in seconds. Emitted by Shearwater Cloud Desktop; not part of UDDF 3.2.3.
 
 `gasdefinitions`:
 
@@ -89,7 +89,7 @@ let generator = Generator(
 )
 
 let document = UDDFDocument(
-    version: "3.2.1",
+    version: "3.2.3",
     generator: generator
 )
 
@@ -231,9 +231,9 @@ print(duration.hours)    // 0.417
 
 ## UDDF Specification
 
-This library implements the UDDF v3.2.1 specification:
+This library implements the UDDF v3.2.3 specification (cumulative over UDDF 3.2.2 and 3.2.3):
 
-https://www.streit.cc/extern/uddf_v321/en/index.html
+https://www.streit.cc/resources/UDDF/v3.2.3/en/index.html
 
 ## Contributing
 

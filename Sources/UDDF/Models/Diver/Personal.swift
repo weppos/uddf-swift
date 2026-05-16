@@ -2,7 +2,7 @@ import Foundation
 
 /// Personal information about a diver
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/personal.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/personal.html
 public struct Personal: Codable, Equatable, Sendable {
     /// First name
     public var firstname: String?
