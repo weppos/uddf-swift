@@ -1,7 +1,11 @@
 import Foundation
 import XMLCoder
 
-/// Represents a complete UDDF document (version 3.2.1)
+/// Represents a complete UDDF document.
+///
+/// The library targets UDDF 3.2.3 (cumulative over 3.2.2 + 3.2.3) and
+/// remains backwards-compatible with documents declared as earlier
+/// minor versions (3.2.0 / 3.2.1).
 ///
 /// This is the root element of a UDDF file. Every UDDF file must have a version
 /// attribute and a required generator section. All other sections are optional.
@@ -52,7 +56,7 @@ public struct UDDFDocument: Codable, Equatable, Sendable {
     public var divecomputercontrol: DiveComputerControl?
 
     public init(
-        version: String = "3.2.1",
+        version: String = "3.2.3",
         generator: Generator
     ) {
         self.xmlns = Self.namespaceURI
