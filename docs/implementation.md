@@ -36,6 +36,7 @@ Cumulative additions across UDDF 3.2.2 and 3.2.3, all modeled in this library:
 - `<certification>` gained `<certificatenumber>` in 3.2.2.
 - `<divemode>/@type=apnoe` was renamed to `@type=apnea` in 3.2.2; both forms are accepted on parse, but the writer emits `"apnea"`.
 - `<setdcgasdefinitionsdata>` gained `<setdcallgasdefinitions/>` and `<setdcgasdata ref="…"/>` children in 3.2.2.
+- The `<divecomputercontrol>` section is now fully modeled, including its three children — `<divecomputerdump>`, `<getdcdata>`, and `<setdcdata>` — and every documented grandchild.
 
 ### Parent-placement resolution in 3.2.3
 

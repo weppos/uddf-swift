@@ -9,21 +9,196 @@ import XMLCoder
 /// download. The UDDF 3.2.3 spec defines three children of
 /// `<divecomputercontrol>`:
 ///
+/// - `<divecomputerdump>` — raw memory dumps (multiple)
+/// - `<getdcdata>` — requests to fetch data **from** the dive computer
 /// - `<setdcdata>` — settings to transfer **to** the dive computer
-/// - `<getdcdata>` — settings to fetch **from** the dive computer
-/// - `<divecomputerdump>` — raw memory dumps
-///
-/// Only `<setdcdata>` is modeled in this release. The other two children
-/// are spec-defined but not yet exposed.
 ///
 /// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/divecomputercontrol.html
 public struct DiveComputerControl: Codable, Equatable, Sendable {
+    /// Binary memory dumps from the dive computer (Base64-bzip2 encoded)
+    public var divecomputerdump: [DiveComputerDump]
+
+    /// Requests for data to fetch from the dive computer
+    public var getdcdata: GetDCData?
+
     /// Configuration data transferred to the dive computer
     public var setdcdata: SetDCData?
 
-    public init(setdcdata: SetDCData? = nil) {
+    public init(
+        divecomputerdump: [DiveComputerDump] = [],
+        getdcdata: GetDCData? = nil,
+        setdcdata: SetDCData? = nil
+    ) {
+        self.divecomputerdump = divecomputerdump
+        self.getdcdata = getdcdata
         self.setdcdata = setdcdata
     }
+
+    enum CodingKeys: String, CodingKey {
+        case divecomputerdump
+        case getdcdata
+        case setdcdata
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        divecomputerdump = try container.decodeIfPresent([DiveComputerDump].self, forKey: .divecomputerdump) ?? []
+        getdcdata = try container.decodeIfPresent(GetDCData.self, forKey: .getdcdata)
+        setdcdata = try container.decodeIfPresent(SetDCData.self, forKey: .setdcdata)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        for entry in divecomputerdump {
+            let encoder = container.superEncoder(forKey: .divecomputerdump)
+            try entry.encode(to: encoder)
+        }
+        try container.encodeIfPresent(getdcdata, forKey: .getdcdata)
+        try container.encodeIfPresent(setdcdata, forKey: .setdcdata)
+    }
+}
+
+// MARK: - DiveComputerDump
+
+/// Binary memory dump from a dive computer
+///
+/// Used for backups and diagnostics. The `<dcdump>` payload is the dive
+/// computer's raw memory, compressed with bzip2 and then Base64-encoded
+/// for safe embedding in XML.
+///
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/divecomputerdump.html
+public struct DiveComputerDump: Codable, Equatable, Sendable {
+    /// When the dump was taken
+    public var datetime: Date
+
+    /// Base64-encoded bzip2-compressed memory payload
+    public var dcdump: String
+
+    /// Cross-references to the recording device (typically a `<divecomputer>`)
+    public var link: [Link]
+
+    public init(datetime: Date, dcdump: String, link: [Link] = []) {
+        self.datetime = datetime
+        self.dcdump = dcdump
+        self.link = link
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case datetime
+        case dcdump
+        case link
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        datetime = try container.decode(Date.self, forKey: .datetime)
+        dcdump = try container.decode(String.self, forKey: .dcdump)
+        link = try container.decodeIfPresent([Link].self, forKey: .link) ?? []
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(datetime, forKey: .datetime)
+        try container.encode(dcdump, forKey: .dcdump)
+        for entry in link {
+            let encoder = container.superEncoder(forKey: .link)
+            try entry.encode(to: encoder)
+        }
+    }
+}
+
+// MARK: - GetDCData
+
+/// Requests for data to fetch from the dive computer
+///
+/// An empty `<getdcdata/>` requests every category; otherwise each child
+/// marker requests a specific data category.
+///
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/getdcdata.html
+public struct GetDCData: Codable, Equatable, Sendable {
+    /// Request every category stored on the dive computer
+    public var getdcalldata: GetDCAllData?
+
+    /// Request dive-buddy data
+    public var getdcbuddydata: GetDCBuddyData?
+
+    /// Request dive-site descriptions
+    public var getdcdivesitedata: GetDCDiveSiteData?
+
+    /// Request dive-trip descriptions
+    public var getdcdivetripdata: GetDCDiveTripData?
+
+    /// Request stored breathing-gas definitions
+    public var getdcgasdefinitionsdata: GetDCGasDefinitionsData?
+
+    /// Request the manufacturer's data
+    public var getdcgeneratordata: GetDCGeneratorData?
+
+    /// Request the owner's data
+    public var getdcownerdata: GetDCOwnerData?
+
+    /// Request stored dive profile data
+    public var getdcprofiledata: GetDCProfileData?
+
+    public init(
+        getdcalldata: GetDCAllData? = nil,
+        getdcbuddydata: GetDCBuddyData? = nil,
+        getdcdivesitedata: GetDCDiveSiteData? = nil,
+        getdcdivetripdata: GetDCDiveTripData? = nil,
+        getdcgasdefinitionsdata: GetDCGasDefinitionsData? = nil,
+        getdcgeneratordata: GetDCGeneratorData? = nil,
+        getdcownerdata: GetDCOwnerData? = nil,
+        getdcprofiledata: GetDCProfileData? = nil
+    ) {
+        self.getdcalldata = getdcalldata
+        self.getdcbuddydata = getdcbuddydata
+        self.getdcdivesitedata = getdcdivesitedata
+        self.getdcdivetripdata = getdcdivetripdata
+        self.getdcgasdefinitionsdata = getdcgasdefinitionsdata
+        self.getdcgeneratordata = getdcgeneratordata
+        self.getdcownerdata = getdcownerdata
+        self.getdcprofiledata = getdcprofiledata
+    }
+}
+
+/// Empty marker: request every category stored on the dive computer
+public struct GetDCAllData: Codable, Equatable, Sendable {
+    public init() {}
+}
+
+/// Empty marker: request dive-buddy data
+public struct GetDCBuddyData: Codable, Equatable, Sendable {
+    public init() {}
+}
+
+/// Empty marker: request dive-site descriptions
+public struct GetDCDiveSiteData: Codable, Equatable, Sendable {
+    public init() {}
+}
+
+/// Empty marker: request dive-trip descriptions
+public struct GetDCDiveTripData: Codable, Equatable, Sendable {
+    public init() {}
+}
+
+/// Empty marker: request stored breathing-gas definitions
+public struct GetDCGasDefinitionsData: Codable, Equatable, Sendable {
+    public init() {}
+}
+
+/// Empty marker: request the manufacturer's data
+public struct GetDCGeneratorData: Codable, Equatable, Sendable {
+    public init() {}
+}
+
+/// Empty marker: request the owner's data
+public struct GetDCOwnerData: Codable, Equatable, Sendable {
+    public init() {}
+}
+
+/// Empty marker: request stored dive profile data
+public struct GetDCProfileData: Codable, Equatable, Sendable {
+    public init() {}
 }
 
 // MARK: - SetDCData

@@ -65,6 +65,52 @@ final class DiveComputerControlWriterTests: XCTestCase {
         XCTAssertEqual(gasData?.last?.ref, "ean32")
     }
 
+    func testWriteDiveComputerDumpRoundTrip() throws {
+        let datetime = ISO8601DateFormatter().date(from: "2025-06-15T22:00:00Z")!
+        var document = UDDFDocument(version: "3.2.3", generator: Generator(name: "DCApp"))
+        document.divecomputercontrol = DiveComputerControl(
+            divecomputerdump: [
+                DiveComputerDump(
+                    datetime: datetime,
+                    dcdump: "QlpoOTFBWSZTWZ8AAAAA",
+                    link: [Link(ref: "dc-1")]
+                )
+            ]
+        )
+
+        let xmlData = try UDDFSerialization.write(document, prettyPrinted: true)
+        let xmlString = String(data: xmlData, encoding: .utf8) ?? ""
+        XCTAssertTrue(xmlString.contains("<divecomputerdump>"), "expected <divecomputerdump> element")
+        XCTAssertTrue(xmlString.contains("QlpoOTFBWSZTWZ8AAAAA"), "expected base64 payload in serialized output")
+
+        let reparsed = try UDDFSerialization.parse(xmlData)
+        let dump = reparsed.divecomputercontrol?.divecomputerdump.first
+        XCTAssertEqual(dump?.datetime, datetime)
+        XCTAssertEqual(dump?.dcdump, "QlpoOTFBWSZTWZ8AAAAA")
+        XCTAssertEqual(dump?.link.first?.ref, "dc-1")
+    }
+
+    func testWriteGetDCDataRoundTrip() throws {
+        var document = UDDFDocument(version: "3.2.3", generator: Generator(name: "DCApp"))
+        document.divecomputercontrol = DiveComputerControl(
+            getdcdata: GetDCData(
+                getdcownerdata: GetDCOwnerData(),
+                getdcprofiledata: GetDCProfileData()
+            )
+        )
+
+        let xmlData = try UDDFSerialization.write(document, prettyPrinted: true)
+        let xmlString = String(data: xmlData, encoding: .utf8) ?? ""
+        XCTAssertTrue(xmlString.contains("<getdcprofiledata"), "expected <getdcprofiledata/> marker")
+        XCTAssertTrue(xmlString.contains("<getdcownerdata"), "expected <getdcownerdata/> marker")
+
+        let reparsed = try UDDFSerialization.parse(xmlData)
+        let get = reparsed.divecomputercontrol?.getdcdata
+        XCTAssertNotNil(get?.getdcprofiledata)
+        XCTAssertNotNil(get?.getdcownerdata)
+        XCTAssertNil(get?.getdcalldata)
+    }
+
     func testWriteAlarmsRoundTrip() throws {
         var document = UDDFDocument(version: "3.2.3", generator: Generator(name: "DCApp"))
         document.divecomputercontrol = DiveComputerControl(

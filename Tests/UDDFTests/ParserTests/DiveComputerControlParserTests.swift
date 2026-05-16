@@ -98,6 +98,59 @@ final class DiveComputerControlParserTests: XCTestCase {
         XCTAssertNotNil(setdc.setdcgeneratordata)
     }
 
+    func testParseDiveComputerDumpAndGetDCDataFromFullFixture() throws {
+        let fixtureURL = Bundle.module.url(
+            forResource: "full",
+            withExtension: "uddf",
+            subdirectory: "Fixtures/divecomputercontrol"
+        )!
+        let data = try Data(contentsOf: fixtureURL)
+        let document = try UDDFSerialization.parse(data)
+
+        guard let dcc = document.divecomputercontrol else {
+            XCTFail("Expected divecomputercontrol"); return
+        }
+
+        // <divecomputerdump>: datetime + base64 payload + link cross-reference
+        XCTAssertEqual(dcc.divecomputerdump.count, 1)
+        let dump = dcc.divecomputerdump.first
+        XCTAssertEqual(dump?.datetime, ISO8601DateFormatter().date(from: "2025-06-15T22:00:00Z"))
+        XCTAssertEqual(dump?.dcdump, "QlpoOTFBWSZTWZ8AAAAA")
+        XCTAssertEqual(dump?.link.first?.ref, "site1")
+
+        // <getdcdata>: selective category requests
+        let get = dcc.getdcdata
+        XCTAssertNotNil(get?.getdcprofiledata)
+        XCTAssertNotNil(get?.getdcgasdefinitionsdata)
+        XCTAssertNil(get?.getdcalldata)
+        XCTAssertNil(get?.getdcbuddydata)
+        XCTAssertNil(get?.getdcdivesitedata)
+        XCTAssertNil(get?.getdcdivetripdata)
+        XCTAssertNil(get?.getdcgeneratordata)
+        XCTAssertNil(get?.getdcownerdata)
+    }
+
+    // Empty <getdcdata/> means "send every category".
+    func testParseGetDCAllDataMarker() throws {
+        let xml = """
+        <?xml version="1.0" encoding="UTF-8"?>
+        <uddf version="3.2.3">
+            <generator>
+                <name>DCApp</name>
+            </generator>
+            <divecomputercontrol>
+                <getdcdata>
+                    <getdcalldata/>
+                </getdcdata>
+            </divecomputercontrol>
+        </uddf>
+        """
+
+        let data = xml.data(using: .utf8)!
+        let document = try UDDFSerialization.parse(data)
+        XCTAssertNotNil(document.divecomputercontrol?.getdcdata?.getdcalldata)
+    }
+
     // UDDF 3.2.2 alternative form: <setdcallgasdefinitions/> instead of selective gas list.
     func testParseAllGasDefinitionsMarker() throws {
         let xml = """

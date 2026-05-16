@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Comprehensive <divecomputercontrol> fixture covering every <setdcdata>
-  child defined by UDDF 3.2.3, including the UDDF 3.2.2 additions
+  Comprehensive <divecomputercontrol> fixture covering all three children:
+  <divecomputerdump>, <getdcdata>, and <setdcdata> — including the UDDF
+  3.2.2 additions inside <setdcgasdefinitionsdata>
   (<setdcallgasdefinitions/> and <setdcgasdata>).
 -->
 <uddf version="3.2.3">
@@ -36,6 +37,17 @@
     </gasdefinitions>
 
     <divecomputercontrol>
+        <divecomputerdump>
+            <link ref="site1"/>
+            <datetime>2025-06-15T22:00:00Z</datetime>
+            <dcdump>QlpoOTFBWSZTWZ8AAAAA</dcdump>
+        </divecomputerdump>
+
+        <getdcdata>
+            <getdcprofiledata/>
+            <getdcgasdefinitionsdata/>
+        </getdcdata>
+
         <setdcdata>
             <setdcalarmtime>
                 <datetime>2025-06-15T09:30:00Z</datetime>
