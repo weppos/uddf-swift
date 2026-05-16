@@ -31,9 +31,6 @@ UDDF Swift supports a small number of non-standard tags that appear in real-worl
 
 - `mix` -> **`usage`**: A libdivecomputer extension for gas mix usage type (`oxygen`, `diluent`, `sidemount`).
 
-> [!NOTE]
-> The `<heartrate>` waypoint element is no longer treated as an extension; UDDF 3.2.3 standardized it in beats per second (SI 1/s). See [CHANGELOG.md](CHANGELOG.md) for the migration note.
-
 ## Installation
 
 ### Swift Package Manager
