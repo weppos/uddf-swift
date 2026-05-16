@@ -148,9 +148,11 @@ final class ProfileDataParserTests: XCTestCase {
         XCTAssertEqual(beforeInfo?.altitude?.meters, 500)
         XCTAssertEqual(beforeInfo?.platform, .charterBoat)
         XCTAssertEqual(beforeInfo?.apparatus, .openScuba)
-        XCTAssertEqual(beforeInfo?.program, .recreation)
         XCTAssertEqual(beforeInfo?.stateofrestbeforedive, .rested)
-        XCTAssertEqual(beforeInfo?.equipmentused?.leadquantity, 4.0)
+
+        // <program> and <equipmentused> appear under <informationbeforedive> in this
+        // fixture (the legacy UDDF \u{2264} 3.2.1 location). UDDF 3.2.3 resolved them
+        // to <informationafterdive>, and the parser re-routes legacy input.
 
         // TankData
         let tankData = dive?.tankdata
@@ -173,6 +175,10 @@ final class ProfileDataParserTests: XCTestCase {
         XCTAssertEqual(afterInfo?.thermalcomfort, .comfortable)
         XCTAssertEqual(afterInfo?.workload, .light)
         XCTAssertEqual(afterInfo?.rating?.ratingvalue, 9)
+
+        // Legacy-location fallback for <program> and <equipmentused>.
+        XCTAssertEqual(afterInfo?.program, .recreation)
+        XCTAssertEqual(afterInfo?.equipmentused?.leadquantity, 4.0)
     }
 
     // MARK: - Waypoint Tests
@@ -527,8 +533,10 @@ final class ProfileDataParserTests: XCTestCase {
         let dive = document.profiledata?.repetitiongroup?.first?.dive?.first
         XCTAssertNotNil(dive)
 
-        // equipmentused is inside informationbeforedive
-        let equipmentUsed = dive?.informationbeforedive?.equipmentused
+        // equipmentused appears under informationbeforedive in this fixture (legacy
+        // UDDF \u{2264} 3.2.1 location). The parser re-routes it to UDDF 3.2.3's
+        // location under informationafterdive.
+        let equipmentUsed = dive?.informationafterdive?.equipmentused
         XCTAssertNotNil(equipmentUsed)
         XCTAssertEqual(equipmentUsed?.leadquantity, 4.0)
 

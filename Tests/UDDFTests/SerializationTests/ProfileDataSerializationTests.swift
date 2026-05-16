@@ -36,14 +36,12 @@ final class ProfileDataSerializationTests: XCTestCase {
             divenumber: 42,
             divenumberofday: 2,
             internaldivenumber: 123,
-            equipmentused: EquipmentUsed(leadquantity: 3.5),
             exercisebeforedive: .light,
             medicationbeforedive: MedicationBeforeDive(medicine: [
                 Medicine(id: "med1", name: "Vitamin C", periodicallytaken: "yes")
             ]),
             nosuit: NoSuit(),
             platform: .charterBoat,
-            program: .recreation,
             stateofrestbeforedive: .rested,
             surfacepressure: Pressure(bar: 0.95),
             tripmembership: "trip-2025"
@@ -58,6 +56,7 @@ final class ProfileDataSerializationTests: XCTestCase {
             diveplan: .diveComputer,
             divetable: .padi,
             equipmentmalfunction: EquipmentMalfunction.none,
+            equipmentused: EquipmentUsed(leadquantity: 3.5),
             globalalarmsgiven: GlobalAlarmsGiven(globalalarm: ["ascent-warning-too-long"]),
             greatestdepth: Depth(meters: 30),
             highestpo2: Pressure(bar: 1.3),
@@ -69,6 +68,7 @@ final class ProfileDataSerializationTests: XCTestCase {
             observations: "Manta rays",
             pressuredrop: Pressure(bar: 150),
             problems: "Minor mask leak",
+            program: .recreation,
             rating: Rating(ratingvalue: 9),
             surfaceintervalafterdive: Duration(hours: 2),
             thermalcomfort: .comfortable,
@@ -149,5 +149,85 @@ final class ProfileDataSerializationTests: XCTestCase {
         XCTAssertEqual(reparsedAfter?.current, .mildCurrent)
         XCTAssertEqual(reparsedAfter?.diveplan, .diveComputer)
         XCTAssertEqual(reparsedAfter?.rating?.ratingvalue, 9)
+        XCTAssertEqual(reparsedAfter?.equipmentused?.leadquantity, 3.5)
+        XCTAssertEqual(reparsedAfter?.program, .recreation)
+
+        // Writer emits <equipmentused> and <program> under <informationafterdive>
+        // (UDDF 3.2.3 location) — not under <informationbeforedive>.
+        let xmlString = String(data: xmlData, encoding: .utf8) ?? ""
+        if let beforeStart = xmlString.range(of: "<informationbeforedive>"),
+           let beforeEnd = xmlString.range(of: "</informationbeforedive>", range: beforeStart.upperBound..<xmlString.endIndex) {
+            let beforeBlock = xmlString[beforeStart.lowerBound..<beforeEnd.upperBound]
+            XCTAssertFalse(beforeBlock.contains("<equipmentused>"),
+                           "<equipmentused> must not appear inside <informationbeforedive> per UDDF 3.2.3")
+            XCTAssertFalse(beforeBlock.contains("<program>"),
+                           "<program> must not appear inside <informationbeforedive> per UDDF 3.2.3")
+        } else {
+            XCTFail("Expected <informationbeforedive> in serialized XML")
+        }
+    }
+
+    // MARK: - Legacy-location fallback for UDDF \u{2264} 3.2.1 placement
+
+    func testParseLegacyPlacementOfEquipmentUsedAndProgramUnderInformationBeforeDive() throws {
+        let xml = """
+        <?xml version="1.0" encoding="UTF-8"?>
+        <uddf version="3.2.3">
+            <generator>
+                <name>LegacyEmitter</name>
+            </generator>
+            <profiledata>
+                <repetitiongroup>
+                    <dive>
+                        <informationbeforedive>
+                            <equipmentused>
+                                <leadquantity>5.0</leadquantity>
+                            </equipmentused>
+                            <program>scientific</program>
+                        </informationbeforedive>
+                    </dive>
+                </repetitiongroup>
+            </profiledata>
+        </uddf>
+        """
+
+        let data = xml.data(using: .utf8)!
+        let document = try UDDFSerialization.parse(data)
+
+        let dive = document.profiledata?.repetitiongroup?.first?.dive?.first
+
+        // Parser re-routes the legacy fields to their UDDF 3.2.3 location.
+        XCTAssertEqual(dive?.informationafterdive?.equipmentused?.leadquantity, 5.0)
+        XCTAssertEqual(dive?.informationafterdive?.program, .scientific)
+    }
+
+    func testLegacyFallbackDoesNotOverwriteExplicitInformationAfterDiveValues() throws {
+        // When a file has both the legacy *and* the new location, the new location wins.
+        let xml = """
+        <?xml version="1.0" encoding="UTF-8"?>
+        <uddf version="3.2.3">
+            <generator>
+                <name>MixedEmitter</name>
+            </generator>
+            <profiledata>
+                <repetitiongroup>
+                    <dive>
+                        <informationbeforedive>
+                            <program>scientific</program>
+                        </informationbeforedive>
+                        <informationafterdive>
+                            <program>recreation</program>
+                        </informationafterdive>
+                    </dive>
+                </repetitiongroup>
+            </profiledata>
+        </uddf>
+        """
+
+        let data = xml.data(using: .utf8)!
+        let document = try UDDFSerialization.parse(data)
+
+        let dive = document.profiledata?.repetitiongroup?.first?.dive?.first
+        XCTAssertEqual(dive?.informationafterdive?.program, .recreation)
     }
 }
