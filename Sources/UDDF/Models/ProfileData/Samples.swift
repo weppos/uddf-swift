@@ -25,6 +25,14 @@ public struct Waypoint: Codable, Equatable, Sendable {
     /// Battery charge/voltage at this waypoint
     public var batterychargecondition: Double?
 
+    /// Diver's body temperature at this waypoint
+    ///
+    /// - Unit: Kelvin (SI)
+    ///
+    /// Added in UDDF 3.2.2. The temperature persists until another
+    /// `<bodytemperature>` is recorded.
+    public var bodytemperature: Temperature?
+
     /// Calculated partial pressure of oxygen (PPO2)
     ///
     /// - Unit: pascals (SI)
@@ -68,6 +76,14 @@ public struct Waypoint: Codable, Equatable, Sendable {
     /// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/otu.html
     public var otu: Double?
 
+    /// Diver's pulse rate at this waypoint
+    ///
+    /// - Unit: beats per second (SI 1/s); divide BPM by 60 to convert.
+    ///
+    /// Added in UDDF 3.2.2. The pulse rate persists until another
+    /// `<pulserate>` is recorded.
+    public var pulserate: Double?
+
     /// Remaining bottom time at this waypoint (time before ascent required)
     public var remainingbottomtime: Duration?
 
@@ -75,6 +91,12 @@ public struct Waypoint: Codable, Equatable, Sendable {
     ///
     /// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/remainingo2time.html
     public var remainingo2time: Duration?
+
+    /// User-set markers recorded at this waypoint (e.g. dive computer "mark" button presses)
+    ///
+    /// Multiple markers may be recorded per waypoint. Free-form alphanumeric text.
+    /// Added in UDDF 3.2.2.
+    public var setmarker: [String]
 
     /// Rebreather setpoint (PPO2) at this waypoint
     ///
@@ -104,6 +126,7 @@ public struct Waypoint: Codable, Equatable, Sendable {
     public init(
         alarm: String? = nil,
         batterychargecondition: Double? = nil,
+        bodytemperature: Temperature? = nil,
         calculatedpo2: Pressure? = nil,
         cns: Double? = nil,
         decostop: DecoStop? = nil,
@@ -115,8 +138,10 @@ public struct Waypoint: Codable, Equatable, Sendable {
         measuredpo2: [MeasuredPO2] = [],
         nodecotime: Duration? = nil,
         otu: Double? = nil,
+        pulserate: Double? = nil,
         remainingbottomtime: Duration? = nil,
         remainingo2time: Duration? = nil,
+        setmarker: [String] = [],
         setpo2: Pressure? = nil,
         switchmix: SwitchMix? = nil,
         tankpressure: [TankPressure] = [],
@@ -126,6 +151,7 @@ public struct Waypoint: Codable, Equatable, Sendable {
     ) {
         self.alarm = alarm
         self.batterychargecondition = batterychargecondition
+        self.bodytemperature = bodytemperature
         self.calculatedpo2 = calculatedpo2
         self.cns = cns
         self.decostop = decostop
@@ -137,8 +163,10 @@ public struct Waypoint: Codable, Equatable, Sendable {
         self.measuredpo2 = measuredpo2
         self.nodecotime = nodecotime
         self.otu = otu
+        self.pulserate = pulserate
         self.remainingbottomtime = remainingbottomtime
         self.remainingo2time = remainingo2time
+        self.setmarker = setmarker
         self.setpo2 = setpo2
         self.switchmix = switchmix
         self.tankpressure = tankpressure
@@ -150,6 +178,7 @@ public struct Waypoint: Codable, Equatable, Sendable {
     enum CodingKeys: String, CodingKey {
         case alarm
         case batterychargecondition
+        case bodytemperature
         case calculatedpo2
         case cns
         case decostop
@@ -161,8 +190,10 @@ public struct Waypoint: Codable, Equatable, Sendable {
         case measuredpo2
         case nodecotime
         case otu
+        case pulserate
         case remainingbottomtime
         case remainingo2time
+        case setmarker
         case setpo2
         case switchmix
         case tankpressure
@@ -175,6 +206,7 @@ public struct Waypoint: Codable, Equatable, Sendable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         alarm = try container.decodeIfPresent(String.self, forKey: .alarm)
         batterychargecondition = try container.decodeIfPresent(Double.self, forKey: .batterychargecondition)
+        bodytemperature = try container.decodeIfPresent(Temperature.self, forKey: .bodytemperature)
         calculatedpo2 = try container.decodeIfPresent(Pressure.self, forKey: .calculatedpo2)
         cns = try container.decodeIfPresent(Double.self, forKey: .cns)
         decostop = try container.decodeIfPresent(DecoStop.self, forKey: .decostop)
@@ -186,8 +218,10 @@ public struct Waypoint: Codable, Equatable, Sendable {
         measuredpo2 = try container.decodeIfPresent([MeasuredPO2].self, forKey: .measuredpo2) ?? []
         nodecotime = try container.decodeIfPresent(Duration.self, forKey: .nodecotime)
         otu = try container.decodeIfPresent(Double.self, forKey: .otu)
+        pulserate = try container.decodeIfPresent(Double.self, forKey: .pulserate)
         remainingbottomtime = try container.decodeIfPresent(Duration.self, forKey: .remainingbottomtime)
         remainingo2time = try container.decodeIfPresent(Duration.self, forKey: .remainingo2time)
+        setmarker = try container.decodeIfPresent([String].self, forKey: .setmarker) ?? []
         setpo2 = try container.decodeIfPresent(Pressure.self, forKey: .setpo2)
         switchmix = try container.decodeIfPresent(SwitchMix.self, forKey: .switchmix)
         tankpressure = try container.decodeIfPresent([TankPressure].self, forKey: .tankpressure) ?? []
@@ -200,6 +234,7 @@ public struct Waypoint: Codable, Equatable, Sendable {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encodeIfPresent(alarm, forKey: .alarm)
         try container.encodeIfPresent(batterychargecondition, forKey: .batterychargecondition)
+        try container.encodeIfPresent(bodytemperature, forKey: .bodytemperature)
         try container.encodeIfPresent(calculatedpo2, forKey: .calculatedpo2)
         try container.encodeIfPresent(cns, forKey: .cns)
         try container.encodeIfPresent(decostop, forKey: .decostop)
@@ -214,8 +249,13 @@ public struct Waypoint: Codable, Equatable, Sendable {
         }
         try container.encodeIfPresent(nodecotime, forKey: .nodecotime)
         try container.encodeIfPresent(otu, forKey: .otu)
+        try container.encodeIfPresent(pulserate, forKey: .pulserate)
         try container.encodeIfPresent(remainingbottomtime, forKey: .remainingbottomtime)
         try container.encodeIfPresent(remainingo2time, forKey: .remainingo2time)
+        for marker in setmarker {
+            let encoder = container.superEncoder(forKey: .setmarker)
+            try marker.encode(to: encoder)
+        }
         try container.encodeIfPresent(setpo2, forKey: .setpo2)
         try container.encodeIfPresent(switchmix, forKey: .switchmix)
         for pressure in tankpressure {
