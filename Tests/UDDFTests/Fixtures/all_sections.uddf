@@ -95,7 +95,11 @@
         </trippart>
     </divetrip>
 
-    <divecomputercontrol id="dc1">
-        <name>Test Dive Computer</name>
+    <divecomputercontrol>
+        <setdcdata>
+            <setdcdatetime>
+                <datetime>2025-06-01T08:00:00Z</datetime>
+            </setdcdatetime>
+        </setdcdata>
     </divecomputercontrol>
 </uddf>
