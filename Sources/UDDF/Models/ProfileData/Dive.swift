@@ -71,18 +71,14 @@ public struct Dive: Codable, Equatable, Sendable {
         tankdata = try container.decodeIfPresent([TankData].self, forKey: .tankdata)
         var afterDive = try container.decodeIfPresent(InformationAfterDive.self, forKey: .informationafterdive)
 
-        // Legacy fallback: route <equipmentused> and <program> from
-        // <informationbeforedive> to their UDDF 3.2.3 location in <informationafterdive>.
-        if let legacy = try? container.decodeIfPresent(InformationBeforeDiveLegacyShim.self, forKey: .informationbeforedive) {
-            if legacy.equipmentused != nil || legacy.program != nil {
-                if afterDive == nil { afterDive = InformationAfterDive() }
-                if let eu = legacy.equipmentused, afterDive?.equipmentused == nil {
-                    afterDive?.equipmentused = eu
-                }
-                if let pg = legacy.program, afterDive?.program == nil {
-                    afterDive?.program = pg
-                }
-            }
+        let needsLegacyEquipmentUsed = afterDive?.equipmentused == nil
+        let needsLegacyProgram = afterDive?.program == nil
+        if informationbeforedive != nil, needsLegacyEquipmentUsed || needsLegacyProgram,
+           let legacy = try container.decodeIfPresent(InformationBeforeDiveLegacyShim.self, forKey: .informationbeforedive),
+           legacy.equipmentused != nil || legacy.program != nil {
+            if afterDive == nil { afterDive = InformationAfterDive() }
+            if needsLegacyEquipmentUsed { afterDive?.equipmentused = legacy.equipmentused }
+            if needsLegacyProgram { afterDive?.program = legacy.program }
         }
 
         informationafterdive = afterDive
