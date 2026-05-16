@@ -5,7 +5,7 @@ import Foundation
 /// Container for alcoholic beverages consumed before a dive.
 /// If present, at least one drink element must be provided.
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/alcoholbeforedive.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/alcoholbeforedive.html
 public struct AlcoholBeforeDive: Codable, Equatable, Sendable {
     /// List of alcoholic drinks consumed before the dive
     ///
@@ -21,7 +21,7 @@ public struct AlcoholBeforeDive: Codable, Equatable, Sendable {
 ///
 /// Documents a specific alcoholic beverage consumed before diving.
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/drink.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/drink.html
 public struct Drink: Codable, Equatable, Sendable {
     /// Name of the drink
     public var name: String?
@@ -62,7 +62,7 @@ public struct Drink: Codable, Equatable, Sendable {
 /// Container for medications taken before a dive.
 /// If present, at least one medicine element must be provided.
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/medicationbeforedive.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/medicationbeforedive.html
 public struct MedicationBeforeDive: Codable, Equatable, Sendable {
     /// List of medicines taken before the dive
     ///
@@ -78,7 +78,7 @@ public struct MedicationBeforeDive: Codable, Equatable, Sendable {
 ///
 /// Documents a specific medication taken before diving.
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/medicine.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/medicine.html
 public struct Medicine: Codable, Equatable, Sendable {
     /// Unique identifier for this medicine
     public var id: String?
@@ -152,7 +152,7 @@ extension Medicine: DynamicNodeEncoding {
 /// Describes the physical activity level before the dive.
 /// From DAN Project Dive Exploration standard.
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/exercisebeforedive.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/exercisebeforedive.html
 public struct ExerciseBeforeDive: Equatable, Sendable {
     /// No exercise before the dive
     public static let none = ExerciseBeforeDive(rawValue: "none")

@@ -3,7 +3,7 @@ import XMLCoder
 
 /// Organization membership information
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/membership.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/membership.html
 public struct Membership: Codable, Equatable, Sendable {
     /// Name of the organization (compulsory)
     public var organisation: String

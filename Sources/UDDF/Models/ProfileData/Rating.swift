@@ -5,7 +5,7 @@ import Foundation
 /// Represents the diver's rating of the dive, including the rating value
 /// and optionally when it was assigned.
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/rating.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/rating.html
 public struct Rating: Codable, Equatable, Sendable {
     /// The rating value (typically 0-10)
     ///

@@ -52,7 +52,7 @@ public struct Waypoint: Codable, Equatable, Sendable {
     ///
     /// - Unit: degrees (0-360)
     ///
-    /// Reference: https://www.streit.cc/extern/uddf_v321/en/heading.html
+    /// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/heading.html
     public var heading: Double?
 
     /// Measured partial pressure of oxygen (PPO2) from sensors
@@ -65,7 +65,7 @@ public struct Waypoint: Codable, Equatable, Sendable {
 
     /// Oxygen Toxicity Units at this waypoint
     ///
-    /// Reference: https://www.streit.cc/extern/uddf_v321/en/otu.html
+    /// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/otu.html
     public var otu: Double?
 
     /// Remaining bottom time at this waypoint (time before ascent required)
@@ -73,7 +73,7 @@ public struct Waypoint: Codable, Equatable, Sendable {
 
     /// Remaining time in seconds until oxygen becomes toxic at this waypoint
     ///
-    /// Reference: https://www.streit.cc/extern/uddf_v321/en/remainingo2time.html
+    /// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/remainingo2time.html
     public var remainingo2time: Duration?
 
     /// Rebreather setpoint (PPO2) at this waypoint
@@ -259,7 +259,7 @@ extension SwitchMix: DynamicNodeEncoding {
 
 /// Dive mode at a waypoint (open circuit, closed circuit, etc.)
 ///
-/// See: https://www.streit.cc/extern/uddf_v321/en/divemode.html
+/// See: https://www.streit.cc/resources/UDDF/v3.2.3/en/divemode.html
 public struct DiveMode: Codable, Equatable, Sendable {
     /// Type of dive mode
     ///

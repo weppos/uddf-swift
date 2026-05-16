@@ -2,7 +2,7 @@ import Foundation
 
 /// Dive certification record
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/certification.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/certification.html
 public struct Certification: Codable, Equatable, Sendable {
     /// Certification level (e.g., OWD, AOWD, Divemaster)
     public var level: String?

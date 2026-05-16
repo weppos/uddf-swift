@@ -2,7 +2,7 @@ import Foundation
 
 /// Notes or comments (text content)
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/notes.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/notes.html
 public struct Notes: Codable, Equatable, Sendable {
     /// Links to related notes/media
     public var link: [Link]?

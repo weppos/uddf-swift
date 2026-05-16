@@ -6,7 +6,7 @@ import XMLCoder
 /// Indicates which decompression table was used for dive planning.
 /// From DAN Project Dive Exploration standard.
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/divetable.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/divetable.html
 public struct DiveTable: Equatable, Sendable {
     /// PADI decompression tables
     public static let padi = DiveTable(rawValue: "PADI")
@@ -61,7 +61,7 @@ extension DiveTable: Codable {
 ///
 /// Documents hyperbaric chamber treatment for decompression sickness.
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/hyperbaricfacilitytreatment.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/hyperbaricfacilitytreatment.html
 public struct HyperbaricFacilityTreatment: Codable, Equatable, Sendable {
     /// Cross-reference to hyperbaric facility
     public var link: Link?
@@ -95,7 +95,7 @@ public struct HyperbaricFacilityTreatment: Codable, Equatable, Sendable {
 
 /// Date of recompression treatment
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/dateofrecompressiontreatment.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/dateofrecompressiontreatment.html
 public struct DateOfRecompressionTreatment: Codable, Equatable, Sendable {
     /// Date and time of the treatment
     public var datetime: Date?
@@ -121,7 +121,7 @@ public struct RelatedDives: Codable, Equatable, Sendable {
 ///
 /// A marker element indicating the dive was conducted without protective suit.
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/nosuit.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/nosuit.html
 public struct NoSuit: Codable, Equatable, Sendable {
     public init() {}
 
@@ -140,7 +140,7 @@ public struct NoSuit: Codable, Equatable, Sendable {
 ///
 /// Lists alarms given only once, global for the whole dive.
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/globalalarmsgiven.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/globalalarmsgiven.html
 public struct GlobalAlarmsGiven: Codable, Equatable, Sendable {
     /// List of global alarms triggered during the dive
     ///

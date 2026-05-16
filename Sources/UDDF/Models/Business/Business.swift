@@ -5,7 +5,7 @@ import XMLCoder
 ///
 /// Information about commercial diving businesses.
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/business.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/business.html
 public struct Business: Codable, Equatable, Sendable {
     /// Unique identifier
     public var id: String?

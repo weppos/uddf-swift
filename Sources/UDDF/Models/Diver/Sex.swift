@@ -2,7 +2,7 @@ import Foundation
 
 /// Biological sex
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/sex.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/sex.html
 public enum Sex: Equatable, Sendable {
     /// Undetermined sex
     case undetermined

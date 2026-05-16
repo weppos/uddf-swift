@@ -3,7 +3,7 @@ import XMLCoder
 
 /// Video camera with body, housing, and lights
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/videocamera.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/videocamera.html
 public struct VideoCamera: Codable, Equatable, Sendable {
     /// Unique identifier
     public var id: String?

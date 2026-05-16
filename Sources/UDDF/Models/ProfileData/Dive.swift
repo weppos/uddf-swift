@@ -6,7 +6,7 @@ import XMLCoder
 /// Contains information before, during, and after the dive, including
 /// samples (waypoints) recorded during the dive.
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/dive.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/dive.html
 public struct Dive: Codable, Equatable, Sendable {
     /// Unique identifier for this dive
     public var id: String?
@@ -74,7 +74,7 @@ extension Dive: DynamicNodeEncoding {
 /// Contains manufacturer or application-specific dive data that doesn't fit
 /// in the standard UDDF elements.
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/applicationdata.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/applicationdata.html
 public struct ApplicationData: Codable, Equatable, Sendable {
     // Application-specific elements can be added here as needed
     // For now, this is a placeholder for forward compatibility
@@ -84,7 +84,7 @@ public struct ApplicationData: Codable, Equatable, Sendable {
 
 /// Information recorded before the dive
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/informationbeforedive.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/informationbeforedive.html
 public struct InformationBeforeDive: Codable, Equatable, Sendable {
     // Elements in UDDF spec order
 
@@ -123,14 +123,14 @@ public struct InformationBeforeDive: Codable, Equatable, Sendable {
     ///
     /// - Note: Sections "profiledata" describes parent as "informationbeforedive", "equipmentused" describes parent as "informationafterdive". Using parent "informationbeforedive".
     ///
-    /// Reference: https://www.streit.cc/extern/uddf_v321/en/equipmentused.html
+    /// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/equipmentused.html
     public var equipmentused: EquipmentUsed?
 
     /// Exercise level before the dive
     ///
     /// - Note: Sections "profiledata" describes parent as "informationbeforedive", "exercisebeforedive" describes parent as "dive". Using parent "informationbeforedive".
     ///
-    /// Reference: https://www.streit.cc/extern/uddf_v321/en/exercisebeforedive.html
+    /// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/exercisebeforedive.html
     public var exercisebeforedive: ExerciseBeforeDive?
 
     /// Medication taken before the dive
@@ -152,14 +152,14 @@ public struct InformationBeforeDive: Codable, Equatable, Sendable {
     ///
     /// - Note: Sections "profiledata" describes parent as "informationafterdive", "purpose" describes parent as "informationbeforedive". Using parent "informationbeforedive".
     ///
-    /// Reference: https://www.streit.cc/extern/uddf_v321/en/purpose.html
+    /// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/purpose.html
     public var purpose: Purpose?
 
     /// Type of diving program
     ///
     /// - Note: Sections "profiledata" describes parent as "informationbeforedive", "program" describes parent as "informationafterdive". Using parent "informationbeforedive".
     ///
-    /// Reference: https://www.streit.cc/extern/uddf_v321/en/program.html
+    /// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/program.html
     public var program: Program?
 
     /// Diver's state of rest before the dive
@@ -236,7 +236,7 @@ public struct InformationBeforeDive: Codable, Equatable, Sendable {
 
 /// Information recorded after the dive
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/informationafterdive.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/informationafterdive.html
 public struct InformationAfterDive: Codable, Equatable, Sendable {
     // Elements in UDDF spec order
 
@@ -287,7 +287,7 @@ public struct InformationAfterDive: Codable, Equatable, Sendable {
     ///
     /// - Note: Sections "profiledata" describes parent as "informationafterdive", "hyperbaricfacilitytreatment" describes parent as "dive". Using parent "informationafterdive".
     ///
-    /// Reference: https://www.streit.cc/extern/uddf_v321/en/exercisebeforedive.html
+    /// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/exercisebeforedive.html
     public var hyperbaricfacilitytreatment: HyperbaricFacilityTreatment?
 
     /// Lowest temperature during the dive

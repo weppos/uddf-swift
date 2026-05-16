@@ -233,7 +233,7 @@ print(duration.hours)    // 0.417
 
 This library implements the UDDF v3.2.1 specification:
 
-https://www.streit.cc/extern/uddf_v321/en/index.html
+https://www.streit.cc/resources/UDDF/v3.2.3/en/index.html
 
 ## Contributing
 

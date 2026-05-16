@@ -8,7 +8,7 @@ import XMLCoder
 ///
 /// This element appears inside `<informationbeforedive>`.
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/equipmentused.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/equipmentused.html
 public struct EquipmentUsed: Codable, Equatable, Sendable {
     /// Cross-references to equipment pieces (tanks, suits, etc.)
     ///
@@ -34,7 +34,7 @@ public struct EquipmentUsed: Codable, Equatable, Sendable {
 /// Contains information about gas consumption for a single tank during a dive.
 /// This is a direct child of `<dive>`, not inside `<equipmentused>`.
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/tankdata.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/tankdata.html
 public struct TankData: Codable, Equatable, Sendable {
     /// Unique identifier for this tank data
     public var id: String?

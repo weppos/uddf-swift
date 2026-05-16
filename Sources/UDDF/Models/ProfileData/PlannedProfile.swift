@@ -6,7 +6,7 @@ import XMLCoder
 /// Describes a theoretical dive profile for comparison against actual dive data.
 /// Contains waypoints marking depth and time intervals throughout the planned dive.
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/plannedprofile.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/plannedprofile.html
 public struct PlannedProfile: Codable, Equatable, Sendable {
     /// Initial dive mode (required)
     ///

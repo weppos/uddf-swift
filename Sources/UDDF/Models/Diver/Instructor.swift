@@ -3,7 +3,7 @@ import XMLCoder
 
 /// Dive instructor information
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/instructor.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/instructor.html
 public struct Instructor: Codable, Equatable, Sendable {
     /// Unique identifier (compulsory)
     public var id: String?

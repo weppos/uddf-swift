@@ -35,7 +35,7 @@ The UDDF 3.2.1 specification contains internal inconsistencies where the prose/s
 
 ### `tankpressure`: `ref` vs `tankref`
 
-The [`tankpressure` spec page](https://www.streit.cc/extern/uddf_v321/en/tankpressure.html) defines the attribute as `ref`, but the XML example on the same page uses `tankref`:
+The [`tankpressure` spec page](https://www.streit.cc/resources/UDDF/v3.2.3/en/tankpressure.html) defines the attribute as `ref`, but the XML example on the same page uses `tankref`:
 
 ```xml
 <!-- From the spec example -->
@@ -47,7 +47,7 @@ The [`tankpressure` spec page](https://www.streit.cc/extern/uddf_v321/en/tankpre
 
 ### Parent Element Disagreements
 
-Several elements have contradictory parent placement across different spec pages. The [`profiledata` section](https://www.streit.cc/extern/uddf_v321/en/profiledata.html) shows one parent, while the element's own page shows a different one.
+Several elements have contradictory parent placement across different spec pages. The [`profiledata` section](https://www.streit.cc/resources/UDDF/v3.2.3/en/profiledata.html) shows one parent, while the element's own page shows a different one.
 
 | Element | `profiledata` page says | Element's own page says | Our decision |
 |---------|------------------------|------------------------|--------------|
@@ -324,11 +324,11 @@ func validateDive(_ dive: Dive) {
 
 #### Implemented with Option 2
 
-- **`DiveMode.ModeType`** - Dive breathing apparatus modes in [UDDF divemode element](https://www.streit.cc/extern/uddf_v321/en/divemode.html)
+- **`DiveMode.ModeType`** - Dive breathing apparatus modes in [UDDF divemode element](https://www.streit.cc/resources/UDDF/v3.2.3/en/divemode.html)
   - Standard: `.apnoe`, `.closedCircuit`, `.openCircuit`, `.semiClosedCircuit`
   - Unknown: `.unknown(String)`
 
-- **`DecoStop.StopKind`** - Decompression stop types in [UDDF waypoint element](https://www.streit.cc/extern/uddf_v321/en/waypoint.html)
+- **`DecoStop.StopKind`** - Decompression stop types in [UDDF waypoint element](https://www.streit.cc/resources/UDDF/v3.2.3/en/waypoint.html)
   - Standard: `.mandatory`, `.safety`
   - Unknown: `.unknown(String)`
 
@@ -341,7 +341,7 @@ func validateDive(_ dive: Dive) {
 
 When adding support for a new UDDF element with enumerated values:
 
-1. Check the [UDDF specification](https://www.streit.cc/extern/uddf_v321/en/) for the attribute definition
+1. Check the [UDDF specification](https://www.streit.cc/resources/UDDF/v3.2.3/en/) for the attribute definition
 2. **Default to Option 2** (hybrid enum) unless you have a specific reason not to
 3. Implement as a nested type within the parent struct
 4. Include `.unknown(String)` case and `.isStandard` property
