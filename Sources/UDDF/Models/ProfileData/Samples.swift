@@ -268,7 +268,10 @@ public struct DiveMode: Codable, Equatable, Sendable {
     /// type safety for standard UDDF values.
     public enum ModeType: Equatable, Sendable {
         /// Freediving (breath-hold diving)
-        case apnoe
+        ///
+        /// Encoded as `"apnea"`. UDDF 3.2.2 renamed `"apnoe"` to `"apnea"`;
+        /// the decoder accepts both spellings for backwards compatibility.
+        case apnea
 
         /// Closed-circuit rebreather
         case closedCircuit
@@ -285,7 +288,7 @@ public struct DiveMode: Codable, Equatable, Sendable {
         /// The raw string value for this mode type
         public var rawValue: String {
             switch self {
-            case .apnoe: return "apnoe"
+            case .apnea: return "apnea"
             case .closedCircuit: return "closedcircuit"
             case .openCircuit: return "opencircuit"
             case .semiClosedCircuit: return "semiclosedcircuit"
@@ -295,10 +298,11 @@ public struct DiveMode: Codable, Equatable, Sendable {
 
         /// Initialize from a raw string value
         ///
-        /// Standard UDDF values map to known cases, all others to `.unknown(String)`
+        /// Standard UDDF values map to known cases, all others to `.unknown(String)`.
+        /// The legacy `"apnoe"` spelling (pre-UDDF 3.2.2) decodes to `.apnea`.
         public init(rawValue: String) {
             switch rawValue {
-            case "apnoe": self = .apnoe
+            case "apnea", "apnoe": self = .apnea
             case "closedcircuit": self = .closedCircuit
             case "opencircuit": self = .openCircuit
             case "semiclosedcircuit": self = .semiClosedCircuit
