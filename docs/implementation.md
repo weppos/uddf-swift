@@ -27,9 +27,10 @@ Some dive computer exporters include fields that are not part of the UDDF specif
 
 ## Permissive parsing
 
-The parser also tolerates a handful of non-spec inputs that show up in real-world files. They are routed to their spec-compliant location on parse and emitted at the spec-compliant location on write:
+The parser also tolerates a handful of non-spec inputs that show up in real-world files. They are routed to their XSD-correct location on parse and emitted at the XSD-correct location on write:
 
-- `<equipmentused>` and `<program>` placed under `<informationbeforedive>` are routed to `InformationAfterDive`.
+- `<equipmentused>` placed under `<informationafterdive>` (the location the HTML element page lists) is routed to `InformationBeforeDive` (where the XSD puts it).
+- `<program>` placed under `<informationbeforedive>` (where older uddf-swift releases emitted it) is routed to `InformationAfterDive` (where the XSD puts it).
 - `<divemode type="apnoe">` (the German spelling) decodes to `.apnea`; the writer always emits `"apnea"`.
 
 ## Attributed Intrinsic Scalars
@@ -40,7 +41,7 @@ When XML is pretty-printed, XMLCoder may expose the intrinsic text as multiple w
 
 ## UDDF Specification Inconsistencies
 
-The UDDF specification contains a few internal inconsistencies where the prose/schema and the examples disagree. This section documents the cases we've encountered and the decisions we've made.
+The UDDF specification contains a few internal inconsistencies where the prose, the HTML element pages, the XSD, and the examples disagree. When sources conflict, this library treats the [XSD](https://www.streit.cc/resources/UDDF/v3.2.3/schema/uddf_3.2.3.xsd) as authoritative (it is the only machine-validatable definition), with Subsurface's emitter as the practical tie-breaker for real-world interop.
 
 ### `tankpressure`: `ref` vs `tankref`
 
@@ -54,16 +55,28 @@ The [`tankpressure` spec page](https://www.streit.cc/resources/UDDF/v3.2.3/en/ta
 
 **Decision:** We use `ref` to stay consistent with `measuredpo2`, which also uses `ref` as a cross-reference attribute on an intrinsic scalar element. Real-world exporters should be tested to determine which attribute name they actually use; if `tankref` appears in practice, we may need to support both during parsing.
 
+### `equipmentused`: HTML page vs XSD
+
+The XSD (line 982) and Subsurface both place `<equipmentused>` inside `<informationbeforedive>`, and the XSD even carries a 2015 changelog entry noting that the older `<informationafterdive>` placement was a bug "now corrected". The HTML element page and the `informationafterdive` child-list page were never updated to match.
+
+**Decision:** Follow the XSD — `equipmentused` lives on `InformationBeforeDive`, and we emit it there. The parser also accepts the HTML-style placement under `<informationafterdive>` and re-routes it.
+
+### `program`: HTML pages aligned with XSD; older uddf-swift was wrong
+
+XSD (line 1135), the element page, and the `informationafterdive` child-list page all agree: `<program>` is a child of `<informationafterdive>`. Older releases of this library placed it on `InformationBeforeDive` (following an outdated reading of the spec).
+
+**Decision:** `program` lives on `InformationAfterDive`. The parser re-routes the legacy `<informationbeforedive>` placement so older uddf-swift output keeps loading.
+
 ### Orphaned elements
 
-Two elements have a parent-side / element-side mismatch: their own pages claim `<dive>` as the parent, but `<dive>`'s child list omits them — so they are unreachable from the schema graph.
+Two elements aren't defined in the XSD at all (`exercisebeforedive`, `hyperbaricfacilitytreatment`). Their HTML pages claim `<dive>` as the parent, but `<dive>`'s child list omits them — so they are unreachable from the schema graph.
 
 | Element | Element-page parent claim | Our placement |
 |---------|---------------------------|---------------|
 | `exercisebeforedive` | `<dive>` | `informationbeforedive` |
 | `hyperbaricfacilitytreatment` | `<dive>` | `informationafterdive` |
 
-**Decision:** Treat the element-page claim as a residual spec defect and keep these under the nearest information container so the data remains addressable. The chosen container matches what most real-world exporters emit.
+**Decision:** Treat these as documentation-only and keep them under the nearest information container so the data remains addressable. The chosen container matches what real-world exporters emit.
 
 ## Handling Enumerated Values in UDDF
 

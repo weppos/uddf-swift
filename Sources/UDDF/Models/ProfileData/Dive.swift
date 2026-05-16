@@ -51,36 +51,46 @@ public struct Dive: Codable, Equatable, Sendable {
         case informationafterdive
     }
 
-    /// Legacy-location shim: in UDDF \u{2264} 3.2.1 the placement of
-    /// `<equipmentused>` and `<program>` under `<informationbeforedive>` vs
-    /// `<informationafterdive>` was contradictory across the spec. UDDF 3.2.3
-    /// resolved both to `<informationafterdive>`. Files written before that
-    /// resolution may still place these elements under `<informationbeforedive>`;
-    /// this shim re-parses that location to capture them.
+    /// Legacy-location shim — `<program>` under `<informationbeforedive>`.
+    /// Older uddf-swift releases (and other tools that followed the stale
+    /// pre-3.2.3 HTML hierarchy) placed `<program>` here; the XSD says it
+    /// belongs to `<informationafterdive>`.
     private struct InformationBeforeDiveLegacyShim: Codable {
-        var equipmentused: EquipmentUsed?
         var program: Program?
+    }
+
+    /// Legacy-location shim — `<equipmentused>` under `<informationafterdive>`.
+    /// The element's HTML page lists `<informationafterdive>` as the parent,
+    /// so tools that consult the HTML rather than the XSD may emit it there.
+    /// The XSD locates `<equipmentused>` under `<informationbeforedive>`.
+    private struct InformationAfterDiveLegacyShim: Codable {
+        var equipmentused: EquipmentUsed?
     }
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         id = try container.decodeIfPresent(String.self, forKey: .id)
-        informationbeforedive = try container.decodeIfPresent(InformationBeforeDive.self, forKey: .informationbeforedive)
         applicationdata = try container.decodeIfPresent(ApplicationData.self, forKey: .applicationdata)
         samples = try container.decodeIfPresent(Samples.self, forKey: .samples)
         tankdata = try container.decodeIfPresent([TankData].self, forKey: .tankdata)
+        var beforeDive = try container.decodeIfPresent(InformationBeforeDive.self, forKey: .informationbeforedive)
         var afterDive = try container.decodeIfPresent(InformationAfterDive.self, forKey: .informationafterdive)
 
-        let needsLegacyEquipmentUsed = afterDive?.equipmentused == nil
-        let needsLegacyProgram = afterDive?.program == nil
-        if informationbeforedive != nil, needsLegacyEquipmentUsed || needsLegacyProgram,
+        if beforeDive != nil, afterDive?.program == nil,
            let legacy = try container.decodeIfPresent(InformationBeforeDiveLegacyShim.self, forKey: .informationbeforedive),
-           legacy.equipmentused != nil || legacy.program != nil {
+           let legacyProgram = legacy.program {
             if afterDive == nil { afterDive = InformationAfterDive() }
-            if needsLegacyEquipmentUsed { afterDive?.equipmentused = legacy.equipmentused }
-            if needsLegacyProgram { afterDive?.program = legacy.program }
+            afterDive?.program = legacyProgram
         }
 
+        if afterDive != nil, beforeDive?.equipmentused == nil,
+           let legacy = try container.decodeIfPresent(InformationAfterDiveLegacyShim.self, forKey: .informationafterdive),
+           let legacyEquipmentUsed = legacy.equipmentused {
+            if beforeDive == nil { beforeDive = InformationBeforeDive() }
+            beforeDive?.equipmentused = legacyEquipmentUsed
+        }
+
+        informationbeforedive = beforeDive
         informationafterdive = afterDive
     }
 }
@@ -152,6 +162,15 @@ public struct InformationBeforeDive: Codable, Equatable, Sendable {
     /// Internal dive number (dive computer's sequence number)
     public var internaldivenumber: Int?
 
+    /// Equipment used during this dive
+    ///
+    /// - Note: The HTML element page lists `<informationafterdive>` as the parent, but
+    ///   the authoritative XSD and Subsurface's emitter both place `<equipmentused>`
+    ///   inside `<informationbeforedive>`. We follow the XSD.
+    ///
+    /// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/equipmentused.html
+    public var equipmentused: EquipmentUsed?
+
     /// Exercise level before the dive
     ///
     /// - Note: Still contradictory in UDDF 3.2.3 — the element page says its parent is
@@ -212,6 +231,7 @@ public struct InformationBeforeDive: Codable, Equatable, Sendable {
         divenumber: Int? = nil,
         divenumberofday: Int? = nil,
         internaldivenumber: Int? = nil,
+        equipmentused: EquipmentUsed? = nil,
         exercisebeforedive: ExerciseBeforeDive? = nil,
         medicationbeforedive: MedicationBeforeDive? = nil,
         nosuit: NoSuit? = nil,
@@ -234,6 +254,7 @@ public struct InformationBeforeDive: Codable, Equatable, Sendable {
         self.divenumber = divenumber
         self.divenumberofday = divenumberofday
         self.internaldivenumber = internaldivenumber
+        self.equipmentused = equipmentused
         self.exercisebeforedive = exercisebeforedive
         self.medicationbeforedive = medicationbeforedive
         self.nosuit = nosuit
@@ -284,11 +305,6 @@ public struct InformationAfterDive: Codable, Equatable, Sendable {
 
     /// Equipment malfunction that occurred during the dive
     public var equipmentmalfunction: EquipmentMalfunction?
-
-    /// Equipment used during this dive
-    ///
-    /// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/equipmentused.html
-    public var equipmentused: EquipmentUsed?
 
     /// Global alarms triggered during the dive
     public var globalalarmsgiven: GlobalAlarmsGiven?
@@ -369,7 +385,6 @@ public struct InformationAfterDive: Codable, Equatable, Sendable {
         diveplan: DivePlan? = nil,
         divetable: DiveTable? = nil,
         equipmentmalfunction: EquipmentMalfunction? = nil,
-        equipmentused: EquipmentUsed? = nil,
         globalalarmsgiven: GlobalAlarmsGiven? = nil,
         greatestdepth: Depth? = nil,
         highestpo2: Pressure? = nil,
@@ -395,7 +410,6 @@ public struct InformationAfterDive: Codable, Equatable, Sendable {
         self.diveplan = diveplan
         self.divetable = divetable
         self.equipmentmalfunction = equipmentmalfunction
-        self.equipmentused = equipmentused
         self.globalalarmsgiven = globalalarmsgiven
         self.greatestdepth = greatestdepth
         self.highestpo2 = highestpo2
