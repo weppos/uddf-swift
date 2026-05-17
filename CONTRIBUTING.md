@@ -71,10 +71,6 @@ BREAKING CHANGE: ValidationResult now uses Set instead of Array.
 Update code accessing result.errors accordingly.
 ```
 
-## Changelog
-
-We follow the [Common Changelog](https://common-changelog.org/) format for changelog entries.
-
 ## Project Structure
 
 ```

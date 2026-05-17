@@ -103,23 +103,6 @@ try UDDFSerialization.write(document, to: outputURL)
 let compactData = try UDDFSerialization.write(document, prettyPrinted: false)
 ```
 
-### Error Handling
-
-```swift
-do {
-    let document = try UDDFSerialization.parse(xmlData)
-    // Process document
-} catch UDDFError.invalidXML(let detail) {
-    print("Invalid XML: \(detail)")
-} catch UDDFError.missingGenerator {
-    print("UDDF files must contain a generator section")
-} catch UDDFError.fileNotFound(let url) {
-    print("File not found: \(url.path)")
-} catch {
-    print("Unexpected error: \(error)")
-}
-```
-
 ### Validation
 
 Validate UDDF documents with comprehensive checks:
@@ -219,6 +202,103 @@ print(duration.minutes)  // 25.0
 print(duration.hours)    // 0.417
 ```
 
+## API Reference
+
+### UDDFSerialization
+
+The main entry point for parsing, writing, validating, and resolving references.
+
+```swift
+public struct UDDFSerialization {
+    // Parsing
+    public static func parse(_ data: Data) throws -> UDDFDocument
+    public static func parse(contentsOf url: URL) throws -> UDDFDocument
+
+    // Reference resolution
+    public static func parseAndResolve(_ data: Data) throws -> (document: UDDFDocument, resolution: ResolutionResult)
+    public static func parseAndResolve(contentsOf url: URL) throws -> (document: UDDFDocument, resolution: ResolutionResult)
+    public static func resolveReferences(in document: UDDFDocument) throws -> ResolutionResult
+
+    // Validation
+    public static func validate(_ document: UDDFDocument, options: UDDFValidator.Options = .init()) -> ValidationResult
+    public static func parseAndValidate(_ data: Data, options: UDDFValidator.Options = .init()) throws -> (document: UDDFDocument, validation: ValidationResult)
+
+    // Writing
+    public static func write(_ document: UDDFDocument, prettyPrinted: Bool = true, dateFormat: UDDFDateFormat = .local) throws -> Data
+    public static func write(_ document: UDDFDocument, to url: URL, prettyPrinted: Bool = true, dateFormat: UDDFDateFormat = .local) throws
+}
+```
+
+### UDDFValidator
+
+Validates UDDF documents for correctness and compliance.
+
+```swift
+public class UDDFValidator {
+    public struct Options {
+        public var validateRanges: Bool       // Default: true
+        public var validateReferences: Bool   // Default: true
+        public var strictMode: Bool           // Default: false
+    }
+
+    public init(options: Options = Options())
+    public func validate(_ document: UDDFDocument) -> ValidationResult
+}
+```
+
+### ReferenceResolver
+
+Resolves and validates ID/IDREF references across the document.
+
+```swift
+public class ReferenceResolver {
+    public init()
+    public func resolve(_ document: UDDFDocument) throws -> ResolutionResult
+    public func element(for id: String) -> ReferenceableElement?
+    public func contains(id: String) -> Bool
+    public var allIDs: [String] { get }
+}
+```
+
+## Error Handling
+
+The library throws `UDDFError` cases for all error conditions:
+
+```swift
+import UDDF
+
+do {
+    let document = try UDDFSerialization.parse(xmlData)
+    // Process document
+} catch UDDFError.invalidXML(let detail) {
+    print("Invalid XML: \(detail)")
+} catch UDDFError.missingGenerator {
+    print("UDDF files must contain a generator section")
+} catch UDDFError.fileNotFound(let url) {
+    print("File not found: \(url.path)")
+} catch let error as UDDFError {
+    print("UDDF error: \(error.localizedDescription)")
+}
+```
+
+Error cases:
+
+| Case | When it's thrown |
+| --- | --- |
+| `invalidXML(String)` | Malformed XML or unparseable structure |
+| `invalidVersion(String)` | Unsupported UDDF version |
+| `missingRequiredElement(String)` | A required XML element is absent |
+| `invalidElementOrder` | XML elements appear in an unexpected order |
+| `unresolvedReference(String)` | An IDREF points to an ID that doesn't exist |
+| `duplicateID(String)` | The same ID is used by multiple elements |
+| `invalidIDFormat(String)` | An ID value doesn't match the expected format |
+| `missingGenerator` | The required `<generator>` section is absent |
+| `invalidDateTime(String)` | Date/time value cannot be parsed |
+| `invalidUnit(String)` | Unit value or format is invalid |
+| `fileNotFound(URL)` | File doesn't exist at the given URL |
+| `unreadableFile(URL)` | File exists but cannot be read |
+| `unwritableFile(URL)` | File cannot be written to the given URL |
+
 ## Requirements
 
 - iOS 15.0+ / macOS 12.0+
@@ -231,9 +311,20 @@ print(duration.hours)    // 0.417
 
 ## UDDF Specification
 
-This library implements the UDDF v3.2.1 specification:
+This library implements [UDDF v3.2.1](https://www.streit.cc/extern/uddf_v321/en/index.html), supporting all major sections:
 
-https://www.streit.cc/extern/uddf_v321/en/index.html
+- Generator (required)
+- Maker
+- Business
+- Diver
+- Dive Site
+- Gas Definitions
+- Decompression Model
+- Profile Data
+- Table Generation
+- Dive Trip
+- Dive Computer Control
+- Media Data
 
 ## Contributing
 
