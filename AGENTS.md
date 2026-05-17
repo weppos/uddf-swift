@@ -27,6 +27,15 @@ UDDF Swift is a Swift library for parsing, validating, and writing Universal Div
 
 ## Project-Specific Context
 
+### Parser vs Validator Philosophy
+
+- **Parser**: Permissive - parse whatever valid XML exists, don't enforce UDDF rules
+- **Validator**: Two modes
+  - Default (`strictMode: false`): Allow real-world deviations with warnings
+  - Strict (`strictMode: true`): Warnings become errors, full spec compliance
+
+Use warnings for recommended fields (like `generator.name`), errors for truly required data.
+
 ### Code Style Notes
 
 - Use Conventional Commits format (see [CONTRIBUTING.md](CONTRIBUTING.md#commit-message-guidelines))
