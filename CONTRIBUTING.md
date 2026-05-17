@@ -75,6 +75,26 @@ Update code accessing result.errors accordingly.
 
 We follow the [Common Changelog](https://common-changelog.org/) format for changelog entries.
 
+## Project Structure
+
+```
+Sources/UDDF/
+├── Core/           # Units (Depth, Temperature, etc.), DateTime, Identifiers
+├── Errors/         # Error types
+├── Models/         # Swift structs/types for UDDF sections
+├── Parser/         # XML parsing and writing (XMLCoder-based)
+└── Validation/     # Document validation
+Tests/UDDFTests/
+├── CoreTests/            # Core unit tests (units, identifiers, datetime, references)
+├── IntegrationTests/     # High-level fixture tests
+├── ModelTests/           # Model unit tests (enums, value types, etc.)
+├── ParserTests/          # XML parsing tests (one file per section)
+├── SerializationTests/   # Round-trip serialization tests (one file per section)
+├── ValidationTests/      # Validation tests
+├── WriterTests/          # XML writing tests (one file per section)
+└── Fixtures/             # Test fixtures organized by UDDF section
+```
+
 ## Testing
 
 ### Running Tests
@@ -87,10 +107,20 @@ swift test --parallel              # Run tests in parallel
 
 ### Writing Tests
 
-- **Core tests**: `Tests/UDDFTests/CoreTests/` with one file per core implementation
-- **Model tests**: `Tests/UDDFTests/ModelTests/` organized by UDDF section or focused model type
-- **Integration tests**: Use fixtures in test bundles
-- **Test fixtures**: Real-world UDDF files for testing
+Tests are organized by UDDF section with consistent naming:
+
+- **CoreTests/`<Type>`Tests.swift** - Core type unit tests (units, datetime, identifiers, references)
+- **ModelTests/`<Section>`Tests.swift** - Model/enum unit tests (initialization, enum values)
+- **ParserTests/`<Section>`ParserTests.swift** - XML parsing tests (minimal + complete)
+- **SerializationTests/`<Section>`SerializationTests.swift** - Round-trip serialization tests
+- **WriterTests/`<Section>`WriterTests.swift** - XML writing tests
+- **IntegrationTests/** - High-level fixture tests
+- **Fixtures/** - Real-world UDDF files for testing (see [Tests/AGENTS.md](Tests/AGENTS.md))
+
+Each parser test file should include:
+
+- `testParseMinimal()` - Minimal valid section with required elements only
+- `testParseComplete()` - Complete section with all optional elements
 
 ### Real-World Integration Testing
 
