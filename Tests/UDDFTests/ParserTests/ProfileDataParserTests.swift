@@ -326,6 +326,41 @@ final class ProfileDataParserTests: XCTestCase {
         XCTAssertEqual(waypoint2?.heartrate, 1.333)
     }
 
+    /// A pretty-printer can put the `<alarm>` category token on its own
+    /// indented line. The token must decode trimmed ("ascent"), not as the
+    /// surrounding whitespace ("\n  ascent\n  "), so equality and lookups work.
+    func testParseAlarmTrimsFormattingWhitespace() throws {
+        let xml = """
+        <?xml version="1.0" encoding="UTF-8"?>
+        <uddf version="3.2.3">
+            <generator>
+                <name>TestApp</name>
+            </generator>
+            <profiledata>
+                <repetitiongroup>
+                    <dive>
+                        <samples>
+                            <waypoint>
+                                <alarm level="2">
+                                    ascent
+                                </alarm>
+                                <depth>10</depth>
+                                <divetime>60</divetime>
+                            </waypoint>
+                        </samples>
+                    </dive>
+                </repetitiongroup>
+            </profiledata>
+        </uddf>
+        """
+
+        let document = try UDDFSerialization.parse(Data(xml.utf8))
+        let waypoint = document.profiledata?.repetitiongroup?.first?.dive?.first?.samples?.waypoint?.first
+        XCTAssertEqual(waypoint?.alarm.count, 1)
+        XCTAssertEqual(waypoint?.alarm.first?.value, "ascent")
+        XCTAssertEqual(waypoint?.alarm.first?.level, 2)
+    }
+
     func testParseWaypointMultiSensorPO2AndMultiTankPressure() throws {
         let xml = """
         <?xml version="1.0" encoding="UTF-8"?>
