@@ -4,7 +4,7 @@ import Foundation
 ///
 /// UDDF uses ISO 8601 format for dates and times. This type wraps Foundation's
 /// Date and optionally preserves timezone information.
-public struct UDDFDateTime: Codable, Equatable, Hashable {
+public struct UDDFDateTime: Codable, Equatable, Hashable, Sendable {
     /// The date and time
     public var date: Date
 
@@ -48,11 +48,27 @@ public struct UDDFDateTime: Codable, Equatable, Hashable {
             return
         }
 
+        // Fall back to local time without timezone (yyyy-MM-dd'T'HH:mm:ss).
+        // Matches the legacy `UDDFDateFormat.local` writer output and lets us
+        // round-trip files written by older versions of this library.
+        if let parsedDate = UDDFDateTime.localFormatter.date(from: dateString) {
+            self.date = parsedDate
+            self.timezone = nil
+            return
+        }
+
         throw DecodingError.dataCorruptedError(
             in: container,
             debugDescription: "Invalid date format: \(dateString). Expected ISO 8601 format."
         )
     }
+
+    private static let localFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        return formatter
+    }()
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.singleValueContainer()

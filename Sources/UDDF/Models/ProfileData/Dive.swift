@@ -150,8 +150,13 @@ public struct InformationBeforeDive: Codable, Equatable, Sendable {
     /// Type of breathing apparatus used
     public var apparatus: Apparatus?
 
-    /// Date and time when the dive started
-    public var datetime: Date?
+    /// Date and time when the dive started.
+    ///
+    /// Uses `UDDFDateTime` so the timezone offset reported by the dive
+    /// computer survives serialization. The resulting `<datetime>` element
+    /// will carry the offset (e.g. `2024-03-05T10:00:00+02:00`) when
+    /// `timezone` is set, or UTC (`Z` suffix) when it is `nil`.
+    public var datetime: UDDFDateTime?
 
     /// Dive number (sequential number across all dives)
     public var divenumber: Int?
@@ -227,7 +232,7 @@ public struct InformationBeforeDive: Codable, Equatable, Sendable {
         alcoholbeforedive: AlcoholBeforeDive? = nil,
         altitude: Altitude? = nil,
         apparatus: Apparatus? = nil,
-        datetime: Date? = nil,
+        datetime: UDDFDateTime? = nil,
         divenumber: Int? = nil,
         divenumberofday: Int? = nil,
         internaldivenumber: Int? = nil,
