@@ -35,7 +35,9 @@ The parser also tolerates a handful of non-spec inputs that show up in real-worl
 
 ## Attributed Intrinsic Scalars
 
-Some UDDF elements combine an XML attribute with scalar text content, for example `<price currency="EUR">499.99</price>` or `<measuredpo2 ref="sensor-1">120000</measuredpo2>`.
+Some UDDF elements combine an XML attribute with scalar text content, for example `<price currency="EUR">499.99</price>` or `<measuredpo2 ref="sensor-1">120000</measuredpo2>`. Inside `<waypoint>` this shape recurs for `<alarm level="…">`, `<batterychargecondition deviceref="…" tankref="…">`, `<setpo2 setby="…">`, and `<gradientfactor tissue="…">`. Each is modelled as a small struct carrying the attribute(s) plus the intrinsic value (`Alarm`, `BatteryChargeCondition`, `SetPO2`, `GradientFactor`), not flattened to a bare scalar; flattening silently drops the attribute on round-trip.
+
+Where the XSD marks such an attribute `use="required"` (`batterychargecondition/@deviceref`, `setpo2/@setby`), the parser still treats it as optional so it can read real-world files that omit it. Enforcing the requirement is the validator's job, not the parser's.
 
 When XML is pretty-printed, XMLCoder may expose the intrinsic text as multiple whitespace-padded fragments during decode. For machine-valued scalar content such as `Double`, decode through the shared `decodeTrimmedIntrinsicValue(forKey:)` helper so formatting whitespace is ignored while preserving the parser's global `trimValueWhitespaces = false` behavior for free-form text fields.
 

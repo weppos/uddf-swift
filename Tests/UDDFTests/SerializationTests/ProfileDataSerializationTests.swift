@@ -169,6 +169,54 @@ final class ProfileDataSerializationTests: XCTestCase {
         }
     }
 
+    // MARK: - Attributed waypoint scalars round-trip
+
+    /// `<alarm>`, `<batterychargecondition>`, `<setpo2>`, and `<gradientfactor>`
+    /// each carry an attribute in the XSD. This verifies those attributes survive
+    /// a write -> parse cycle instead of being dropped.
+    func testWaypointAttributedScalarsRoundTrip() throws {
+        let generator = Generator(name: "TestApp")
+
+        let waypoint = Waypoint(
+            alarm: [Alarm("ascent", level: 2.5)],
+            batterychargecondition: [BatteryChargeCondition(3.6, deviceref: "dc1", tankref: "tank1")],
+            depth: Depth(meters: 18),
+            divetime: Duration(minutes: 12),
+            gradientfactor: GradientFactor(0.72, tissue: 5),
+            setpo2: SetPO2(pascals: 130_000, setby: .computer)
+        )
+
+        let dive = Dive(id: "dive1", samples: Samples(waypoint: [waypoint]))
+        let profileData = ProfileData(repetitiongroup: [RepetitionGroup(dive: [dive])])
+
+        var document = UDDFDocument(version: "3.2.3", generator: generator)
+        document.profiledata = profileData
+
+        let xmlData = try UDDFSerialization.write(document, prettyPrinted: true)
+        let xmlString = String(data: xmlData, encoding: .utf8) ?? ""
+
+        // The attributes must actually be emitted on their elements.
+        XCTAssertTrue(xmlString.contains("level=\"2.5\""), "alarm/@level missing from output")
+        XCTAssertTrue(xmlString.contains("deviceref=\"dc1\""), "batterychargecondition/@deviceref missing")
+        XCTAssertTrue(xmlString.contains("tankref=\"tank1\""), "batterychargecondition/@tankref missing")
+        XCTAssertTrue(xmlString.contains("tissue=\"5\""), "gradientfactor/@tissue missing")
+        XCTAssertTrue(xmlString.contains("setby=\"computer\""), "setpo2/@setby missing")
+
+        // ...and survive a re-parse with both value and attribute intact.
+        let reparsed = try UDDFSerialization.parse(xmlData)
+        let wp = reparsed.profiledata?.repetitiongroup?.first?.dive?.first?.samples?.waypoint?.first
+
+        XCTAssertEqual(wp?.alarm.first?.value, "ascent")
+        XCTAssertEqual(wp?.alarm.first?.level, 2.5)
+        XCTAssertEqual(wp?.batterychargecondition.first?.value, 3.6)
+        XCTAssertEqual(wp?.batterychargecondition.first?.deviceref, "dc1")
+        XCTAssertEqual(wp?.batterychargecondition.first?.tankref, "tank1")
+        XCTAssertEqual(wp?.gradientfactor?.value, 0.72)
+        XCTAssertEqual(wp?.gradientfactor?.tissue, 5)
+        XCTAssertEqual(wp?.setpo2?.pascals, 130_000)
+        XCTAssertEqual(wp?.setpo2?.setby, .computer)
+    }
+
     // MARK: - Legacy-location fallback for older uddf-swift placements
 
     func testParseLegacyPlacementOfProgramUnderInformationBeforeDive() throws {
