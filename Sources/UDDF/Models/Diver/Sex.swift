@@ -3,7 +3,7 @@ import Foundation
 /// Biological sex
 ///
 /// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/sex.html
-public enum Sex: Equatable, Sendable {
+public enum Sex: ExtensibleStringEnum {
     /// Undetermined sex
     case undetermined
 
@@ -49,20 +49,5 @@ public enum Sex: Equatable, Sendable {
             return false
         }
         return true
-    }
-}
-
-// MARK: - Codable
-
-extension Sex: Codable {
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.singleValueContainer()
-        let value = try container.decode(String.self)
-        self.init(rawValue: value)
-    }
-
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.singleValueContainer()
-        try container.encode(self.rawValue)
     }
 }

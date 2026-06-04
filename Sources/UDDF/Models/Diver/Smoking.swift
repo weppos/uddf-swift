@@ -3,7 +3,7 @@ import Foundation
 /// Smoking habits (cigarettes per day)
 ///
 /// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/smoking.html
-public enum Smoking: Equatable, Sendable {
+public enum Smoking: ExtensibleStringEnum {
     /// Non-smoker (0 cigarettes per day)
     case nonSmoker
 
@@ -59,20 +59,5 @@ public enum Smoking: Equatable, Sendable {
             return false
         }
         return true
-    }
-}
-
-// MARK: - Codable
-
-extension Smoking: Codable {
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.singleValueContainer()
-        let value = try container.decode(String.self)
-        self.init(rawValue: value)
-    }
-
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.singleValueContainer()
-        try container.encode(self.rawValue)
     }
 }

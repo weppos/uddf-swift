@@ -92,7 +92,7 @@ extension Suit: DynamicNodeEncoding {
 /// Type of diving suit
 ///
 /// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/suittype.html
-public enum SuitType: Equatable, Sendable {
+public enum SuitType: ExtensibleStringEnum {
     case diveSkin
     case wetSuit
     case drySuit
@@ -128,20 +128,5 @@ public enum SuitType: Equatable, Sendable {
             return false
         }
         return true
-    }
-}
-
-// MARK: - Codable
-
-extension SuitType: Codable {
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.singleValueContainer()
-        let value = try container.decode(String.self)
-        self.init(rawValue: value)
-    }
-
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.singleValueContainer()
-        try container.encode(rawValue)
     }
 }

@@ -99,7 +99,7 @@ extension Tank: DynamicNodeEncoding {
 /// Tank construction material
 ///
 /// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/tankmaterial.html
-public enum TankMaterial: Equatable, Sendable {
+public enum TankMaterial: ExtensibleStringEnum {
     case aluminium
     case carbon
     case steel
@@ -129,20 +129,5 @@ public enum TankMaterial: Equatable, Sendable {
             return false
         }
         return true
-    }
-}
-
-// MARK: - Codable
-
-extension TankMaterial: Codable {
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.singleValueContainer()
-        let value = try container.decode(String.self)
-        self.init(rawValue: value)
-    }
-
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.singleValueContainer()
-        try container.encode(rawValue)
     }
 }

@@ -23,7 +23,7 @@ public struct Salinity: Codable, Equatable, Sendable {
 }
 
 /// Supported water types for salinity reporting.
-public enum WaterType: Equatable, Sendable {
+public enum WaterType: ExtensibleStringEnum {
     case fresh
     case salt
     case unknown(String)
@@ -43,20 +43,5 @@ public enum WaterType: Equatable, Sendable {
         case "salt": self = .salt
         default: self = .unknown(trimmed)
         }
-    }
-}
-
-// MARK: - Codable
-
-extension WaterType: Codable {
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.singleValueContainer()
-        let value = try container.decode(String.self)
-        self.init(rawValue: value)
-    }
-
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.singleValueContainer()
-        try container.encode(rawValue)
     }
 }

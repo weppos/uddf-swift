@@ -281,7 +281,7 @@ public struct DiveMode: Codable, Equatable, Sendable {
     /// Specifies the breathing apparatus mode used at this waypoint.
     /// Uses a hybrid enum to gracefully handle unknown values while providing
     /// type safety for standard UDDF values.
-    public enum ModeType: Equatable, Sendable {
+    public enum ModeType: ExtensibleStringEnum {
         /// Freediving (breath-hold diving)
         ///
         /// Encoded as `"apnea"`. UDDF 3.2.2 renamed `"apnoe"` to `"apnea"`;
@@ -346,21 +346,6 @@ public struct DiveMode: Codable, Equatable, Sendable {
     }
 }
 
-// MARK: - ModeType Codable
-
-extension DiveMode.ModeType: Codable {
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.singleValueContainer()
-        let value = try container.decode(String.self)
-        self.init(rawValue: value)
-    }
-
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.singleValueContainer()
-        try container.encode(self.rawValue)
-    }
-}
-
 // MARK: - DynamicNodeEncoding
 
 extension DiveMode: DynamicNodeEncoding {
@@ -385,7 +370,7 @@ public struct DecoStop: Codable, Equatable, Sendable {
     /// Specifies whether the stop is mandatory (required for safety)
     /// or a safety stop (recommended but not required).
     /// Uses a hybrid enum to gracefully handle unknown values.
-    public enum StopKind: Equatable, Sendable {
+    public enum StopKind: ExtensibleStringEnum {
         /// Mandatory decompression stop (required)
         case mandatory
 
@@ -447,21 +432,6 @@ public struct DecoStop: Codable, Equatable, Sendable {
         case kind
         case decodepth
         case duration
-    }
-}
-
-// MARK: - StopKind Codable
-
-extension DecoStop.StopKind: Codable {
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.singleValueContainer()
-        let value = try container.decode(String.self)
-        self.init(rawValue: value)
-    }
-
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.singleValueContainer()
-        try container.encode(self.rawValue)
     }
 }
 
@@ -600,7 +570,7 @@ public struct SetPO2: Codable, Equatable, Sendable {
     ///
     /// Uses a hybrid enum to gracefully handle unknown values while providing
     /// type safety for the standard UDDF values.
-    public enum SetBy: Equatable, Sendable {
+    public enum SetBy: ExtensibleStringEnum {
         /// The diver set the value manually.
         case user
         /// The dive computer set the value automatically.
@@ -677,20 +647,5 @@ public struct SetPO2: Codable, Equatable, Sendable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         _setby = try container.decodeIfPresent(Attribute<SetBy?>.self, forKey: .setby) ?? Attribute(nil)
         pascals = try container.decodeTrimmedIntrinsicValue(forKey: .pascals)
-    }
-}
-
-// MARK: - SetBy Codable
-
-extension SetPO2.SetBy: Codable {
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.singleValueContainer()
-        let value = try container.decode(String.self)
-        self.init(rawValue: value)
-    }
-
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.singleValueContainer()
-        try container.encode(rawValue)
     }
 }
