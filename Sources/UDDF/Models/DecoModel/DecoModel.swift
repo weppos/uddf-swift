@@ -257,7 +257,7 @@ extension Tissue: DynamicNodeEncoding {
 /// Gas types for tissue compartment calculations
 ///
 /// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/tissue.html
-public enum TissueGas: Equatable, Sendable {
+public enum TissueGas: ExtensibleStringEnum {
     /// Nitrogen
     case n2
     /// Helium
@@ -291,18 +291,5 @@ public enum TissueGas: Equatable, Sendable {
             return false
         }
         return true
-    }
-}
-
-extension TissueGas: Codable {
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.singleValueContainer()
-        let value = try container.decode(String.self)
-        self.init(rawValue: value)
-    }
-
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.singleValueContainer()
-        try container.encode(rawValue)
     }
 }

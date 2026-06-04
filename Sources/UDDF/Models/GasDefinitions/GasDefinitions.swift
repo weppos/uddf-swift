@@ -19,7 +19,7 @@ public struct GasDefinitions: Codable, Equatable, Sendable {
 /// Specifies the intended use of a gas mix in diving configurations.
 ///
 /// - Note: EXTENSION libdivecomputer export
-public enum GasUsage: Equatable, Sendable {
+public enum GasUsage: ExtensibleStringEnum {
     /// Bottom/back gas
     case bottom
 
@@ -75,21 +75,6 @@ public enum GasUsage: Equatable, Sendable {
             return false
         }
         return true
-    }
-}
-
-// MARK: - GasUsage Codable
-
-extension GasUsage: Codable {
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.singleValueContainer()
-        let value = try container.decode(String.self)
-        self.init(rawValue: value)
-    }
-
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.singleValueContainer()
-        try container.encode(rawValue)
     }
 }
 

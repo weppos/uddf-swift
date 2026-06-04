@@ -7,7 +7,7 @@ import Foundation
 /// Describes the location/facility from which a dive commenced.
 ///
 /// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/platform.html
-public enum Platform: Equatable, Sendable {
+public enum Platform: ExtensibleStringEnum {
     /// Beach or shore entry
     case beachShore
     /// Pier or dock entry
@@ -70,19 +70,6 @@ public enum Platform: Equatable, Sendable {
     }
 }
 
-extension Platform: Codable {
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.singleValueContainer()
-        let value = try container.decode(String.self)
-        self.init(rawValue: value)
-    }
-
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.singleValueContainer()
-        try container.encode(self.rawValue)
-    }
-}
-
 // MARK: - Apparatus
 
 /// Breathing gas delivery system
@@ -90,7 +77,7 @@ extension Platform: Codable {
 /// Describes the type of breathing apparatus used during the dive.
 ///
 /// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/apparatus.html
-public enum Apparatus: Equatable, Sendable {
+public enum Apparatus: ExtensibleStringEnum {
     /// Open-circuit scuba
     case openScuba
     /// Rebreather (closed or semi-closed circuit)
@@ -141,19 +128,6 @@ public enum Apparatus: Equatable, Sendable {
     }
 }
 
-extension Apparatus: Codable {
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.singleValueContainer()
-        let value = try container.decode(String.self)
-        self.init(rawValue: value)
-    }
-
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.singleValueContainer()
-        try container.encode(self.rawValue)
-    }
-}
-
 // MARK: - Purpose
 
 /// Dive purpose
@@ -161,7 +135,7 @@ extension Apparatus: Codable {
 /// Describes the purpose or reason for the dive.
 ///
 /// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/purpose.html
-public enum Purpose: Equatable, Sendable {
+public enum Purpose: ExtensibleStringEnum {
     /// Sightseeing/recreational diving
     case sightseeing
     /// Learning (student diving with instructor)
@@ -224,25 +198,12 @@ public enum Purpose: Equatable, Sendable {
     }
 }
 
-extension Purpose: Codable {
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.singleValueContainer()
-        let value = try container.decode(String.self)
-        self.init(rawValue: value)
-    }
-
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.singleValueContainer()
-        try container.encode(self.rawValue)
-    }
-}
-
 // MARK: - StateOfRestBeforeDive
 
 /// Diver's state of rest before the dive
 ///
 /// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/stateofrestbeforedive.html
-public enum StateOfRestBeforeDive: Equatable, Sendable {
+public enum StateOfRestBeforeDive: ExtensibleStringEnum {
     /// Not specified
     case notSpecified
     /// Well rested
@@ -285,25 +246,12 @@ public enum StateOfRestBeforeDive: Equatable, Sendable {
     }
 }
 
-extension StateOfRestBeforeDive: Codable {
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.singleValueContainer()
-        let value = try container.decode(String.self)
-        self.init(rawValue: value)
-    }
-
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.singleValueContainer()
-        try container.encode(self.rawValue)
-    }
-}
-
 // MARK: - Current
 
 /// Water current strength during the dive
 ///
 /// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/current.html
-public enum Current: Equatable, Sendable {
+public enum Current: ExtensibleStringEnum {
     /// No current
     case noCurrent
     /// Very mild current
@@ -354,25 +302,12 @@ public enum Current: Equatable, Sendable {
     }
 }
 
-extension Current: Codable {
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.singleValueContainer()
-        let value = try container.decode(String.self)
-        self.init(rawValue: value)
-    }
-
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.singleValueContainer()
-        try container.encode(self.rawValue)
-    }
-}
-
 // MARK: - DivePlan
 
 /// Method used to plan the dive
 ///
 /// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/diveplan.html
-public enum DivePlan: Equatable, Sendable {
+public enum DivePlan: ExtensibleStringEnum {
     /// No dive plan
     case none
     /// Dive tables used
@@ -415,25 +350,12 @@ public enum DivePlan: Equatable, Sendable {
     }
 }
 
-extension DivePlan: Codable {
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.singleValueContainer()
-        let value = try container.decode(String.self)
-        self.init(rawValue: value)
-    }
-
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.singleValueContainer()
-        try container.encode(self.rawValue)
-    }
-}
-
 // MARK: - ThermalComfort
 
 /// Diver's thermal comfort during the dive
 ///
 /// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/thermalcomfort.html
-public enum ThermalComfort: Equatable, Sendable {
+public enum ThermalComfort: ExtensibleStringEnum {
     /// Not indicated
     case notIndicated
     /// Comfortable temperature
@@ -480,25 +402,12 @@ public enum ThermalComfort: Equatable, Sendable {
     }
 }
 
-extension ThermalComfort: Codable {
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.singleValueContainer()
-        let value = try container.decode(String.self)
-        self.init(rawValue: value)
-    }
-
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.singleValueContainer()
-        try container.encode(self.rawValue)
-    }
-}
-
 // MARK: - Workload
 
 /// Physical workload during the dive
 ///
 /// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/workload.html
-public enum Workload: Equatable, Sendable {
+public enum Workload: ExtensibleStringEnum {
     /// Not specified
     case notSpecified
     /// Resting (minimal activity)
@@ -549,25 +458,12 @@ public enum Workload: Equatable, Sendable {
     }
 }
 
-extension Workload: Codable {
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.singleValueContainer()
-        let value = try container.decode(String.self)
-        self.init(rawValue: value)
-    }
-
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.singleValueContainer()
-        try container.encode(self.rawValue)
-    }
-}
-
 // MARK: - EquipmentMalfunction
 
 /// Type of equipment malfunction during the dive
 ///
 /// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/equipmentmalfunction.html
-public enum EquipmentMalfunction: Equatable, Sendable {
+public enum EquipmentMalfunction: ExtensibleStringEnum {
     /// No malfunction
     case none
     /// Face mask malfunction
@@ -642,25 +538,12 @@ public enum EquipmentMalfunction: Equatable, Sendable {
     }
 }
 
-extension EquipmentMalfunction: Codable {
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.singleValueContainer()
-        let value = try container.decode(String.self)
-        self.init(rawValue: value)
-    }
-
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.singleValueContainer()
-        try container.encode(self.rawValue)
-    }
-}
-
 // MARK: - Program
 
 /// Type of diving program
 ///
 /// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/program.html
-public enum Program: Equatable, Sendable {
+public enum Program: ExtensibleStringEnum {
     /// Recreational diving
     case recreation
     /// Training/certification dive
@@ -716,18 +599,5 @@ public enum Program: Equatable, Sendable {
             return false
         }
         return true
-    }
-}
-
-extension Program: Codable {
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.singleValueContainer()
-        let value = try container.decode(String.self)
-        self.init(rawValue: value)
-    }
-
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.singleValueContainer()
-        try container.encode(self.rawValue)
     }
 }

@@ -61,7 +61,7 @@ public struct Generator: Codable, Equatable, Sendable {
 /// or a converter program.
 ///
 /// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/type.html
-public enum GeneratorType: Equatable, Sendable {
+public enum GeneratorType: ExtensibleStringEnum {
     /// A converter program generated the UDDF file from a manufacturer's own format
     case converter
     /// A dive computer generated the UDDF file
@@ -95,18 +95,5 @@ public enum GeneratorType: Equatable, Sendable {
             return false
         }
         return true
-    }
-}
-
-extension GeneratorType: Codable {
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.singleValueContainer()
-        let value = try container.decode(String.self)
-        self.init(rawValue: value)
-    }
-
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.singleValueContainer()
-        try container.encode(self.rawValue)
     }
 }
