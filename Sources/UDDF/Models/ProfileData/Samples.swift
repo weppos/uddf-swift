@@ -253,10 +253,7 @@ public struct Waypoint: Codable, Equatable, Sendable {
         try container.encodeIfPresent(depth, forKey: .depth)
         try container.encodeIfPresent(divemode, forKey: .divemode)
         try container.encodeIfPresent(divetime, forKey: .divetime)
-        if let gradientfactor {
-            let encoder = container.superEncoder(forKey: .gradientfactor)
-            try gradientfactor.encode(to: encoder)
-        }
+        try container.encodeIfPresent(gradientfactor, forKey: .gradientfactor)
         try container.encodeIfPresent(heading, forKey: .heading)
         try container.encodeIfPresent(heartrate, forKey: .heartrate)
         for reading in measuredpo2 {
@@ -272,10 +269,7 @@ public struct Waypoint: Codable, Equatable, Sendable {
             let encoder = container.superEncoder(forKey: .setmarker)
             try marker.encode(to: encoder)
         }
-        if let setpo2 {
-            let encoder = container.superEncoder(forKey: .setpo2)
-            try setpo2.encode(to: encoder)
-        }
+        try container.encodeIfPresent(setpo2, forKey: .setpo2)
         try container.encodeIfPresent(switchmix, forKey: .switchmix)
         for pressure in tankpressure {
             let encoder = container.superEncoder(forKey: .tankpressure)
