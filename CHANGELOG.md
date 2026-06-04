@@ -2,9 +2,11 @@
 
 ## Unreleased
 
+## 0.11.0 - 2026-05-25
+
 ### Changed
 
-- `InformationBeforeDive.datetime` now preserves the dive's original timezone offset survives serialization. Writers that previously emitted offsetless wall-clock times via `UDDFDateFormat.local` now emit a tz-suffixed `<datetime>` (e.g. `2024-03-05T10:00:00+02:00`) when the value carries a `timezone`, or UTC (`Z`) when it does not. `UDDFDateTime` now decodes offsetless ISO 8601 strings (e.g. `2024-03-05T10:00:00`) with `timezone == nil`. This keeps round-trip compatibility with files written by older versions of this library that used `UDDFDateFormat.local`. (#3)
+- `InformationBeforeDive.datetime` now preserves the dive's original timezone offset across serialization. Writers that previously emitted offsetless wall-clock times via `UDDFDateFormat.local` now emit a tz-suffixed `<datetime>` (e.g. `2024-03-05T10:00:00+02:00`) when the value carries a `timezone`, or UTC (`Z`) when it does not. `UDDFDateTime` now decodes offsetless ISO 8601 strings (e.g. `2024-03-05T10:00:00`) with `timezone == nil`. This keeps round-trip compatibility with files written by older versions of this library that used `UDDFDateFormat.local`. (#3)
 
 - **BREAKING**: `InformationBeforeDive.datetime` is now `UDDFDateTime?` (was `Date?`)
 
