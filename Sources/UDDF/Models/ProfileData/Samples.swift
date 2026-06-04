@@ -208,6 +208,12 @@ public struct Waypoint: Codable, Equatable, Sendable {
         case tts
     }
 
+    /// Decoding is hand-written (encoding is synthesized) for one reason: the
+    /// repeated-element arrays (`alarm`, `batterychargecondition`, `measuredpo2`,
+    /// `setmarker`, `tankpressure`) are non-optional and must default to empty
+    /// when the elements are absent, which synthesized `Decodable` cannot express
+    /// (it throws on a missing key). Every field is still listed here, so
+    /// `testWaypointEveryFieldRoundTrips` guards against a field being dropped.
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         alarm = try container.decodeIfPresent([Alarm].self, forKey: .alarm) ?? []
@@ -234,49 +240,6 @@ public struct Waypoint: Codable, Equatable, Sendable {
         tankpressure = try container.decodeIfPresent([TankPressure].self, forKey: .tankpressure) ?? []
         temperature = try container.decodeIfPresent(Temperature.self, forKey: .temperature)
         tts = try container.decodeIfPresent(Duration.self, forKey: .tts)
-    }
-
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        for entry in alarm {
-            let encoder = container.superEncoder(forKey: .alarm)
-            try entry.encode(to: encoder)
-        }
-        for entry in batterychargecondition {
-            let encoder = container.superEncoder(forKey: .batterychargecondition)
-            try entry.encode(to: encoder)
-        }
-        try container.encodeIfPresent(bodytemperature, forKey: .bodytemperature)
-        try container.encodeIfPresent(calculatedpo2, forKey: .calculatedpo2)
-        try container.encodeIfPresent(cns, forKey: .cns)
-        try container.encodeIfPresent(decostop, forKey: .decostop)
-        try container.encodeIfPresent(depth, forKey: .depth)
-        try container.encodeIfPresent(divemode, forKey: .divemode)
-        try container.encodeIfPresent(divetime, forKey: .divetime)
-        try container.encodeIfPresent(gradientfactor, forKey: .gradientfactor)
-        try container.encodeIfPresent(heading, forKey: .heading)
-        try container.encodeIfPresent(heartrate, forKey: .heartrate)
-        for reading in measuredpo2 {
-            let encoder = container.superEncoder(forKey: .measuredpo2)
-            try reading.encode(to: encoder)
-        }
-        try container.encodeIfPresent(nodecotime, forKey: .nodecotime)
-        try container.encodeIfPresent(otu, forKey: .otu)
-        try container.encodeIfPresent(pulserate, forKey: .pulserate)
-        try container.encodeIfPresent(remainingbottomtime, forKey: .remainingbottomtime)
-        try container.encodeIfPresent(remainingo2time, forKey: .remainingo2time)
-        for marker in setmarker {
-            let encoder = container.superEncoder(forKey: .setmarker)
-            try marker.encode(to: encoder)
-        }
-        try container.encodeIfPresent(setpo2, forKey: .setpo2)
-        try container.encodeIfPresent(switchmix, forKey: .switchmix)
-        for pressure in tankpressure {
-            let encoder = container.superEncoder(forKey: .tankpressure)
-            try pressure.encode(to: encoder)
-        }
-        try container.encodeIfPresent(temperature, forKey: .temperature)
-        try container.encodeIfPresent(tts, forKey: .tts)
     }
 }
 

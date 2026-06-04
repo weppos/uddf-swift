@@ -217,6 +217,80 @@ final class ProfileDataSerializationTests: XCTestCase {
         XCTAssertEqual(wp?.setpo2?.setby, .computer)
     }
 
+    /// Guardrail for the hand-written `Waypoint.init(from:)`/`encode(to:)`.
+    ///
+    /// Every field is populated with a distinctive value and the whole waypoint
+    /// is compared after a write/parse round-trip. If a field is ever added to
+    /// the struct but dropped from the decode or encode list (the fragility that
+    /// caused the dropped-attribute bug), this equality check fails loudly.
+    func testWaypointEveryFieldRoundTrips() throws {
+        let generator = Generator(name: "TestApp")
+
+        let waypoint = Waypoint(
+            alarm: [Alarm("deco", level: 3)],
+            batterychargecondition: [BatteryChargeCondition(3.6, deviceref: "dc1", tankref: "tank1")],
+            bodytemperature: Temperature(kelvin: 305),
+            calculatedpo2: Pressure(pascals: 121_000),
+            cns: 0.5,
+            decostop: DecoStop(kind: .mandatory, decodepth: 3, duration: 180),
+            depth: Depth(meters: 18),
+            divemode: DiveMode(type: .openCircuit),
+            divetime: Duration(seconds: 720),
+            gradientfactor: GradientFactor(0.75, tissue: 5),
+            heading: 270,
+            heartrate: 1.25,
+            measuredpo2: [MeasuredPO2(pascals: 131_000, ref: "sensor1")],
+            nodecotime: Duration(seconds: 300),
+            otu: 1.5,
+            pulserate: 1.5,
+            remainingbottomtime: Duration(seconds: 600),
+            remainingo2time: Duration(seconds: 1200),
+            setmarker: ["mark-a"],
+            setpo2: SetPO2(pascals: 130_000, setby: .computer),
+            switchmix: SwitchMix(ref: "ean32"),
+            tankpressure: [TankPressure(pascals: 21_000_000, ref: "tank1")],
+            temperature: Temperature(kelvin: 291),
+            tts: Duration(seconds: 90)
+        )
+
+        let dive = Dive(id: "dive1", samples: Samples(waypoint: [waypoint]))
+        let profileData = ProfileData(repetitiongroup: [RepetitionGroup(dive: [dive])])
+        var document = UDDFDocument(version: "3.2.3", generator: generator)
+        document.profiledata = profileData
+
+        let xmlData = try UDDFSerialization.write(document, prettyPrinted: true)
+        let reparsed = try UDDFSerialization.parse(xmlData)
+        let roundTripped = reparsed.profiledata?.repetitiongroup?.first?.dive?.first?.samples?.waypoint?.first
+
+        XCTAssertEqual(roundTripped, waypoint)
+    }
+
+    /// A waypoint with all repeated-element arrays empty must not emit stray
+    /// elements. This pins the clean output of the synthesized `encode(to:)`
+    /// (the custom one was dropped in favour of synthesis plus the round-trip
+    /// guardrail above).
+    func testMinimalWaypointEmitsNoEmptyArrayElements() throws {
+        let generator = Generator(name: "TestApp")
+        let waypoint = Waypoint(depth: Depth(meters: 5), divetime: Duration(seconds: 30))
+        let dive = Dive(id: "dive1", samples: Samples(waypoint: [waypoint]))
+        let profileData = ProfileData(repetitiongroup: [RepetitionGroup(dive: [dive])])
+        var document = UDDFDocument(version: "3.2.3", generator: generator)
+        document.profiledata = profileData
+
+        let xmlData = try UDDFSerialization.write(document, prettyPrinted: true)
+        let xml = String(data: xmlData, encoding: .utf8) ?? ""
+
+        XCTAssertFalse(xml.contains("<alarm"), "empty alarm array should emit nothing")
+        XCTAssertFalse(xml.contains("<batterychargecondition"), "empty batterychargecondition array should emit nothing")
+        XCTAssertFalse(xml.contains("<measuredpo2"), "empty measuredpo2 array should emit nothing")
+        XCTAssertFalse(xml.contains("<setmarker"), "empty setmarker array should emit nothing")
+        XCTAssertFalse(xml.contains("<tankpressure"), "empty tankpressure array should emit nothing")
+
+        // Sanity: populated fields are still present.
+        XCTAssertTrue(xml.contains("<depth>"))
+        XCTAssertTrue(xml.contains("<divetime>"))
+    }
+
     // MARK: - Legacy-location fallback for older uddf-swift placements
 
     func testParseLegacyPlacementOfProgramUnderInformationBeforeDive() throws {
