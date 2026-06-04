@@ -351,4 +351,112 @@ final class ReferenceResolutionTests: XCTestCase {
         XCTAssertTrue(allIDs.contains("owner1"))
         XCTAssertTrue(allIDs.contains("buddy1"))
     }
+
+    // MARK: - Equipment & Waypoint Reference Tests
+
+    func testResolveWaypointEquipmentReferences() throws {
+        let xml = """
+        <?xml version="1.0" encoding="UTF-8"?>
+        <uddf version="3.2.3">
+            <generator>
+                <name>Test</name>
+            </generator>
+            <diver>
+                <owner id="owner1">
+                    <personal>
+                        <firstname>John</firstname>
+                    </personal>
+                    <equipment>
+                        <divecomputer id="dc1">
+                            <name>Petrel</name>
+                        </divecomputer>
+                        <tank id="tank1">
+                            <name>AL80</name>
+                        </tank>
+                    </equipment>
+                </owner>
+            </diver>
+            <profiledata>
+                <repetitiongroup id="rg1">
+                    <dive id="dive1">
+                        <samples>
+                            <waypoint>
+                                <depth>10.0</depth>
+                                <divetime>60</divetime>
+                                <batterychargecondition deviceref="dc1" tankref="tank1">3.7</batterychargecondition>
+                            </waypoint>
+                        </samples>
+                    </dive>
+                </repetitiongroup>
+            </profiledata>
+        </uddf>
+        """
+
+        let data = xml.data(using: .utf8)!
+        let document = try UDDFSerialization.parse(data)
+
+        let resolver = ReferenceResolver()
+        let result = try resolver.resolve(document)
+
+        // The equipment IDs must be registered and resolve to their typed elements.
+        XCTAssertTrue(result.isValid)
+        XCTAssertTrue(result.registry.keys.contains("dc1"))
+        XCTAssertTrue(result.registry.keys.contains("tank1"))
+
+        if case .diveComputer(let computer)? = result.registry["dc1"] {
+            XCTAssertEqual(computer.id, "dc1")
+        } else {
+            XCTFail("dc1 should resolve to a divecomputer")
+        }
+
+        if case .tank(let tank)? = result.registry["tank1"] {
+            XCTAssertEqual(tank.id, "tank1")
+        } else {
+            XCTFail("tank1 should resolve to a tank")
+        }
+
+        // The waypoint references must resolve against the registered equipment.
+        XCTAssertTrue(resolver.contains(id: "dc1"))
+        XCTAssertTrue(resolver.contains(id: "tank1"))
+    }
+
+    func testDetectUnresolvedWaypointEquipmentReferences() throws {
+        let xml = """
+        <?xml version="1.0" encoding="UTF-8"?>
+        <uddf version="3.2.3">
+            <generator>
+                <name>Test</name>
+            </generator>
+            <profiledata>
+                <repetitiongroup>
+                    <dive>
+                        <samples>
+                            <waypoint>
+                                <depth>10.0</depth>
+                                <divetime>60</divetime>
+                                <batterychargecondition deviceref="ghostdc" tankref="ghosttank">3.7</batterychargecondition>
+                            </waypoint>
+                        </samples>
+                    </dive>
+                </repetitiongroup>
+            </profiledata>
+        </uddf>
+        """
+
+        let data = xml.data(using: .utf8)!
+        let document = try UDDFSerialization.parse(data)
+
+        let resolver = ReferenceResolver()
+        let result = try resolver.resolve(document)
+
+        XCTAssertFalse(result.isValid)
+        XCTAssertEqual(result.errors.count, 2)
+
+        let locations = Set(result.errors.map(\.location))
+        XCTAssertTrue(locations.contains("waypoint.batterychargecondition.deviceref"))
+        XCTAssertTrue(locations.contains("waypoint.batterychargecondition.tankref"))
+
+        let unresolved = Set(result.errors.map(\.referenceID))
+        XCTAssertEqual(unresolved, ["ghostdc", "ghosttank"])
+    }
 }

@@ -46,12 +46,18 @@ public class ReferenceResolver {
             if let id = owner.id {
                 try register(id: id, element: .diver(owner))
             }
+            if let equipment = owner.equipment {
+                try registerEquipment(equipment)
+            }
         }
 
         if let buddies = document.diver?.buddy {
             for buddy in buddies {
                 if let id = buddy.id {
                     try register(id: id, element: .buddy(buddy))
+                }
+                if let equipment = buddy.equipment {
+                    try registerEquipment(equipment)
                 }
             }
         }
@@ -173,12 +179,34 @@ public class ReferenceResolver {
         registry[id] = element
     }
 
+    /// Register the equipment pieces that can be the target of an IDREF.
+    ///
+    /// Only divecomputers and tanks are referenced from dive samples today (via
+    /// `<batterychargecondition>` `deviceref`/`tankref`), so those are the pieces
+    /// registered here.
+    private func registerEquipment(_ equipment: Equipment) throws {
+        if let computers = equipment.divecomputer {
+            for computer in computers {
+                if let id = computer.id {
+                    try register(id: id, element: .diveComputer(computer))
+                }
+            }
+        }
+        if let tanks = equipment.tank {
+            for tank in tanks {
+                if let id = tank.id {
+                    try register(id: id, element: .tank(tank))
+                }
+            }
+        }
+    }
+
     // MARK: - Reference Validation
 
     private func validateReferences(_ document: UDDFDocument) -> [ReferenceError] {
         var errors: [ReferenceError] = []
 
-        // Validate references in notes/links
+        // Validate references in notes/links and dive samples
         if let groups = document.profiledata?.repetitiongroup {
             for group in groups {
                 if let dives = group.dive {
@@ -186,6 +214,13 @@ public class ReferenceResolver {
                         // Check information after dive
                         if let notes = dive.informationafterdive?.notes {
                             errors.append(contentsOf: validateLinkReferences(in: notes))
+                        }
+
+                        // Check sample readings that reference equipment
+                        if let waypoints = dive.samples?.waypoint {
+                            for waypoint in waypoints {
+                                errors.append(contentsOf: validateWaypointReferences(in: waypoint))
+                            }
                         }
                     }
                 }
@@ -198,6 +233,29 @@ public class ReferenceResolver {
                 errors.append(ReferenceError(
                     referenceID: ref,
                     location: "tablegeneration.link",
+                    message: "Unresolved reference to '\(ref)'"
+                ))
+            }
+        }
+
+        return errors
+    }
+
+    private func validateWaypointReferences(in waypoint: Waypoint) -> [ReferenceError] {
+        var errors: [ReferenceError] = []
+
+        for reading in waypoint.batterychargecondition {
+            if let ref = reading.deviceref, !registry.keys.contains(ref) {
+                errors.append(ReferenceError(
+                    referenceID: ref,
+                    location: "waypoint.batterychargecondition.deviceref",
+                    message: "Unresolved reference to '\(ref)'"
+                ))
+            }
+            if let ref = reading.tankref, !registry.keys.contains(ref) {
+                errors.append(ReferenceError(
+                    referenceID: ref,
+                    location: "waypoint.batterychargecondition.tankref",
                     message: "Unresolved reference to '\(ref)'"
                 ))
             }
@@ -248,6 +306,8 @@ public class ReferenceResolver {
 public enum ReferenceableElement: Equatable {
     case diver(Owner)
     case buddy(Buddy)
+    case diveComputer(DiveComputer)
+    case tank(Tank)
     case diveSite(DiveSite)
     case gasMix(Mix)
     case repetitionGroup(RepetitionGroup)
