@@ -10,6 +10,7 @@
 - Add `bodytemperature`, `pulserate`, and `setmarker` fields to `Waypoint` (UDDF 3.2.2)
 - Add `divecomputercontrol` support: `setdcdata` with all 14 children, plus `getdcdata` and `divecomputerdump`
 - Add `certificatenumber` to `Certification` (UDDF 3.2.2)
+- Resolve `<batterychargecondition>` `deviceref`/`tankref` references: `ReferenceResolver` now registers `<divecomputer>` and `<tank>` equipment IDs (from owner and buddy equipment) and reports unresolved waypoint references
 
 ### Changed
 
