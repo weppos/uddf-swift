@@ -6,7 +6,7 @@ import Foundation
 ///
 /// Describes the location/facility from which a dive commenced.
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/platform.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/platform.html
 public enum Platform: Equatable, Sendable {
     /// Beach or shore entry
     case beachShore
@@ -89,7 +89,7 @@ extension Platform: Codable {
 ///
 /// Describes the type of breathing apparatus used during the dive.
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/apparatus.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/apparatus.html
 public enum Apparatus: Equatable, Sendable {
     /// Open-circuit scuba
     case openScuba
@@ -160,7 +160,7 @@ extension Apparatus: Codable {
 ///
 /// Describes the purpose or reason for the dive.
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/purpose.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/purpose.html
 public enum Purpose: Equatable, Sendable {
     /// Sightseeing/recreational diving
     case sightseeing
@@ -241,7 +241,7 @@ extension Purpose: Codable {
 
 /// Diver's state of rest before the dive
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/stateofrestbeforedive.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/stateofrestbeforedive.html
 public enum StateOfRestBeforeDive: Equatable, Sendable {
     /// Not specified
     case notSpecified
@@ -302,7 +302,7 @@ extension StateOfRestBeforeDive: Codable {
 
 /// Water current strength during the dive
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/current.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/current.html
 public enum Current: Equatable, Sendable {
     /// No current
     case noCurrent
@@ -371,7 +371,7 @@ extension Current: Codable {
 
 /// Method used to plan the dive
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/diveplan.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/diveplan.html
 public enum DivePlan: Equatable, Sendable {
     /// No dive plan
     case none
@@ -432,7 +432,7 @@ extension DivePlan: Codable {
 
 /// Diver's thermal comfort during the dive
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/thermalcomfort.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/thermalcomfort.html
 public enum ThermalComfort: Equatable, Sendable {
     /// Not indicated
     case notIndicated
@@ -497,7 +497,7 @@ extension ThermalComfort: Codable {
 
 /// Physical workload during the dive
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/workload.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/workload.html
 public enum Workload: Equatable, Sendable {
     /// Not specified
     case notSpecified
@@ -566,7 +566,7 @@ extension Workload: Codable {
 
 /// Type of equipment malfunction during the dive
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/equipmentmalfunction.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/equipmentmalfunction.html
 public enum EquipmentMalfunction: Equatable, Sendable {
     /// No malfunction
     case none
@@ -659,7 +659,7 @@ extension EquipmentMalfunction: Codable {
 
 /// Type of diving program
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/program.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/program.html
 public enum Program: Equatable, Sendable {
     /// Recreational diving
     case recreation

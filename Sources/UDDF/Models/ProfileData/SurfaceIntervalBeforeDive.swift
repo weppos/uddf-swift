@@ -6,7 +6,7 @@ import XMLCoder
 /// Represents the time spent on the surface before starting the dive,
 /// including any altitude changes during travel to the dive site.
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/surfaceintervalbeforedive.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/surfaceintervalbeforedive.html
 public struct SurfaceIntervalBeforeDive: Codable, Equatable, Sendable {
     /// Time elapsed on the surface before this dive
     ///
@@ -74,7 +74,7 @@ public struct SurfaceIntervalBeforeDive: Codable, Equatable, Sendable {
 
 /// Altitude exposure information during surface interval
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/exposuretoaltitude.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/exposuretoaltitude.html
 public struct ExposureToAltitude: Codable, Equatable, Sendable {
     /// Altitude exposed to
     ///
@@ -99,7 +99,7 @@ public struct ExposureToAltitude: Codable, Equatable, Sendable {
 ///
 /// Records altitude changes during travel, with time and altitude values.
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/wayaltitude.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/wayaltitude.html
 public struct WayAltitude: Codable, Equatable, Sendable {
     /// Time since start of travel
     ///

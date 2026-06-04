@@ -6,7 +6,7 @@ import XMLCoder
 /// Allows divers to define reusable equipment configurations by
 /// referencing previously defined equipment pieces.
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/equipmentconfiguration.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/equipmentconfiguration.html
 public struct EquipmentConfiguration: Codable, Equatable, Sendable {
     /// Unique identifier
     public var id: String?

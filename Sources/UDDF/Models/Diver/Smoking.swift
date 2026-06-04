@@ -2,7 +2,7 @@ import Foundation
 
 /// Smoking habits (cigarettes per day)
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/smoking.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/smoking.html
 public enum Smoking: Equatable, Sendable {
     /// Non-smoker (0 cigarettes per day)
     case nonSmoker

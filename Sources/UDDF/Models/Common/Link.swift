@@ -5,7 +5,7 @@ import XMLCoder
 ///
 /// An empty element with a ref attribute pointing to another element's ID.
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/link.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/link.html
 public struct Link: Codable, Equatable, Sendable {
     /// Reference to another element's ID
     public var ref: String?

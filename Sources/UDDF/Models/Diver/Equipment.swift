@@ -4,7 +4,7 @@ import Foundation
 ///
 /// Contains all diving equipment owned by a diver.
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/equipment.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/equipment.html
 public struct Equipment: Codable, Equatable, Sendable {
     /// Diving boots/footwear
     public var boots: [Boots]?

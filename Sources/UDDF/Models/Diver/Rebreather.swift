@@ -3,7 +3,7 @@ import XMLCoder
 
 /// Rebreather (closed-circuit breathing apparatus)
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/rebreather.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/rebreather.html
 public struct Rebreather: Codable, Equatable, Sendable {
     /// Unique identifier
     public var id: String?
@@ -91,7 +91,7 @@ extension Rebreather: DynamicNodeEncoding {
 
 /// Oxygen sensor for rebreathers
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/o2sensor.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/o2sensor.html
 public struct O2Sensor: Codable, Equatable, Sendable {
     /// Unique identifier
     public var id: String?

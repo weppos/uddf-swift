@@ -3,7 +3,7 @@ import XMLCoder
 
 /// Photo camera with body, lenses, flash, and housing
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/camera.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/camera.html
 public struct Camera: Codable, Equatable, Sendable {
     /// Unique identifier
     public var id: String?
@@ -52,7 +52,7 @@ extension Camera: DynamicNodeEncoding {
 
 /// Camera body
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/body.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/body.html
 public struct CameraBody: Codable, Equatable, Sendable {
     /// Unique identifier
     public var id: String?
@@ -132,7 +132,7 @@ extension CameraBody: DynamicNodeEncoding {
 
 /// Camera lens
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/lens.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/lens.html
 public struct Lens: Codable, Equatable, Sendable {
     /// Unique identifier
     public var id: String?
@@ -212,7 +212,7 @@ extension Lens: DynamicNodeEncoding {
 
 /// Camera flash/strobe
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/flash.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/flash.html
 public struct Flash: Codable, Equatable, Sendable {
     /// Unique identifier
     public var id: String?
@@ -292,7 +292,7 @@ extension Flash: DynamicNodeEncoding {
 
 /// Underwater housing for camera/video equipment
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/housing.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/housing.html
 public struct Housing: Codable, Equatable, Sendable {
     /// Unique identifier
     public var id: String?

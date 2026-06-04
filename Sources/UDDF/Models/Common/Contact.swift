@@ -4,7 +4,7 @@ import Foundation
 ///
 /// Used for storing contact details for individuals, businesses, and manufacturers.
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/contact.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/contact.html
 public struct Contact: Codable, Equatable, Sendable {
     /// Preferred language
     public var language: String?

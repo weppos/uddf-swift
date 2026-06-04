@@ -20,13 +20,13 @@ final class RealWorldFixtureTests: XCTestCase {
         XCTAssertEqual(waypoint0?.divetime?.seconds, 0)
         XCTAssertEqual(waypoint0?.depth?.meters, 0)
         XCTAssertEqual(waypoint0?.temperature?.kelvin, 299.15)
-        XCTAssertEqual(waypoint0?.batterychargecondition, 3.43)
+        XCTAssertEqual(waypoint0?.batterychargecondition.first?.value, 3.43)
         // NOTE: Shearwater Cloud Desktop exports calculatedpo2 in bar instead of pascals (SI).
         // This is a bug in the Shearwater export - UDDF spec requires pascals.
         // No direct assertion here because the source data is non-SI and intentionally tolerated.
         XCTAssertEqual(waypoint0?.switchmix?.ref, "CC4:15/55")
         XCTAssertEqual(waypoint0?.divemode?.type, .closedCircuit)
-        XCTAssertEqual(waypoint0?.gradientfactor, 0)
+        XCTAssertEqual(waypoint0?.gradientfactor?.value, 0)
 
         // Test waypoint with NDL time
         let waypoint1 = waypoints?[1]
@@ -53,6 +53,6 @@ final class RealWorldFixtureTests: XCTestCase {
         XCTAssertEqual(waypoint9?.decostop?.kind, .mandatory)
         XCTAssertEqual(waypoint9?.decostop?.decodepth, 6)
         XCTAssertEqual(waypoint9?.decostop?.duration, 180)
-        XCTAssertEqual(waypoint9?.gradientfactor, 52)
+        XCTAssertEqual(waypoint9?.gradientfactor?.value, 52)
     }
 }

@@ -3,7 +3,7 @@ import XMLCoder
 
 /// Price with currency attribute
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/price.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/price.html
 public struct Price: Codable, Equatable, Sendable {
     /// Currency code (e.g., "EUR", "USD")
     @Attribute public var currency: String?

@@ -2,6 +2,26 @@
 
 ## Unreleased
 
+### Added
+
+- Support for UDDF 3.2.3 (cumulative over UDDF 3.2.2 and 3.2.3)
+- Add `Alarm`, `BatteryChargeCondition`, `GradientFactor`, and `SetPO2` waypoint types, each capturing the element value together with its XML attributes (`alarm/@level`, `batterychargecondition/@deviceref` and `@tankref`, `gradientfactor/@tissue`, `setpo2/@setby`)
+- Add `alarm`, `batterychargecondition`, `gradientfactor`, and `setpo2` fields to `Waypoint` (UDDF 3.2.3)
+- Add `bodytemperature`, `pulserate`, and `setmarker` fields to `Waypoint` (UDDF 3.2.2)
+- Add `divecomputercontrol` support: `setdcdata` with all 14 children, plus `getdcdata` and `divecomputerdump`
+- Add `certificatenumber` to `Certification` (UDDF 3.2.2)
+
+### Changed
+
+- **BREAKING**: Change `UDDFDocument` default version from `3.2.1` to `3.2.3`
+- **BREAKING**: Change `Waypoint.heartrate` from `UInt?` (beats per minute) to `Double?` (beats per second, SI) per UDDF 3.2.3
+- **BREAKING**: Rename `DiveMode.ModeType.apnoe` to `.apnea` per UDDF 3.2.2; the decoder still accepts the legacy `apnoe` spelling
+- **BREAKING**: Move `program` from `InformationBeforeDive` to `InformationAfterDive` to match the XSD; files that still place it under `informationbeforedive` continue to decode
+
+### Fixed
+
+- Trim formatting whitespace from intrinsic string scalars (e.g. `<alarm>`) when decoding pretty-printed XML
+
 ## 0.11.0 - 2026-05-25
 
 ### Changed

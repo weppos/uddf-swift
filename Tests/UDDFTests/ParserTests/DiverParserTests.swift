@@ -169,6 +169,7 @@ final class DiverParserTests: XCTestCase {
                 <owner id="owner1">
                     <education>
                         <certification>
+                            <certificatenumber>PADI-1234-5678</certificatenumber>
                             <level>OWD</level>
                             <organization>PADI</organization>
                             <issuedate>
@@ -204,6 +205,7 @@ final class DiverParserTests: XCTestCase {
 
         // First certification - OWD
         let cert1 = education?.certification?[0]
+        XCTAssertEqual(cert1?.certificatenumber, "PADI-1234-5678")
         XCTAssertEqual(cert1?.level, "OWD")
         XCTAssertEqual(cert1?.organization, "PADI")
         XCTAssertNotNil(cert1?.issuedate?.datetime)

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Comprehensive <divecomputercontrol> fixture covering all three children:
+  <divecomputerdump>, <getdcdata>, and <setdcdata> — including the UDDF
+  3.2.2 additions inside <setdcgasdefinitionsdata>
+  (<setdcallgasdefinitions/> and <setdcgasdata>).
+-->
+<uddf version="3.2.3">
+    <generator>
+        <name>DCConfigurator</name>
+    </generator>
+
+    <diver>
+        <buddy id="buddy1">
+            <personal>
+                <firstname>Alice</firstname>
+                <lastname>Smith</lastname>
+            </personal>
+        </buddy>
+    </diver>
+
+    <divesite>
+        <site id="site1">
+            <name>Wreck of the Zenobia</name>
+        </site>
+    </divesite>
+
+    <gasdefinitions>
+        <mix id="air">
+            <name>Air</name>
+            <o2>0.21</o2>
+        </mix>
+        <mix id="ean32">
+            <name>EAN32</name>
+            <o2>0.32</o2>
+        </mix>
+    </gasdefinitions>
+
+    <divecomputercontrol>
+        <divecomputerdump>
+            <link ref="site1"/>
+            <datetime>2025-06-15T22:00:00Z</datetime>
+            <dcdump>QlpoOTFBWSZTWZ8AAAAA</dcdump>
+        </divecomputerdump>
+
+        <getdcdata>
+            <getdcprofiledata/>
+            <getdcgasdefinitionsdata/>
+        </getdcdata>
+
+        <setdcdata>
+            <setdcalarmtime>
+                <datetime>2025-06-15T09:30:00Z</datetime>
+                <dcalarm>
+                    <period>10.0</period>
+                    <alarmtype>1</alarmtype>
+                </dcalarm>
+            </setdcalarmtime>
+
+            <setdcaltitude>1500.0</setdcaltitude>
+
+            <setdcbuddydata buddy="buddy1"/>
+
+            <setdcdatetime>
+                <datetime>2025-06-15T08:00:00Z</datetime>
+            </setdcdatetime>
+
+            <setdcdecomodel>
+                <name>Buhlmann ZH-L16C</name>
+                <aliasname>ZHL-16C</aliasname>
+                <aliasname>Buhlmann-C</aliasname>
+            </setdcdecomodel>
+
+            <setdcdivedepthalarm>
+                <dcalarmdepth>40.0</dcalarmdepth>
+                <dcalarm>
+                    <acknowledge/>
+                    <alarmtype>2</alarmtype>
+                </dcalarm>
+            </setdcdivedepthalarm>
+
+            <setdcdivepo2alarm>
+                <dcalarm>
+                    <period>5.0</period>
+                    <alarmtype>3</alarmtype>
+                </dcalarm>
+                <maximumpo2>1.4e5</maximumpo2>
+            </setdcdivepo2alarm>
+
+            <setdcdivesitedata divesite="site1"/>
+
+            <setdcdivetimealarm>
+                <dcalarm>
+                    <period>15.0</period>
+                    <alarmtype>4</alarmtype>
+                </dcalarm>
+                <timespan>2700.0</timespan>
+            </setdcdivetimealarm>
+
+            <setdcendndtalarm>
+                <dcalarm>
+                    <acknowledge/>
+                    <alarmtype>5</alarmtype>
+                </dcalarm>
+            </setdcendndtalarm>
+
+            <setdcgasdefinitionsdata>
+                <setdcgasdata ref="air"/>
+                <setdcgasdata ref="ean32"/>
+            </setdcgasdefinitionsdata>
+
+            <setdcownerdata/>
+
+            <setdcpassword>1234</setdcpassword>
+
+            <setdcgeneratordata/>
+        </setdcdata>
+    </divecomputercontrol>
+</uddf>

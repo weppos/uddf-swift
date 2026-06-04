@@ -8,7 +8,7 @@ import XMLCoder
 /// Contains configuration for decompression algorithms used in dive planning
 /// and real-time calculations. Supports Bühlmann, VPM, and RGBM models.
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/decomodel.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/decomodel.html
 public struct DecoModel: Codable, Equatable, Sendable {
     /// Bühlmann decompression models
     public var buehlmann: [Buehlmann]?
@@ -43,7 +43,7 @@ public struct DecoModel: Codable, Equatable, Sendable {
 /// The Bühlmann algorithm models dissolved gas uptake and elimination
 /// in multiple tissue compartments with different half-times.
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/buehlmann.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/buehlmann.html
 public struct Buehlmann: Codable, Equatable, Sendable {
     /// Unique identifier for this parameter set
     public var id: String
@@ -97,7 +97,7 @@ extension Buehlmann: DynamicNodeEncoding {
 /// Based on research by Yount and Hoffman (1986), this model tracks
 /// bubble formation and growth during decompression.
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/vpm.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/vpm.html
 public struct VPM: Codable, Equatable, Sendable {
     /// Unique identifier for this parameter set
     public var id: String
@@ -165,7 +165,7 @@ extension VPM: DynamicNodeEncoding {
 /// Note: RGBM is a proprietary model and its complete parameters
 /// are not fully documented. Support is experimental.
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/rgbm.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/rgbm.html
 public struct RGBM: Codable, Equatable, Sendable {
     /// Unique identifier for this parameter set
     public var id: String
@@ -203,7 +203,7 @@ extension RGBM: DynamicNodeEncoding {
 /// Defines gas absorption characteristics for a single tissue compartment.
 /// All attributes are compulsory per the UDDF specification.
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/tissue.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/tissue.html
 public struct Tissue: Codable, Equatable, Sendable {
     /// Gas type (n2, he, or h2)
     public var gas: TissueGas
@@ -256,7 +256,7 @@ extension Tissue: DynamicNodeEncoding {
 
 /// Gas types for tissue compartment calculations
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/tissue.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/tissue.html
 public enum TissueGas: Equatable, Sendable {
     /// Nitrogen
     case n2

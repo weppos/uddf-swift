@@ -15,7 +15,7 @@ The library prioritizes working with actual dive computer exports over strict sp
 
 ## UDDF Extensions
 
-Some dive computer exporters include fields that are not part of the UDDF 3.2.1 specification. We support a limited set of these extensions when they are widely used in practice.
+Some dive computer exporters include fields that are not part of the UDDF specification. The library supports a limited set of these extensions when they are widely used in practice.
 
 - **Salinity (`<salinity>`)**: Stored under `<informationbeforedive>` as `<salinity density="...">fresh|salt</salinity>`. This is an extension based on libdivecomputer's de-facto UDDF export behavior. Treat it as optional and preserve it on round-trip.
 
@@ -23,19 +23,31 @@ Some dive computer exporters include fields that are not part of the UDDF 3.2.1 
     <salinity density="1025.0">salt</salinity>
     ```
 
+- **`<tts>` on `<waypoint>`**: Time-to-surface in seconds. Emitted by Shearwater Cloud Desktop. Preserved on round-trip but tagged in `Waypoint` under a `// MARK: - Non-spec extensions` block.
+
+## Permissive parsing
+
+The parser also tolerates a handful of non-spec inputs that show up in real-world files. They are routed to their XSD-correct location on parse and emitted at the XSD-correct location on write:
+
+- `<equipmentused>` placed under `<informationafterdive>` (the location the HTML element page lists) is routed to `InformationBeforeDive` (where the XSD puts it).
+- `<program>` placed under `<informationbeforedive>` (where older uddf-swift releases emitted it) is routed to `InformationAfterDive` (where the XSD puts it).
+- `<divemode type="apnoe">` (the German spelling) decodes to `.apnea`; the writer always emits `"apnea"`.
+
 ## Attributed Intrinsic Scalars
 
-Some UDDF elements combine an XML attribute with scalar text content, for example `<price currency="EUR">499.99</price>` or `<measuredpo2 ref="sensor-1">120000</measuredpo2>`.
+Some UDDF elements combine an XML attribute with scalar text content, for example `<price currency="EUR">499.99</price>` or `<measuredpo2 ref="sensor-1">120000</measuredpo2>`. Inside `<waypoint>` this shape recurs for `<alarm level="…">`, `<batterychargecondition deviceref="…" tankref="…">`, `<setpo2 setby="…">`, and `<gradientfactor tissue="…">`. Each is modelled as a small struct carrying the attribute(s) plus the intrinsic value (`Alarm`, `BatteryChargeCondition`, `SetPO2`, `GradientFactor`), not flattened to a bare scalar; flattening silently drops the attribute on round-trip.
 
-When XML is pretty-printed, XMLCoder may expose the intrinsic text as multiple whitespace-padded fragments during decode. For machine-valued scalar content such as `Double`, decode through the shared `decodeTrimmedIntrinsicValue(forKey:)` helper so formatting whitespace is ignored while preserving the parser's global `trimValueWhitespaces = false` behavior for free-form text fields.
+Where the XSD marks such an attribute `use="required"` (`batterychargecondition/@deviceref`, `setpo2/@setby`), the parser still treats it as optional so it can read real-world files that omit it. The library does not currently flag a missing required attribute as an error; that enforcement is left to the consumer (a future strict-mode validator check could add it).
+
+When XML is pretty-printed, XMLCoder may expose the intrinsic text as whitespace-padded fragments during decode. The shared `decodeTrimmedIntrinsicValue(forKey:)` helper ignores that formatting whitespace for the scalar content of these elements: numeric values (e.g. `<measuredpo2>`) and short token text (e.g. the `<alarm>` category). Genuinely free-form prose (for example `<para>` inside `<notes>`) does not route through this helper and keeps the parser's global `trimValueWhitespaces = false` behavior.
 
 ## UDDF Specification Inconsistencies
 
-The UDDF 3.2.1 specification contains internal inconsistencies where the prose/schema and the examples disagree. This section documents the cases we've encountered and the decisions we've made.
+The UDDF specification contains a few internal inconsistencies where the prose, the HTML element pages, the XSD, and the examples disagree. When sources conflict, this library treats the [XSD](https://www.streit.cc/resources/UDDF/v3.2.3/schema/uddf_3.2.3.xsd) as authoritative (it is the only machine-validatable definition), with Subsurface's emitter as the practical tie-breaker for real-world interop.
 
 ### `tankpressure`: `ref` vs `tankref`
 
-The [`tankpressure` spec page](https://www.streit.cc/extern/uddf_v321/en/tankpressure.html) defines the attribute as `ref`, but the XML example on the same page uses `tankref`:
+The [`tankpressure` spec page](https://www.streit.cc/resources/UDDF/v3.2.3/en/tankpressure.html) defines the attribute as `ref`, but the XML example on the same page uses `tankref`:
 
 ```xml
 <!-- From the spec example -->
@@ -45,19 +57,28 @@ The [`tankpressure` spec page](https://www.streit.cc/extern/uddf_v321/en/tankpre
 
 **Decision:** We use `ref` to stay consistent with `measuredpo2`, which also uses `ref` as a cross-reference attribute on an intrinsic scalar element. Real-world exporters should be tested to determine which attribute name they actually use; if `tankref` appears in practice, we may need to support both during parsing.
 
-### Parent Element Disagreements
+### `equipmentused`: HTML page vs XSD
 
-Several elements have contradictory parent placement across different spec pages. The [`profiledata` section](https://www.streit.cc/extern/uddf_v321/en/profiledata.html) shows one parent, while the element's own page shows a different one.
+The XSD (line 982) and Subsurface both place `<equipmentused>` inside `<informationbeforedive>`, and the XSD even carries a 2015 changelog entry noting that the older `<informationafterdive>` placement was a bug "now corrected". The HTML element page and the `informationafterdive` child-list page were never updated to match.
 
-| Element | `profiledata` page says | Element's own page says | Our decision |
-|---------|------------------------|------------------------|--------------|
-| `equipmentused` | `informationbeforedive` | `informationafterdive` | `informationbeforedive` |
-| `exercisebeforedive` | `informationbeforedive` | `dive` | `informationbeforedive` |
-| `purpose` | `informationafterdive` | `informationbeforedive` | `informationbeforedive` |
-| `program` | `informationbeforedive` | `informationafterdive` | `informationbeforedive` |
-| `hyperbaricfacilitytreatment` | `informationafterdive` | `dive` | `informationafterdive` |
+**Decision:** Follow the XSD — `equipmentused` lives on `InformationBeforeDive`, and we emit it there. The parser also accepts the HTML-style placement under `<informationafterdive>` and re-routes it.
 
-**Decision:** We follow the `profiledata` hierarchy page as the authoritative source, since it provides the complete structural overview. The individual element pages appear to have copy-paste errors in their parent declarations.
+### `program`: HTML pages aligned with XSD; older uddf-swift was wrong
+
+XSD (line 1135), the element page, and the `informationafterdive` child-list page all agree: `<program>` is a child of `<informationafterdive>`. Older releases of this library placed it on `InformationBeforeDive` (following an outdated reading of the spec).
+
+**Decision:** `program` lives on `InformationAfterDive`. The parser re-routes the legacy `<informationbeforedive>` placement so older uddf-swift output keeps loading.
+
+### Orphaned elements
+
+Two elements aren't defined in the XSD at all (`exercisebeforedive`, `hyperbaricfacilitytreatment`). Their HTML pages claim `<dive>` as the parent, but `<dive>`'s child list omits them — so they are unreachable from the schema graph.
+
+| Element | Element-page parent claim | Our placement |
+|---------|---------------------------|---------------|
+| `exercisebeforedive` | `<dive>` | `informationbeforedive` |
+| `hyperbaricfacilitytreatment` | `<dive>` | `informationafterdive` |
+
+**Decision:** Treat these as documentation-only and keep them under the nearest information container so the data remains addressable. The chosen container matches what real-world exporters emit.
 
 ## Handling Enumerated Values in UDDF
 
@@ -90,7 +111,7 @@ Use for attributes with fixed UDDF values that need resilience for real-world us
 ```swift
 public struct DiveMode: Codable, Equatable {
     public enum ModeType: Equatable {
-        case apnoe
+        case apnea
         case closedCircuit
         case openCircuit
         case semiClosedCircuit
@@ -98,7 +119,7 @@ public struct DiveMode: Codable, Equatable {
 
         public var rawValue: String {
             switch self {
-            case .apnoe: return "apnoe"
+            case .apnea: return "apnea"
             case .closedCircuit: return "closedcircuit"
             case .openCircuit: return "opencircuit"
             case .semiClosedCircuit: return "semiclosedcircuit"
@@ -108,7 +129,7 @@ public struct DiveMode: Codable, Equatable {
 
         public init(rawValue: String) {
             switch rawValue {
-            case "apnoe": self = .apnoe
+            case "apnea", "apnoe": self = .apnea
             case "closedcircuit": self = .closedCircuit
             case "opencircuit": self = .openCircuit
             case "semiclosedcircuit": self = .semiClosedCircuit
@@ -172,7 +193,7 @@ case .closedCircuit:
     print("CCR dive")
 case .openCircuit:
     print("OC dive")
-case .apnoe:
+case .apnea:
     print("Freediving")
 case .semiClosedCircuit:
     print("SCR dive")
@@ -203,7 +224,7 @@ Use only when you control all data sources and know they're strictly UDDF-compli
 
 ```swift
 public enum ModeType: String, Codable {
-    case apnoe = "apnoe"
+    case apnea = "apnea"
     case closedCircuit = "closedcircuit"
     case openCircuit = "opencircuit"
     case semiClosedCircuit = "semiclosedcircuit"
@@ -265,7 +286,7 @@ Does the UDDF spec define fixed enumerated values?
 
 #### Scenario 1: Parsing Unknown Values
 
-**Problem:** File from Shearwater contains `<divemode type="gauge" />` (gauge mode not in UDDF 3.2.1))
+**Problem:** File from Shearwater contains `<divemode type="gauge" />` (gauge mode is not in the UDDF spec)
 
 **Option 1 Result:**
 
@@ -324,11 +345,12 @@ func validateDive(_ dive: Dive) {
 
 #### Implemented with Option 2
 
-- **`DiveMode.ModeType`** - Dive breathing apparatus modes in [UDDF divemode element](https://www.streit.cc/extern/uddf_v321/en/divemode.html)
-  - Standard: `.apnoe`, `.closedCircuit`, `.openCircuit`, `.semiClosedCircuit`
+- **`DiveMode.ModeType`** - Dive breathing apparatus modes in [UDDF divemode element](https://www.streit.cc/resources/UDDF/v3.2.3/en/divemode.html)
+  - Standard: `.apnea`, `.closedCircuit`, `.openCircuit`, `.semiClosedCircuit`
   - Unknown: `.unknown(String)`
+  - The decoder also accepts the German spelling `"apnoe"` and maps it to `.apnea`; the encoder always emits `"apnea"`.
 
-- **`DecoStop.StopKind`** - Decompression stop types in [UDDF waypoint element](https://www.streit.cc/extern/uddf_v321/en/waypoint.html)
+- **`DecoStop.StopKind`** - Decompression stop types in [UDDF waypoint element](https://www.streit.cc/resources/UDDF/v3.2.3/en/waypoint.html)
   - Standard: `.mandatory`, `.safety`
   - Unknown: `.unknown(String)`
 
@@ -341,7 +363,7 @@ func validateDive(_ dive: Dive) {
 
 When adding support for a new UDDF element with enumerated values:
 
-1. Check the [UDDF specification](https://www.streit.cc/extern/uddf_v321/en/) for the attribute definition
+1. Check the [UDDF specification](https://www.streit.cc/resources/UDDF/v3.2.3/en/) for the attribute definition
 2. **Default to Option 2** (hybrid enum) unless you have a specific reason not to
 3. Implement as a nested type within the parent struct
 4. Include `.unknown(String)` case and `.isStandard` property

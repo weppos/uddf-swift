@@ -148,9 +148,12 @@ final class ProfileDataParserTests: XCTestCase {
         XCTAssertEqual(beforeInfo?.altitude?.meters, 500)
         XCTAssertEqual(beforeInfo?.platform, .charterBoat)
         XCTAssertEqual(beforeInfo?.apparatus, .openScuba)
-        XCTAssertEqual(beforeInfo?.program, .recreation)
         XCTAssertEqual(beforeInfo?.stateofrestbeforedive, .rested)
         XCTAssertEqual(beforeInfo?.equipmentused?.leadquantity, 4.0)
+
+        // <program> appears under <informationbeforedive> in this fixture (an older
+        // uddf-swift placement). The authoritative XSD locates <program> under
+        // <informationafterdive>; the parser re-routes the legacy location.
 
         // TankData
         let tankData = dive?.tankdata
@@ -173,6 +176,9 @@ final class ProfileDataParserTests: XCTestCase {
         XCTAssertEqual(afterInfo?.thermalcomfort, .comfortable)
         XCTAssertEqual(afterInfo?.workload, .light)
         XCTAssertEqual(afterInfo?.rating?.ratingvalue, 9)
+
+        // Legacy-location fallback for <program>.
+        XCTAssertEqual(afterInfo?.program, .recreation)
     }
 
     // MARK: - Waypoint Tests
@@ -237,64 +243,122 @@ final class ProfileDataParserTests: XCTestCase {
 
         // Waypoint 0: Surface with setpoint, battery, PPO2
         let waypoint0 = waypoints?[0]
-        XCTAssertEqual(waypoint0?.batterychargecondition, 3.5)
+        XCTAssertEqual(waypoint0?.batterychargecondition.count, 1)
+        XCTAssertEqual(waypoint0?.batterychargecondition.first?.value, 3.5)
+        XCTAssertEqual(waypoint0?.batterychargecondition.first?.deviceref, "dc1")
+        XCTAssertNil(waypoint0?.batterychargecondition.first?.tankref)
+        XCTAssertNil(waypoint0?.bodytemperature)
         XCTAssertEqual(waypoint0?.calculatedpo2?.pascals ?? 0, 1.2e5)
         XCTAssertEqual(waypoint0?.depth?.meters, 0)
         XCTAssertEqual(waypoint0?.divemode?.type, .closedCircuit)
         XCTAssertEqual(waypoint0?.divetime?.seconds, 0)
-        XCTAssertEqual(waypoint0?.gradientfactor, 0)
+        XCTAssertEqual(waypoint0?.gradientfactor?.value, 0)
+        XCTAssertEqual(waypoint0?.gradientfactor?.tissue, 5)
         XCTAssertNil(waypoint0?.heading)
         XCTAssertEqual(waypoint0?.measuredpo2.count, 1)
         XCTAssertNil(waypoint0?.measuredpo2.first?.ref)
         XCTAssertEqual(waypoint0?.measuredpo2.first?.pascals ?? 0, 1.19e5)
         XCTAssertNil(waypoint0?.nodecotime)
         XCTAssertNil(waypoint0?.otu)
+        XCTAssertNil(waypoint0?.pulserate)
         XCTAssertNil(waypoint0?.remainingbottomtime)
         XCTAssertNil(waypoint0?.remainingo2time)
+        XCTAssertEqual(waypoint0?.setmarker, ["descent-start"])
         XCTAssertEqual(waypoint0?.setpo2?.pascals ?? 0, 1.2e5)
+        XCTAssertEqual(waypoint0?.setpo2?.setby, .computer)
         XCTAssertEqual(waypoint0?.switchmix?.ref, "mix1")
         XCTAssertEqual(waypoint0?.tankpressure.count, 1)
         XCTAssertNil(waypoint0?.tankpressure.first?.ref)
         XCTAssertEqual(waypoint0?.tankpressure.first?.pascals ?? 0, 2.0e7)
         XCTAssertEqual(waypoint0?.temperature?.kelvin ?? 0, 293.15)
 
-        // Waypoint 1: Shallow with NDL, RBT, setpoint, heart rate, heading
+        // Waypoint 1: Shallow with NDL, RBT, setpoint, heart rate, heading, bodytemperature
         let waypoint1 = waypoints?[1]
-        XCTAssertEqual(waypoint1?.batterychargecondition, 3.48)
+        XCTAssertEqual(waypoint1?.batterychargecondition.first?.value, 3.48)
+        XCTAssertEqual(waypoint1?.batterychargecondition.first?.deviceref, "dc1")
+        XCTAssertEqual(waypoint1?.batterychargecondition.first?.tankref, "tank1")
+        XCTAssertEqual(waypoint1?.bodytemperature?.kelvin ?? 0, 309.65)
         XCTAssertEqual(waypoint1?.depth?.meters, 5.0)
         XCTAssertEqual(waypoint1?.divemode?.type, .closedCircuit)
         XCTAssertEqual(waypoint1?.divetime?.seconds, 60)
-        XCTAssertEqual(waypoint1?.gradientfactor, 5)
+        XCTAssertEqual(waypoint1?.gradientfactor?.value, 5)
+        XCTAssertEqual(waypoint1?.gradientfactor?.tissue, 3)
         XCTAssertEqual(waypoint1?.heading, 90.0)
         XCTAssertEqual(waypoint1?.measuredpo2, [])
         XCTAssertEqual(waypoint1?.nodecotime?.seconds, 5940)
         XCTAssertEqual(waypoint1?.otu, 15.5)
+        XCTAssertNil(waypoint1?.pulserate)
         XCTAssertEqual(waypoint1?.remainingbottomtime?.seconds, 1800)
         XCTAssertEqual(waypoint1?.remainingo2time?.seconds, 3300)
+        XCTAssertEqual(waypoint1?.setmarker, [])
         XCTAssertEqual(waypoint1?.setpo2?.pascals ?? 0, 1.2e5)
+        XCTAssertEqual(waypoint1?.setpo2?.setby, .user)
         XCTAssertEqual(waypoint1?.tankpressure.count, 1)
         XCTAssertEqual(waypoint1?.tankpressure.first?.pascals ?? 0, 1.95e7)
-        XCTAssertEqual(waypoint1?.heartrate, 75)
+        XCTAssertEqual(waypoint1?.heartrate, 1.25)
 
-        // Waypoint 2: Depth with deco stop, CNS, TTS, heading
+        // Waypoint 2: Depth with deco stop, CNS, TTS, heading, pulserate, multiple setmarkers
         let waypoint2 = waypoints?[2]
+        XCTAssertNil(waypoint2?.bodytemperature)
         XCTAssertEqual(waypoint2?.cns, 8)
+        XCTAssertEqual(waypoint2?.alarm.count, 1)
+        XCTAssertEqual(waypoint2?.alarm.first?.value, "deco")
+        XCTAssertEqual(waypoint2?.alarm.first?.level, 3)
         XCTAssertEqual(waypoint2?.decostop?.kind, .mandatory)
         XCTAssertEqual(waypoint2?.decostop?.decodepth, 6)
         XCTAssertEqual(waypoint2?.decostop?.duration, 300)
         XCTAssertEqual(waypoint2?.depth?.meters, 40.0)
         XCTAssertEqual(waypoint2?.divemode?.type, .closedCircuit)
         XCTAssertEqual(waypoint2?.divetime?.seconds, 1200)
-        XCTAssertEqual(waypoint2?.gradientfactor, 65)
+        XCTAssertEqual(waypoint2?.gradientfactor?.value, 65)
+        XCTAssertEqual(waypoint2?.gradientfactor?.tissue, 16)
         XCTAssertEqual(waypoint2?.heading, 180.5)
         XCTAssertEqual(waypoint2?.measuredpo2, [])
         XCTAssertEqual(waypoint2?.otu, 42.0)
+        XCTAssertEqual(waypoint2?.pulserate, 1.333)
         XCTAssertEqual(waypoint2?.remainingo2time?.seconds, 2400)
+        XCTAssertEqual(waypoint2?.setmarker, ["turn-point", "2"])
         XCTAssertEqual(waypoint2?.setpo2?.pascals ?? 0, 1.3e5)
+        XCTAssertEqual(waypoint2?.setpo2?.setby, .computer)
         XCTAssertEqual(waypoint2?.tankpressure.count, 1)
         XCTAssertEqual(waypoint2?.tankpressure.first?.pascals ?? 0, 1.8e7)
         XCTAssertEqual(waypoint2?.tts?.seconds, 600)
-        XCTAssertEqual(waypoint2?.heartrate, 80)
+        XCTAssertEqual(waypoint2?.heartrate, 1.333)
+    }
+
+    /// A pretty-printer can put the `<alarm>` category token on its own
+    /// indented line. The token must decode trimmed ("ascent"), not as the
+    /// surrounding whitespace ("\n  ascent\n  "), so equality and lookups work.
+    func testParseAlarmTrimsFormattingWhitespace() throws {
+        let xml = """
+        <?xml version="1.0" encoding="UTF-8"?>
+        <uddf version="3.2.3">
+            <generator>
+                <name>TestApp</name>
+            </generator>
+            <profiledata>
+                <repetitiongroup>
+                    <dive>
+                        <samples>
+                            <waypoint>
+                                <alarm level="2">
+                                    ascent
+                                </alarm>
+                                <depth>10</depth>
+                                <divetime>60</divetime>
+                            </waypoint>
+                        </samples>
+                    </dive>
+                </repetitiongroup>
+            </profiledata>
+        </uddf>
+        """
+
+        let document = try UDDFSerialization.parse(Data(xml.utf8))
+        let waypoint = document.profiledata?.repetitiongroup?.first?.dive?.first?.samples?.waypoint?.first
+        XCTAssertEqual(waypoint?.alarm.count, 1)
+        XCTAssertEqual(waypoint?.alarm.first?.value, "ascent")
+        XCTAssertEqual(waypoint?.alarm.first?.level, 2)
     }
 
     func testParseWaypointMultiSensorPO2AndMultiTankPressure() throws {
@@ -518,7 +582,7 @@ final class ProfileDataParserTests: XCTestCase {
         let dive = document.profiledata?.repetitiongroup?.first?.dive?.first
         XCTAssertNotNil(dive)
 
-        // equipmentused is inside informationbeforedive
+        // equipmentused is a child of informationbeforedive per the XSD.
         let equipmentUsed = dive?.informationbeforedive?.equipmentused
         XCTAssertNotNil(equipmentUsed)
         XCTAssertEqual(equipmentUsed?.leadquantity, 4.0)

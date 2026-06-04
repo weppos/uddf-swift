@@ -3,7 +3,7 @@ import XMLCoder
 
 /// Number of dives in a given time interval
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/numberofdives.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/numberofdives.html
 public struct NumberOfDives: Codable, Equatable, Sendable {
     /// Start date of the interval (ISO 8601 format)
     public var startdate: String

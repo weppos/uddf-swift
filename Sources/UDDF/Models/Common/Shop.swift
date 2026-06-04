@@ -3,7 +3,7 @@ import XMLCoder
 
 /// Shop/vendor information for equipment purchases
 ///
-/// Reference: https://www.streit.cc/extern/uddf_v321/en/shop.html
+/// Reference: https://www.streit.cc/resources/UDDF/v3.2.3/en/shop.html
 public struct Shop: Codable, Equatable, Sendable {
     /// Unique identifier for this shop
     public var id: String
