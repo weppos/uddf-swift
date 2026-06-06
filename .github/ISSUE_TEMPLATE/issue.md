@@ -18,8 +18,8 @@ assignees: ''
 
 ## Proposal
 
-<!-- What should change? Rough is fine — significant work gets a plan
-     before implementation, so this is the starting point, not the full design. -->
+<!-- What should change? Rough is fine; this is the starting point,
+     not the full design. -->
 
 ## Acceptance criteria
 

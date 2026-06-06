@@ -3,9 +3,9 @@
 
 ## Context
 
-<!-- Link the plan that drives this change; the reasoning lives there.
-     e.g. plans/<timestamp>-<slug>.md
-     Add prose only for context the code and plan don't already carry. -->
+<!-- Provide the background a reviewer needs to evaluate this change.
+     Link the parent ticket, if any (e.g. Closes #123).
+     Add prose only for context the code and ticket don't already carry. -->
 
 ## Verification
 
