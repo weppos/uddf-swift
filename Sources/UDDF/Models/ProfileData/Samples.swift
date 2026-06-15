@@ -38,7 +38,9 @@ public struct Waypoint: Codable, Equatable, Sendable {
     /// - Unit: pascals (SI)
     public var calculatedpo2: Pressure?
 
-    /// Central Nervous System (CNS) oxygen toxicity percentage at this waypoint
+    /// Central Nervous System (CNS) oxygen toxicity at this waypoint
+    ///
+    /// - Unit: fraction (dimensionless), e.g. `0.43` for 43%
     public var cns: Double?
 
     /// Decompression stop information at this waypoint
