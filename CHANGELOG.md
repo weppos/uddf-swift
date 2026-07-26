@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Changed
+
+- Require XMLCoder 0.18.2 or later. Its native single-line pretty-printing of intrinsic-value elements (e.g. `<tankpressure ref="backgas">17000000.0</tankpressure>`) replaces the writer's previous output post-processing, which is now removed.
+
 ## 0.12.0 - 2026-06-06
 
 ### Added

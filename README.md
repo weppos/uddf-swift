@@ -307,7 +307,7 @@ Error cases:
 
 ## Dependencies
 
-- [XMLCoder](https://github.com/CoreOffice/XMLCoder) (0.17.0+)
+- [XMLCoder](https://github.com/CoreOffice/XMLCoder) (0.18.2+)
 
 ## UDDF Specification
 
