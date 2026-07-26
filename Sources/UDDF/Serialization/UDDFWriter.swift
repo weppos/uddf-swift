@@ -16,10 +16,8 @@ public enum UDDFDateFormat {
 /// produce valid UDDF files with proper formatting and attributes.
 class UDDFWriter {
     private let encoder: XMLEncoder
-    private let prettyPrinted: Bool
 
     init(prettyPrinted: Bool = true, dateFormat: UDDFDateFormat = .local) {
-        self.prettyPrinted = prettyPrinted
         encoder = XMLEncoder()
 
         // Configure date encoding based on format option
@@ -51,11 +49,7 @@ class UDDFWriter {
             try validateDocument(document)
 
             let header = XMLHeader(version: 1.0, encoding: "utf-8")
-            var data = try encoder.encode(document, withRootKey: "uddf", header: header)
-
-            if prettyPrinted {
-                data = collapseIntrinsicValueElements(data)
-            }
+            let data = try encoder.encode(document, withRootKey: "uddf", header: header)
 
             return data
         } catch let error as UDDFError {
@@ -82,38 +76,6 @@ class UDDFWriter {
     }
 
     // MARK: - Private Helpers
-
-    /// Collapse elements whose only content is a text value onto a single line.
-    ///
-    /// XMLCoder's pretty printer places intrinsic values (text content encoded
-    /// via the empty-string CodingKey `""`) on a separate line when the element
-    /// also carries attributes. This produces output like:
-    ///
-    ///     <tankpressure ref="backgas">
-    ///     17000000.0
-    ///                 </tankpressure>
-    ///
-    /// This method rewrites such elements into the compact form:
-    ///
-    ///     <tankpressure ref="backgas">17000000.0</tankpressure>
-    ///
-    private func collapseIntrinsicValueElements(_ data: Data) -> Data {
-        guard var xml = String(data: data, encoding: .utf8) else { return data }
-
-        // Match an opening tag (with optional attributes), followed by
-        // whitespace-only content (the intrinsic value), then its closing tag.
-        // The value must be non-empty after trimming.
-        let pattern = #"(<[a-zA-Z][\w]*\b[^>]*)>\s*\n\s*([^\s<][^\n<]*?)\s*\n\s*(</[a-zA-Z][\w]*>)"#
-        if let regex = try? NSRegularExpression(pattern: pattern) {
-            xml = regex.stringByReplacingMatches(
-                in: xml,
-                range: NSRange(xml.startIndex..., in: xml),
-                withTemplate: "$1>$2$3"
-            )
-        }
-
-        return Data(xml.utf8)
-    }
 
     private func validateDocument(_ document: UDDFDocument) throws {
         // Writer validates structure, not content

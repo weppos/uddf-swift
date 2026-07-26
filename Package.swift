@@ -17,7 +17,7 @@ let package = Package(
     dependencies: [
         .package(
             url: "https://github.com/CoreOffice/XMLCoder.git",
-            from: "0.17.0"
+            from: "0.18.2"
         )
     ],
     targets: [
